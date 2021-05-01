@@ -17,7 +17,9 @@
     "start": "react-scripts start",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "format": "yarn prettier --write .",
+    "check": "yarn prettier --check ."
   },
   "eslintConfig": {
     "extends": "react-app",
@@ -42,6 +44,8 @@
     ]
   },
   "devDependencies": {
-    "@types/chrome": "^0.0.136"
+    "@types/chrome": "^0.0.136",
+    "prettier": "^2.2.1",
+    "prettier-plugin-organize-imports": "^1.1.1"
   }
 }
