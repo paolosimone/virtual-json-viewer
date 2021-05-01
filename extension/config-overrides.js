@@ -11,10 +11,12 @@ module.exports = {
 
 // Function to override the CRA webpack config
 function override(config, env) {
+  const isEnvProduction = env === "production";
+
   // Replace single entry point in the config with multiple ones
   // Note: you may remove any property below except "popup" to exclude respective entry point from compilation
   config.entry = {
-    popup: paths.appIndexJs,
+    popup: paths.appSrc + "/popup",
     options: paths.appSrc + "/options",
     background: paths.appSrc + "/background",
     content: paths.appSrc + "/content",
@@ -41,13 +43,12 @@ function override(config, env) {
     minifyCSS: true,
     minifyURLs: true,
   };
-  const isEnvProduction = env === "production";
 
-  // Custom HtmlWebpackPlugin instance for index (popup) page
-  const indexHtmlPlugin = new HtmlWebpackPlugin({
+  // Extra HtmlWebpackPlugin instance for popup page. Can't be removed.
+  const popupHtmlPlugin = new HtmlWebpackPlugin({
     inject: true,
     chunks: ["popup"],
-    template: paths.appHtml,
+    template: paths.appPublic + "/popup.html",
     filename: "popup.html",
     minify: isEnvProduction && minifyOpts,
   });
@@ -55,7 +56,7 @@ function override(config, env) {
   config.plugins = replacePlugin(
     config.plugins,
     (name) => /HtmlWebpackPlugin/i.test(name),
-    indexHtmlPlugin
+    popupHtmlPlugin
   );
 
   // Extra HtmlWebpackPlugin instance for options page
@@ -69,6 +70,18 @@ function override(config, env) {
   // Add the above HtmlWebpackPlugin instance into config.plugins
   // Note: you may remove/comment the next line if you don't need an options page
   config.plugins.push(optionsHtmlPlugin);
+
+  // Custom entry instance for index (development) page
+  if (!isEnvProduction) {
+    config.entry = { ...config.entry, dev: paths.appIndexJs };
+
+    const indexHtmlPlugin = new HtmlWebpackPlugin({
+      inject: true,
+      chunks: ["dev"],
+      template: paths.appHtml,
+    });
+    config.plugins.push(indexHtmlPlugin);
+  }
 
   // Custom ManifestPlugin instance to cast asset-manifest.json back to old plain format
   const manifestPlugin = new ManifestPlugin({
