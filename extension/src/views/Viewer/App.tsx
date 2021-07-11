@@ -1,12 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Container, Row } from "react-bootstrap";
 import { FixedSizeTree as Tree } from "react-vtree";
 import { NodeComponentProps, TreeWalker } from "react-vtree/dist/es/Tree";
+import jq from "../../vendor/jq.wasm";
 import "./App.css";
-
-// TODO copy wasm file in the js directory
-// eslint-disable-line
-const jq = (window as any).jq;
 
 type JsonValue =
   | string
@@ -132,12 +129,20 @@ function JsonTree(json: Json) {
 }
 
 function App(props: { jsonText: string }) {
-  // TODO debug props
-  // TODO switch to promise
-  let jsonText: string = jq.raw(props.jsonText, ".");
-  const parseStart = performance.now();
-  const json = JSON.parse(jsonText);
-  console.log(`JSON.parse: ${performance.now() - parseStart} ms`);
+  // TODO add flag props for profiling
+  const query = ".";
+  const [json, setJson] = useState(null);
+
+  useEffect(() => {
+    setJson(null);
+    jq.promised.raw(props.jsonText, query).then((jsonText: string) => {
+      const parseStart = performance.now();
+      const json = JSON.parse(jsonText);
+      console.log(`JSON.parse: ${performance.now() - parseStart} ms`);
+      setJson(json);
+    });
+  }, [props.jsonText, query]);
+
   return (
     <Container>
       <Row>
@@ -145,7 +150,7 @@ function App(props: { jsonText: string }) {
       </Row>
       <Row>
         <p style={{ whiteSpace: "pre-wrap" }}>
-          {JSON.stringify(json, null, 2)}
+          {json == null ? "loading..." : JSON.stringify(json, null, 2)}
         </p>
       </Row>
     </Container>
