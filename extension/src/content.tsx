@@ -2,19 +2,34 @@ import React from "react";
 import ReactDOM from "react-dom";
 import App from "./views/Viewer/App";
 
-// TODO try hide pre (display: none) to improve loading time
-
+// TODO test in firefox
 chrome.runtime.sendMessage("check-json", (isJson: boolean) => {
   if (!isJson) {
     return;
   }
 
-  // the JSON is wrapped in a pre tag.
-  // TODO test in firefox
+  disableDefaultRendering();
+  window.addEventListener("load", loadJsonViewer);
+});
+
+// workaround: improve loading time on large json
+function disableDefaultRendering() {
+  addCSS(`pre { display: none; }`);
+}
+
+function loadJsonViewer() {
   const jsonElement = document.getElementsByTagName("pre")[0];
   const jsonText = jsonElement.innerText;
 
   const div = document.createElement("div");
   jsonElement.parentNode?.replaceChild(div, jsonElement);
+  // TODO remove css
   ReactDOM.render(<App jsonText={jsonText} />, div);
-});
+}
+
+function addCSS(style: string) {
+  const styleElement = document.head.appendChild(
+    document.createElement("style")
+  );
+  styleElement.innerHTML = style;
+}

@@ -143,15 +143,17 @@ function App(props: { jsonText: string }) {
     });
   }, [props.jsonText, query]);
 
+  const jsonTree = json
+    ? JSON.stringify(json, null, 2).substring(0, 10_000)
+    : "loading...";
+
   return (
     <Container>
       <Row>
         <h1>Json Viewer</h1>
       </Row>
       <Row>
-        <p style={{ whiteSpace: "pre-wrap" }}>
-          {json == null ? "loading..." : JSON.stringify(json, null, 2)}
-        </p>
+        <p style={{ whiteSpace: "pre-wrap" }}>{jsonTree}</p>
       </Row>
     </Container>
   );
