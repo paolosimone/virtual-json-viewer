@@ -24,7 +24,10 @@ function loadJsonViewer() {
   const div = document.createElement("div");
   jsonElement.parentNode?.replaceChild(div, jsonElement);
   // TODO remove css
-  ReactDOM.render(<App jsonText={jsonText} />, div);
+  ReactDOM.render(
+    <App jsonText={jsonText} wasmFile={chrome.runtime.getURL("jq.wasm")} />,
+    div
+  );
 }
 
 function addCSS(style: string) {

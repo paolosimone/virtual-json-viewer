@@ -17,7 +17,7 @@
   "icons": {
     "192": "logo192.png"
   },
-  "web_accessible_resources": ["jq.wasm.wasm"],
+  "web_accessible_resources": ["jq.wasm"],
   "browser_action": {
     "default_icon": {
       "192": "logo192.png"

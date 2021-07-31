@@ -41,7 +41,7 @@ function App() {
         <JsonPicker onFileRead={setJsonText} />
       </Row>
       <Row>
-        <Viewer jsonText={jsonText} />
+        <Viewer jsonText={jsonText} wasmFile="jq.wasm" />
       </Row>
     </Container>
   );

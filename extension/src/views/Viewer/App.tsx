@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Container, Row } from "react-bootstrap";
 import { FixedSizeTree as Tree } from "react-vtree";
 import { NodeComponentProps, TreeWalker } from "react-vtree/dist/es/Tree";
-import jq from "../../vendor/jq.wasm";
+import newJQ from "../../vendor/jq-web.wasm";
 import "./App.css";
 
 type JsonValue =
@@ -128,20 +128,33 @@ function JsonTree(json: Json) {
   );
 }
 
-function App(props: { jsonText: string }) {
+function App(props: { jsonText: string; wasmFile: string }) {
   // TODO add flag props for profiling
   const query = ".";
-  const [json, setJson] = useState(null);
 
+  const [jq, setJQ] = useState(null);
   useEffect(() => {
+    newJQ({ locateFile: () => props.wasmFile }).then((module: any) =>
+      setJQ(module)
+    );
+  }, [props.wasmFile]);
+
+  const [json, setJson] = useState(null);
+  useEffect(() => {
+    if (jq == null) {
+      console.log("jq is null");
+      return;
+    }
+
     setJson(null);
-    jq.promised.raw(props.jsonText, query).then((jsonText: string) => {
+    (jq as any).invoke(props.jsonText, query).then((jsonText: string) => {
+      console.log("invoke done");
       const parseStart = performance.now();
       const json = JSON.parse(jsonText);
       console.log(`JSON.parse: ${performance.now() - parseStart} ms`);
       setJson(json);
     });
-  }, [props.jsonText, query]);
+  }, [jq, props.jsonText, query]);
 
   const jsonTree = json
     ? JSON.stringify(json, null, 2).substring(0, 10_000)
