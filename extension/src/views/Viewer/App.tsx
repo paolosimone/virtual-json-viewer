@@ -1,128 +1,165 @@
 import React, { useEffect, useState } from "react";
 import { Container, Row } from "react-bootstrap";
-import { FixedSizeTree as Tree } from "react-vtree";
-import { NodeComponentProps, TreeWalker } from "react-vtree/dist/es/Tree";
+// TODO wait for next official release
+import { FixedSizeTree as Tree } from "react-vtree/lib/FixedSizeTree";
+import {
+  NodeComponentProps,
+  NodePublicState,
+  TreeWalker,
+  TreeWalkerValue,
+} from "react-vtree/lib/Tree";
 import newJQ from "../../vendor/jq-web.wasm";
 import "./App.css";
 
-type JsonValue =
-  | string
-  | number
-  | boolean
-  | null
-  | JsonValue[]
-  | { [key: string]: JsonValue };
-
-type JsonObject = { [key: string]: JsonValue };
-type JsonArray = JsonValue[];
-type Json = JsonObject | JsonArray;
+type Json = JsonLiteral | JsonObject | JsonArray;
+type JsonLiteral = string | number | boolean | null;
+type JsonObject = { [key: string]: Json };
+type JsonArray = Json[];
 
 type JsonNodeData = {
   id: string;
   isOpenByDefault: boolean;
-  name: string;
+  isLeaf: boolean;
+  key: string;
+  value: string;
   nestingLevel: number;
+  json: Json;
+  parent: JsonNodeData | null;
 };
 
-function getNodeData(node: JsonValue, nestingLevel: number): JsonNodeData {
-  const id = "ciao";
-  return {
-    id: id, // mandatory
-    isOpenByDefault: true, // mandatory
-    name: id,
-    nestingLevel,
-  };
+function isObject(value: Json): value is JsonObject {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
-// if (a.constructor == Object) {
-//   // code here...
-// }
+function isArray(value: Json): value is JsonArray {
+  return Array.isArray(value);
+}
+
+function isPrimitive(value: Json): value is JsonLiteral {
+  return !isObject(value) && !isArray(value);
+}
+
+function isString(value: Json): value is string {
+  return typeof value == "string";
+}
+
+function isNumber(value: Json): value is number {
+  return typeof value == "number";
+}
+
+function isBoolean(value: Json): value is boolean {
+  return typeof value == "boolean";
+}
+
+function getNodeData(
+  key: string,
+  json: Json,
+  parent: JsonNodeData | null
+): TreeWalkerValue<JsonNodeData> {
+  let value = "";
+  if (isArray(json)) {
+    value = "[]";
+  } else if (isObject(json)) {
+    value = "{}";
+  } else {
+    value = json?.toString() ?? "null";
+  }
+
+  return {
+    data: {
+      id: parent ? parent.id + key : key, // mandatory
+      isLeaf: isPrimitive(json),
+      isOpenByDefault: false, // mandatory
+      key: key,
+      value: value,
+      json: json,
+      nestingLevel: parent ? parent.nestingLevel + 1 : 0,
+      parent: parent,
+    },
+  };
+}
 
 // TODO right tree walker
-function jsonTreeWalker(treeNodes: Json): TreeWalker<JsonNodeData> {
+// TODO handle empty object/array
+function jsonTreeWalker(json: Json): TreeWalker<JsonNodeData> {
   return function* () {
-    if (!Array.isArray(treeNodes)) {
-      treeNodes = [treeNodes];
+    console.log(`building..`);
+
+    if (isArray(json)) {
+      console.log(`array`);
+      for (let i = 0; i < json.length; i++) {
+        yield getNodeData(i.toString(), json[i], null);
+      }
+    } else if (isObject(json)) {
+      console.log(`object`);
+      for (let key in json) {
+        yield getNodeData(key, json[key], null);
+      }
+    } else {
+      console.log(`else`);
+      yield getNodeData("", json, null);
     }
 
-    for (let i = 0; i < treeNodes.length; i++) {
-      yield getNodeData(treeNodes[i], 0);
+    while (true) {
+      console.log(`while true..`);
+      const parent = yield;
+
+      const json = parent.data.json;
+      console.log(`${parent.data.key}: ${parent.data.isLeaf}`);
+
+      if (isArray(json)) {
+        for (let i = 0; i < json.length; i++) {
+          console.log(`array inside`);
+          yield getNodeData(i.toString(), json[i], parent.data);
+        }
+      } else if (isObject(json)) {
+        console.log(`object inside`);
+        for (let key in json) {
+          yield getNodeData(key, json[key], parent.data);
+        }
+      }
     }
-
-    // const stack = [];
-
-    // // Remember all the necessary data of the first node in the stack.
-    // stack.push({
-    //   nestingLevel: 0,
-    //   node: tree,
-    // });
-
-    // // Walk through the tree until we have no nodes available.
-    // while (stack.length !== 0) {
-    //   const {
-    //     node: {children = [], id, name},
-    //     nestingLevel,
-    //   } = stack.pop();
-
-    //   // Here we are sending the information about the node to the Tree component
-    //   // and receive an information about the openness state from it. The
-    //   // `refresh` parameter tells us if the full update of the tree is requested;
-    //   // basing on it we decide to return the full node data or only the node
-    //   // id to update the nodes order.
-    //   const isOpened = yield refresh
-    //     ? {
-    //         id,
-    //         isLeaf: children.length === 0,
-    //         isOpenByDefault: true,
-    //         name,
-    //         nestingLevel,
-    //       }
-    //     : id;
-
-    //   // Basing on the node openness state we are deciding if we need to render
-    //   // the child nodes (if they exist).
-    //   if (children.length !== 0 && isOpened) {
-    //     // Since it is a stack structure, we need to put nodes we want to render
-    //     // first to the end of the stack.
-    //     for (let i = children.length - 1; i >= 0; i--) {
-    //       stack.push({
-    //         nestingLevel: nestingLevel + 1,
-    //         node: children[i],
-    //       });
-    //     }
-    //   }
-    // }
   };
 }
 
-// Node component receives all the data we created in the `treeWalker` +
-// internal openness state (`isOpen`), function to change internal openness
-// state (`setOpen`) and `style` parameter that should be added to the root div.
 function JsonNode({
-  data,
+  data: { isLeaf, key, value },
   isOpen,
   style,
-  toggle,
-}: NodeComponentProps<JsonNodeData>) {
+  setOpen,
+}: NodeComponentProps<JsonNodeData, NodePublicState<JsonNodeData>>) {
   return (
     <div style={style}>
-      {/* {!isLeaf && (
-      <button type="button" onClick={() => setOpen(!isOpen)}>
-        {isOpen ? '-' : '+'}
-      </button>
-    )} */}
-      <div>{data.name}</div>
+      {!isLeaf && (
+        <button type="button" onClick={() => setOpen(!isOpen)}>
+          {isOpen ? "-" : "+"}
+        </button>
+      )}
+      <div>
+        {key}: {value}
+      </div>
     </div>
   );
 }
 
 // eslint-disable-next-line
-function JsonTree(json: Json) {
+function JsonTree(props: { json: Json }) {
+  console.log(props.json);
+  if (props.json == null) {
+    return <div>null</div>;
+  }
+  if (Object.keys(props.json).length === 0) {
+    console.log("empty");
+    return <div>{"{}"}</div>;
+  }
   // TODO fill height
-  // TODO render test
-  const treeWalker = jsonTreeWalker(json);
   return (
-    <Tree treeWalker={treeWalker} itemSize={30} height={150} width={300}>
+    <Tree
+      treeWalker={jsonTreeWalker(props.json)}
+      itemSize={60}
+      height={600}
+      width={900}
+    >
       {JsonNode}
     </Tree>
   );
@@ -156,9 +193,9 @@ function App(props: { jsonText: string; wasmFile: string }) {
     });
   }, [jq, props.jsonText, query]);
 
-  const jsonTree = json
-    ? JSON.stringify(json, null, 2).substring(0, 10_000)
-    : "loading...";
+  // const jsonTree = json
+  //   ? JSON.stringify(json, null, 2).substring(0, 10_000)
+  //   : "loading...";
 
   return (
     <Container>
@@ -166,7 +203,8 @@ function App(props: { jsonText: string; wasmFile: string }) {
         <h1>Json Viewer</h1>
       </Row>
       <Row>
-        <p style={{ whiteSpace: "pre-wrap" }}>{jsonTree}</p>
+        {/* <p style={{ whiteSpace: "pre-wrap" }}>{jsonTree}</p> */}
+        <JsonTree json={json} />
       </Row>
     </Container>
   );
