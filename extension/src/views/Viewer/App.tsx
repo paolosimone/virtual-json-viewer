@@ -3,16 +3,17 @@ import { Container, Row } from "react-bootstrap";
 // TODO wait for next official release
 import { FixedSizeTree as Tree } from "react-vtree/lib/FixedSizeTree";
 import {
-  NodeComponentProps,
-  NodePublicState,
+  FixedSizeTree as Tree,
   TreeWalker,
   TreeWalkerValue,
-} from "react-vtree/lib/Tree";
+} from "react-vtree";
+import { NodeComponentProps, NodePublicState } from "react-vtree/dist/es/Tree";
 import newJQ from "../../vendor/jq-web.wasm";
 import "./App.css";
 
-type Json = JsonLiteral | JsonObject | JsonArray;
+type Json = JsonLiteral | JsonCollection;
 type JsonLiteral = string | number | boolean | null;
+type JsonCollection = JsonObject | JsonArray;
 type JsonObject = { [key: string]: Json };
 type JsonArray = Json[];
 
@@ -27,28 +28,40 @@ type JsonNodeData = {
   parent: JsonNodeData | null;
 };
 
-function isObject(value: Json): value is JsonObject {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
+function isObject(json: Json): json is JsonObject {
+  return typeof json === "object" && json !== null && !Array.isArray(json);
 }
 
-function isArray(value: Json): value is JsonArray {
-  return Array.isArray(value);
+function isArray(json: Json): json is JsonArray {
+  return Array.isArray(json);
 }
 
-function isPrimitive(value: Json): value is JsonLiteral {
-  return !isObject(value) && !isArray(value);
+function isCollection(json: Json): json is JsonCollection {
+  return isObject(json) || isArray(json);
 }
 
-function isString(value: Json): value is string {
+function isLiteral(json: Json): json is JsonLiteral {
+  return !isCollection(json);
+}
+
+function isString(value: JsonLiteral): value is string {
   return typeof value == "string";
 }
 
-function isNumber(value: Json): value is number {
+function isNumber(value: JsonLiteral): value is number {
   return typeof value == "number";
 }
 
-function isBoolean(value: Json): value is boolean {
+function isBoolean(value: JsonLiteral): value is boolean {
   return typeof value == "boolean";
+}
+
+function isEmpty(json: JsonCollection): boolean {
+  return Object.keys(json).length === 0;
+}
+
+function isLeaf(json: Json): boolean {
+  return isLiteral(json) || isEmpty(json);
 }
 
 function getNodeData(
@@ -68,7 +81,7 @@ function getNodeData(
   return {
     data: {
       id: parent ? parent.id + key : key, // mandatory
-      isLeaf: isPrimitive(json),
+      isLeaf: isLeaf(json),
       isOpenByDefault: false, // mandatory
       key: key,
       value: value,
@@ -79,49 +92,51 @@ function getNodeData(
   };
 }
 
-// TODO right tree walker
-// TODO handle empty object/array
+function* jsonIterator(
+  json: JsonCollection
+): Generator<[string, Json], void, void> {
+  if (isArray(json)) {
+    for (let i = 0; i < json.length; i++) {
+      yield [i.toString(), json[i]];
+    }
+  } else if (isObject(json)) {
+    for (let key in json) {
+      yield [key, json[key]];
+    }
+  }
+}
+
 function jsonTreeWalker(json: Json): TreeWalker<JsonNodeData> {
   return function* () {
-    console.log(`building..`);
-
-    if (isArray(json)) {
-      console.log(`array`);
-      for (let i = 0; i < json.length; i++) {
-        yield getNodeData(i.toString(), json[i], null);
-      }
-    } else if (isObject(json)) {
-      console.log(`object`);
-      for (let key in json) {
-        yield getNodeData(key, json[key], null);
-      }
-    } else {
-      console.log(`else`);
+    if (isLeaf(json)) {
       yield getNodeData("", json, null);
+    } else {
+      for (let [key, value] of jsonIterator(json as JsonCollection)) {
+        yield getNodeData(key, value, null);
+      }
     }
 
     while (true) {
-      console.log(`while true..`);
+      // if leaf, will return `undefined`, ending the loop
       const parent = yield;
-
       const json = parent.data.json;
-      console.log(`${parent.data.key}: ${parent.data.isLeaf}`);
 
-      if (isArray(json)) {
-        for (let i = 0; i < json.length; i++) {
-          console.log(`array inside`);
-          yield getNodeData(i.toString(), json[i], parent.data);
-        }
-      } else if (isObject(json)) {
-        console.log(`object inside`);
-        for (let key in json) {
-          yield getNodeData(key, json[key], parent.data);
+      if (isCollection(json)) {
+        for (let [key, value] of jsonIterator(json)) {
+          yield getNodeData(key, value, null);
         }
       }
     }
   };
 }
 
+// button | key | (array / object / string / number / boolean)
+// TODO constant spacing
+// TODO nesting levels
+// TODO value colors (bootstrap color scheme?)
+// TODO triangular button + collection indicator
+// TODO external css (tailwind?)
+// TODO variable height for long text?
 function JsonNode({
   data: { isLeaf, key, value },
   isOpen,
@@ -130,13 +145,16 @@ function JsonNode({
 }: NodeComponentProps<JsonNodeData, NodePublicState<JsonNodeData>>) {
   return (
     <div style={style}>
-      {!isLeaf && (
-        <button type="button" onClick={() => setOpen(!isOpen)}>
-          {isOpen ? "-" : "+"}
-        </button>
-      )}
-      <div>
-        {key}: {value}
+      <div style={{ display: "flex", columnGap: "10px" }}>
+        <div style={{ flexGrow: 1 }}>
+          {!isLeaf && (
+            <button type="button" onClick={() => setOpen(!isOpen)}>
+              {isOpen ? "-" : "+"}
+            </button>
+          )}
+        </div>
+        <div style={{ flexGrow: 1, color: "green" }}>{key}</div>
+        <div style={{ flexGrow: 4 }}>{value}</div>
       </div>
     </div>
   );
@@ -167,6 +185,7 @@ function JsonTree(props: { json: Json }) {
 
 function App(props: { jsonText: string; wasmFile: string }) {
   // TODO add flag props for profiling
+  // TODO investigate multiple invocations failure
   const query = ".";
 
   const [jq, setJQ] = useState(null);
