@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@types/react-window": "^1.8.3",
     "react": "^17.0.2",
     "react-app-rewired": "^2.0",
     "react-dom": "^17.0.2",
@@ -11,10 +10,10 @@
     "react-virtualized": "^9.22.3",
     "react-vtree": "3.0.0-beta.3",
     "react-window": "^1.8.6",
-    "typescript": "^3.8.0"
+    "typescript": "^4.4.0"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject",
@@ -54,6 +53,8 @@
     "@types/react": "^16.9.0",
     "@types/react-dom": "^16.9.0",
     "@types/react-virtualized": "^9.21.13",
+    "@types/react-window": "^1.8.3",
+    "customize-cra": "^1.0.0",
     "prettier": "^2.2.1",
     "prettier-plugin-organize-imports": "^1.1.1"
   }

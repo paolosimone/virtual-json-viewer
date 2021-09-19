@@ -9,7 +9,12 @@ chrome.runtime.sendMessage("check-json", (isJson: boolean) => {
   }
 
   disableDefaultRendering();
-  window.addEventListener("load", loadJsonViewer);
+
+  if (document.readyState === "complete") {
+    loadJsonViewer();
+  } else {
+    window.addEventListener("load", loadJsonViewer);
+  }
 });
 
 // workaround: improve loading time on large json
@@ -21,7 +26,9 @@ function loadJsonViewer() {
   const jsonElement = document.getElementsByTagName("pre")[0];
   const jsonText = jsonElement.innerText;
 
+  // TODO body 100vh?
   const div = document.createElement("div");
+  div.style.cssText = `height: 100vh`;
   jsonElement.parentNode?.replaceChild(div, jsonElement);
   // TODO remove css
   ReactDOM.render(

@@ -1,16 +1,11 @@
+const { override } = require("customize-cra");
 const paths = require("react-scripts/config/paths");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ManifestPlugin = require("webpack-manifest-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
-// Export override function(s) via object
-module.exports = {
-  webpack: override,
-  // You may also override the Jest config (used for tests) by adding property with 'jest' name below. See react-app-rewired library's docs for details
-};
-
-// Function to override the CRA webpack config
-function override(config, env) {
+// Make the build output compatible with chrome extension structure
+function convertToChromeExtension(config, env) {
   const isEnvProduction = env === "production";
 
   // Replace single entry point in the config with multiple ones
@@ -129,3 +124,6 @@ function replacePlugin(plugins, nameMatcher, newPlugin) {
         .concat(plugins.slice(i + 1))
     : plugins;
 }
+
+// See customize-cra and react-app-rewired
+module.exports = override(convertToChromeExtension);
