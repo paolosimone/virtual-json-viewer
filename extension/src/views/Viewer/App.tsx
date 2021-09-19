@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Container, Row } from "react-bootstrap";
-// TODO wait for next official release
-import { FixedSizeTree as Tree } from "react-vtree/lib/FixedSizeTree";
+import { AutoSizer } from "react-virtualized";
+import "react-virtualized/styles.css";
 import {
   FixedSizeTree as Tree,
   TreeWalker,
@@ -163,23 +162,20 @@ function JsonNode({
 // eslint-disable-next-line
 function JsonTree(props: { json: Json }) {
   console.log(props.json);
-  if (props.json == null) {
-    return <div>null</div>;
-  }
-  if (Object.keys(props.json).length === 0) {
-    console.log("empty");
-    return <div>{"{}"}</div>;
-  }
   // TODO fill height
   return (
-    <Tree
-      treeWalker={jsonTreeWalker(props.json)}
-      itemSize={60}
-      height={600}
-      width={900}
-    >
-      {JsonNode}
-    </Tree>
+    <AutoSizer>
+      {({ height, width }) => (
+        <Tree
+          treeWalker={jsonTreeWalker(props.json)}
+          itemSize={30}
+          height={height}
+          width={width}
+        >
+          {JsonNode}
+        </Tree>
+      )}
+    </AutoSizer>
   );
 }
 
@@ -217,15 +213,22 @@ function App(props: { jsonText: string; wasmFile: string }) {
   //   : "loading...";
 
   return (
-    <Container>
-      <Row>
+    <div
+      style={{
+        display: "flex",
+        height: "100%",
+        flexDirection: "column",
+        alignItems: "stretch",
+      }}
+    >
+      <div>
         <h1>Json Viewer</h1>
-      </Row>
-      <Row>
+      </div>
+      <div style={{ flex: "1" }}>
         {/* <p style={{ whiteSpace: "pre-wrap" }}>{jsonTree}</p> */}
         <JsonTree json={json} />
-      </Row>
-    </Container>
+      </div>
+    </div>
   );
 }
 

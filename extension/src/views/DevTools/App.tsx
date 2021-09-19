@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import { Form } from "react-bootstrap";
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
 import Viewer from "../Viewer/App";
 
 function JsonPicker(props: { onFileRead: (content: string) => void }) {
@@ -36,14 +34,21 @@ function App() {
   const [jsonText, setJsonText] = useState("{}");
 
   return (
-    <Container fluid>
-      <Row>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "stretch",
+        height: "100vh",
+      }}
+    >
+      <div id="picker-row">
         <JsonPicker onFileRead={setJsonText} />
-      </Row>
-      <Row>
+      </div>
+      <div id="viewer-row" style={{ flex: "1" }}>
         <Viewer jsonText={jsonText} wasmFile="jq.wasm" />
-      </Row>
-    </Container>
+      </div>
+    </div>
   );
 }
 
