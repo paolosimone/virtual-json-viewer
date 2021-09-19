@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Form } from "react-bootstrap";
 import Viewer from "../Viewer/App";
 
 function JsonPicker(props: { onFileRead: (content: string) => void }) {
@@ -16,17 +15,9 @@ function JsonPicker(props: { onFileRead: (content: string) => void }) {
     }
   };
   return (
-    <Form>
-      <Form.Group>
-        <Form.File
-          id="jsonPicker"
-          label="JSON input"
-          accept=".json"
-          multiple={false}
-          onChange={onChange}
-        />
-      </Form.Group>
-    </Form>
+    <form>
+        <input type="file" accept=".json" multiple={false} onChange={onChange}/>
+    </form>
   );
 }
 

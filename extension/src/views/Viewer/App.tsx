@@ -132,7 +132,7 @@ function jsonTreeWalker(json: Json): TreeWalker<JsonNodeData> {
 // button | key | (array / object / string / number / boolean)
 // TODO constant spacing
 // TODO nesting levels
-// TODO value colors (bootstrap color scheme?)
+// TODO value colors (theme?)
 // TODO triangular button + collection indicator
 // TODO external css (tailwind?)
 // TODO variable height for long text?
