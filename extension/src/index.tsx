@@ -1,10 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import App from "./views/DevTools/App";
+import { LauncherApp } from "./launcher/LauncherApp";
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <LauncherApp />
   </React.StrictMode>,
   document.getElementById("root")
 );

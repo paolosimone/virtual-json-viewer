@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import App from "./views/Viewer/App";
+import { ViewerApp } from "./viewer/ViewerApp";
 
 // TODO test in firefox
 chrome.runtime.sendMessage("check-json", (isJson: boolean) => {
@@ -25,7 +25,10 @@ function loadJsonViewer() {
   jsonElement.parentNode?.replaceChild(div, jsonElement);
   // TODO remove css
   ReactDOM.render(
-    <App jsonText={jsonText} wasmFile={chrome.runtime.getURL("jq.wasm")} />,
+    <ViewerApp
+      jsonText={jsonText}
+      wasmFile={chrome.runtime.getURL("jq.wasm")}
+    />,
     div
   );
 }

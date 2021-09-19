@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Viewer from "../Viewer/App";
+import { ViewerApp } from "../viewer/ViewerApp";
 
 function JsonPicker(props: { onFileRead: (content: string) => void }) {
   // TODO add load button
@@ -16,12 +16,12 @@ function JsonPicker(props: { onFileRead: (content: string) => void }) {
   };
   return (
     <form>
-        <input type="file" accept=".json" multiple={false} onChange={onChange}/>
+      <input type="file" accept=".json" multiple={false} onChange={onChange} />
     </form>
   );
 }
 
-function App() {
+export function LauncherApp() {
   const [jsonText, setJsonText] = useState("{}");
 
   return (
@@ -37,10 +37,8 @@ function App() {
         <JsonPicker onFileRead={setJsonText} />
       </div>
       <div id="viewer-row" style={{ flex: "1" }}>
-        <Viewer jsonText={jsonText} wasmFile="jq.wasm" />
+        <ViewerApp jsonText={jsonText} wasmFile="jq.wasm" />
       </div>
     </div>
   );
 }
-
-export default App;

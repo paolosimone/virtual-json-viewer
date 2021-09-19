@@ -1,10 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import App from "./views/Options/App";
+import { OptionsApp } from "./options/OptionsApp";
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <OptionsApp />
   </React.StrictMode>,
   document.getElementById("root")
 );

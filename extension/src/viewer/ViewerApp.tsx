@@ -7,8 +7,8 @@ import {
   TreeWalkerValue,
 } from "react-vtree";
 import { NodeComponentProps, NodePublicState } from "react-vtree/dist/es/Tree";
-import newJQ from "../../vendor/jq-web.wasm";
-import "./App.css";
+import newJQ from "vendor/jq-web.wasm";
+import "./ViewerApp.css";
 
 type Json = JsonLiteral | JsonCollection;
 type JsonLiteral = string | number | boolean | null;
@@ -179,7 +179,7 @@ function JsonTree(props: { json: Json }) {
   );
 }
 
-function App(props: { jsonText: string; wasmFile: string }) {
+export function ViewerApp(props: { jsonText: string; wasmFile: string }) {
   // TODO add flag props for profiling
   // TODO investigate multiple invocations failure
   const query = ".";
@@ -222,7 +222,7 @@ function App(props: { jsonText: string; wasmFile: string }) {
       }}
     >
       <div>
-        <h1>Json Viewer</h1>
+        <h1 className="text-red">Json Viewer</h1>
       </div>
       <div style={{ flex: "1" }}>
         {/* <p style={{ whiteSpace: "pre-wrap" }}>{jsonTree}</p> */}
@@ -231,5 +231,3 @@ function App(props: { jsonText: string; wasmFile: string }) {
     </div>
   );
 }
-
-export default App;

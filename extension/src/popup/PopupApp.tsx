@@ -1,13 +1,13 @@
 import React from "react";
-import "./App.css";
+import "./PopupApp.css";
 
-function App() {
+export function PopupApp() {
   return (
     <div className="App">
       <header className="App-header">
-        <p>Options page</p>
+        <p>Popup page</p>
         <p>
-          Edit <code>src/views/Options/App.tsx</code> and save.
+          Edit <code>src/views/Popup/App.tsx</code> and save.
         </p>
         <a
           className="App-link"
@@ -21,5 +21,3 @@ function App() {
     </div>
   );
 }
-
-export default App;
