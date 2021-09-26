@@ -1,4 +1,4 @@
-const { override } = require("customize-cra");
+const { override, addPostcssPlugins } = require("customize-cra");
 const paths = require("react-scripts/config/paths");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ManifestPlugin = require("webpack-manifest-plugin");
@@ -125,5 +125,10 @@ function replacePlugin(plugins, nameMatcher, newPlugin) {
     : plugins;
 }
 
+// See: https://tailwindcss.com/docs/installation
+function addTailwindCss() {
+  return addPostcssPlugins([require("tailwindcss"), require("autoprefixer")]);
+}
+
 // See customize-cra and react-app-rewired
-module.exports = override(convertToChromeExtension);
+module.exports = override(addTailwindCss(), convertToChromeExtension);

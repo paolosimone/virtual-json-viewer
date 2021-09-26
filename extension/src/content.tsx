@@ -30,7 +30,13 @@ function loadJsonViewer() {
   const div = document.createElement("div");
   div.style.cssText = `height: 100vh`;
   jsonElement.parentNode?.replaceChild(div, jsonElement);
-  // TODO remove css
+
+  // TODO remove pre css
+
+  // For some obscure reason `ReactDOM.render` doesn't inject CSS
+  // ...so we add it manually :shrug:
+  addCSSRef(chrome.runtime.getURL("static/css/content.css"));
+
   ReactDOM.render(
     <ViewerApp
       jsonText={jsonText}
@@ -41,8 +47,15 @@ function loadJsonViewer() {
 }
 
 function addCSS(style: string) {
-  const styleElement = document.head.appendChild(
-    document.createElement("style")
-  );
+  const styleElement = document.createElement("style");
   styleElement.innerHTML = style;
+  document.head.appendChild(styleElement);
+}
+
+function addCSSRef(href: string) {
+  const linkElement = document.createElement("link");
+  linkElement.href = href;
+  linkElement.type = "text/css";
+  linkElement.rel = "stylesheet";
+  document.head.appendChild(linkElement);
 }

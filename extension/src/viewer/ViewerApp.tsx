@@ -7,6 +7,7 @@ import {
   TreeWalkerValue,
 } from "react-vtree";
 import { NodeComponentProps, NodePublicState } from "react-vtree/dist/es/Tree";
+import "tailwindcss/tailwind.css";
 import newJQ from "vendor/jq-web.wasm";
 import "./ViewerApp.css";
 
@@ -222,7 +223,7 @@ export function ViewerApp(props: { jsonText: string; wasmFile: string }) {
       }}
     >
       <div>
-        <h1 className="text-red">Json Viewer</h1>
+        <h1 className="text-red-600">Json Viewer</h1>
       </div>
       <div style={{ flex: "1" }}>
         {/* <p style={{ whiteSpace: "pre-wrap" }}>{jsonTree}</p> */}

@@ -54,8 +54,11 @@
     "@types/react-dom": "^16.9.0",
     "@types/react-virtualized": "^9.21.13",
     "@types/react-window": "^1.8.3",
+    "autoprefixer": "^9",
     "customize-cra": "^1.0.0",
+    "postcss": "^7",
     "prettier": "^2.2.1",
-    "prettier-plugin-organize-imports": "^1.1.1"
+    "prettier-plugin-organize-imports": "^1.1.1",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat"
   }
 }
