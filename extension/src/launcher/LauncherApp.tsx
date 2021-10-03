@@ -21,22 +21,16 @@ function JsonPicker(props: { onFileRead: (content: string) => void }) {
   );
 }
 
+// TODO launch all pages
 export function LauncherApp() {
   const [jsonText, setJsonText] = useState("{}");
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "stretch",
-        height: "100vh",
-      }}
-    >
-      <div id="picker-row">
+    <div className="flex flex-col h-screen">
+      <div>
         <JsonPicker onFileRead={setJsonText} />
       </div>
-      <div id="viewer-row" style={{ flex: "1" }}>
+      <div className="flex-1">
         <ViewerApp jsonText={jsonText} wasmFile="jq.wasm" />
       </div>
     </div>

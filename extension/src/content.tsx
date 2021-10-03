@@ -26,7 +26,6 @@ function loadJsonViewer() {
   const jsonElement = document.getElementsByTagName("pre")[0];
   const jsonText = jsonElement.innerText;
 
-  // TODO body 100vh?
   const div = document.createElement("div");
   div.style.cssText = `height: 100vh`;
   jsonElement.parentNode?.replaceChild(div, jsonElement);
