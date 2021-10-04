@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { AutoSizer } from "react-virtualized";
 import "react-virtualized/styles.css";
 import {
-  FixedSizeTree as Tree,
   TreeWalker,
   TreeWalkerValue,
+  VariableSizeNodePublicState,
+  VariableSizeTree as Tree,
 } from "react-vtree";
-import { NodeComponentProps, NodePublicState } from "react-vtree/dist/es/Tree";
+import { NodeComponentProps } from "react-vtree/dist/es/Tree";
 import "tailwindcss/tailwind.css";
 import newJQ from "vendor/jq-web.wasm";
 import "./ViewerApp.css";
@@ -26,6 +27,7 @@ type JsonNodeData = {
   nesting: number;
   childrenCount: number | null;
   parent: JsonNodeData | null;
+  defaultHeight: number;
 };
 
 function isObject(json: Json): json is JsonObject {
@@ -72,6 +74,8 @@ function isLeaf(json: Json): boolean {
   return isLiteral(json) || isEmpty(json);
 }
 
+const MIN_HEIGHT = 30;
+
 function getNodeData(
   key: string | null,
   value: Json,
@@ -87,6 +91,7 @@ function getNodeData(
       childrenCount: isCollection(value) ? length(value) : null,
       value: value,
       parent: parent,
+      defaultHeight: MIN_HEIGHT,
     },
   };
 }
@@ -127,19 +132,6 @@ function jsonTreeWalker(json: Json): TreeWalker<JsonNodeData> {
       }
     }
   };
-}
-
-type NodeNestingProps = {
-  data: JsonNodeData;
-};
-
-function NodeNesting({ data: { nesting } }: NodeNestingProps): JSX.Element {
-  return (
-    <span
-      className="h-full"
-      style={{ display: "inline-block", width: `${nesting}em` }}
-    />
-  );
 }
 
 type NodeOpenProps = {
@@ -195,7 +187,7 @@ function NodeValue({
   if (isCollection(value)) {
     const count = childrenCount ? `↤ ${childrenCount} ↦` : "";
     const preview = isArray(value) ? `[${count}]` : `{${count}}`;
-    return <span className="text-gray-600">{preview}</span>;
+    return <span className="truncate text-gray-600">{preview}</span>;
   }
 
   if (isString(value)) {
@@ -205,34 +197,80 @@ function NodeValue({
   return <span className="text-green-600">{value?.toString() ?? "null"}</span>;
 }
 
-// TODO variable height for long text
 // TODO clickable links
 // TODO refactor code
+// TODO collapse / expand all
+// TODO search
+// TODO raw data
+// TODO pretty print / minify
+// TODO options / popup
+// -- v1
+// TODO jq (in new tabs)
+// -- v2
+// TODO copy
+// TODO save
 // TODO theme
+// -- v3
 function JsonNode({
   data,
-  isOpen,
   style,
+  resize,
+  isOpen,
   setOpen,
-}: NodeComponentProps<JsonNodeData, NodePublicState<JsonNodeData>>) {
+}: NodeComponentProps<
+  JsonNodeData,
+  VariableSizeNodePublicState<JsonNodeData>
+>): JSX.Element {
+  const row = useRef<HTMLDivElement>(null);
+  const content = useRef<HTMLDivElement>(null);
+
+  const fitContent = () => {
+    const oldHeight = row.current?.clientHeight ?? MIN_HEIGHT;
+    const newHeight = Math.max(content.current?.clientHeight ?? 0, MIN_HEIGHT);
+    if (newHeight !== oldHeight) {
+      resize(newHeight, true);
+    }
+  };
+
+  useEffect(fitContent);
+
   return (
-    <div style={style} className="flex items-start">
-      <NodeNesting data={data} />
-      <NodeOpen data={data} isOpen={isOpen} setOpen={setOpen} />
-      <NodeKey data={data} />
-      <NodeValue data={data} isOpen={isOpen} />
+    <div ref={row} style={{ ...style, marginLeft: `${data.nesting}em` }}>
+      <div ref={content} className="flex items-start">
+        <NodeOpen data={data} isOpen={isOpen} setOpen={setOpen} />
+        <NodeKey data={data} />
+        <NodeValue data={data} isOpen={isOpen} />
+      </div>
     </div>
   );
 }
 
 // eslint-disable-next-line
 function JsonTree(props: { json: Json }) {
+  const [, fakeUpdate] = React.useState<any>();
+  const rerender = React.useCallback(() => fakeUpdate({}), []);
+
+  // force rerender on window resize (with throttle)
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout | null = null;
+    const onResize = () => {
+      if (timeoutId) clearTimeout(timeoutId);
+      timeoutId = setTimeout(rerender, 100);
+    };
+
+    window.addEventListener("resize", onResize);
+
+    return () => {
+      window.removeEventListener("resize", onResize);
+      if (timeoutId) clearTimeout(timeoutId);
+    };
+  }, [rerender]);
+
   return (
     <AutoSizer>
       {({ height, width }) => (
         <Tree
           treeWalker={jsonTreeWalker(props.json)}
-          itemSize={30}
           height={height}
           width={width}
         >
