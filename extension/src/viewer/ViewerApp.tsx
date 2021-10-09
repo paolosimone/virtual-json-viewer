@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import React, { useEffect, useRef, useState } from "react";
 import { AutoSizer } from "react-virtualized";
 import "react-virtualized/styles.css";
@@ -10,6 +11,7 @@ import {
 import { NodeComponentProps } from "react-vtree/dist/es/Tree";
 import "tailwindcss/tailwind.css";
 import newJQ from "vendor/jq-web.wasm";
+import { SearchBox } from "./SearchBox";
 import "./ViewerApp.css";
 
 type Json = JsonLiteral | JsonCollection;
@@ -17,18 +19,6 @@ type JsonLiteral = string | number | boolean | null;
 type JsonCollection = JsonObject | JsonArray;
 type JsonObject = { [key: string]: Json };
 type JsonArray = Json[];
-
-type JsonNodeData = {
-  id: string;
-  isOpenByDefault: boolean;
-  isLeaf: boolean;
-  key: string | null;
-  value: Json;
-  nesting: number;
-  childrenCount: number | null;
-  parent: JsonNodeData | null;
-  defaultHeight: number;
-};
 
 function isObject(json: Json): json is JsonObject {
   return typeof json === "object" && json !== null && !Array.isArray(json);
@@ -76,15 +66,69 @@ function isLeaf(json: Json): boolean {
 
 const MIN_HEIGHT = 30;
 
+type JsonNode = {
+  key: Nullable<string>;
+  value: Json;
+  parent: Nullable<JsonNodeData>;
+};
+
+type SearchMatch = {
+  inKey: boolean;
+  inValue: boolean;
+  inAncestor: boolean;
+};
+
+// TODO option to enable case sensitive match
+function matchNode(
+  { key, value, parent }: JsonNode,
+  search: string
+): Nullable<SearchMatch> {
+  if (!search) {
+    return null;
+  }
+
+  const searchToLower = search.toLowerCase();
+
+  const matchKey =
+    (!isArray(parent?.value ?? null) &&
+      key?.toLowerCase()?.includes(searchToLower)) ||
+    false;
+
+  const matchValue =
+    value !== null &&
+    JSON.stringify(value)?.toLowerCase()?.includes(searchToLower);
+
+  const matchAncestor =
+    parent?.searchMatch?.inKey || parent?.searchMatch?.inAncestor || false;
+
+  return {
+    inKey: matchKey,
+    inValue: matchValue,
+    inAncestor: matchAncestor,
+  };
+}
+
+type JsonNodeData = {
+  id: string;
+  isOpenByDefault: boolean;
+  isLeaf: boolean;
+  key: Nullable<string>;
+  value: Json;
+  nesting: number;
+  childrenCount: Nullable<number>;
+  parent: Nullable<JsonNodeData>;
+  defaultHeight: number;
+  searchMatch: Nullable<SearchMatch>;
+};
+
 function getNodeData(
-  key: string | null,
-  value: Json,
-  parent: JsonNodeData | null
+  { key, value, parent }: JsonNode,
+  searchMatch: Nullable<SearchMatch>
 ): TreeWalkerValue<JsonNodeData> {
   return {
     data: {
       id: parent ? parent.id + key : String(key),
-      isOpenByDefault: false,
+      isOpenByDefault: (searchMatch?.inValue || false) && !isLeaf(value),
       nesting: parent ? parent.nesting + 1 : 0,
       isLeaf: isLeaf(value),
       key: key,
@@ -92,6 +136,7 @@ function getNodeData(
       value: value,
       parent: parent,
       defaultHeight: MIN_HEIGHT,
+      searchMatch: searchMatch,
     },
   };
 }
@@ -110,13 +155,30 @@ function* jsonIterator(
   }
 }
 
-function jsonTreeWalker(json: Json): TreeWalker<JsonNodeData> {
+// TODO option to remove unrelevant nodes or keep them but faded
+function isRelevantMatch(match: Nullable<SearchMatch>): boolean {
+  if (!match) {
+    return true;
+  }
+
+  return match.inAncestor || match.inValue || match.inKey;
+}
+
+function jsonTreeWalker(json: Json, search: string): TreeWalker<JsonNodeData> {
   return function* () {
     if (isLeaf(json)) {
-      yield getNodeData(null, json, null);
+      const node = { key: null, value: json, parent: null };
+      const match = matchNode(node, search);
+      if (isRelevantMatch(match)) {
+        yield getNodeData(node, match);
+      }
     } else {
       for (let [key, value] of jsonIterator(json as JsonCollection)) {
-        yield getNodeData(key, value, null);
+        const node = { key: key, value: value, parent: null };
+        const match = matchNode(node, search);
+        if (isRelevantMatch(match)) {
+          yield getNodeData(node, match);
+        }
       }
     }
 
@@ -127,7 +189,11 @@ function jsonTreeWalker(json: Json): TreeWalker<JsonNodeData> {
 
       if (isCollection(json)) {
         for (let [key, value] of jsonIterator(json)) {
-          yield getNodeData(key, value, parent.data);
+          const node = { key: key, value: value, parent: parent.data };
+          const match = matchNode(node, search);
+          if (isRelevantMatch(match)) {
+            yield getNodeData(node, match);
+          }
         }
       }
     }
@@ -197,21 +263,27 @@ function NodeValue({
   return <span className="text-green-600">{value?.toString() ?? "null"}</span>;
 }
 
-// TODO clickable links
-// TODO refactor code
+// -- v1
+// TODO search match style
 // TODO collapse / expand all
-// TODO search
+// TODO popup
+// TODO clean and refactor code
+// TODO readme
+// -- v2
+// TODO jq (in new tabs)
+// -- v3
 // TODO raw data
 // TODO pretty print / minify
-// TODO options / popup
-// -- v1
-// TODO jq (in new tabs)
-// -- v2
+// -- backlog
 // TODO copy
 // TODO save
-// TODO theme
-// -- v3
-function JsonNode({
+// TODO dark mode
+// TODO highlight search matches
+// TODO clickable links
+// TODO internationalization
+// TODO profiling
+// TODO options page
+function JsonTreeNode({
   data,
   style,
   resize,
@@ -224,6 +296,7 @@ function JsonNode({
   const row = useRef<HTMLDivElement>(null);
   const content = useRef<HTMLDivElement>(null);
 
+  // TODO MIN_HEIGHT = 0 + margin?
   const fitContent = () => {
     const oldHeight = row.current?.clientHeight ?? MIN_HEIGHT;
     const newHeight = Math.max(content.current?.clientHeight ?? 0, MIN_HEIGHT);
@@ -234,9 +307,21 @@ function JsonNode({
 
   useEffect(fitContent);
 
+  const isRelevantContent =
+    !data.searchMatch ||
+    data.searchMatch.inKey ||
+    (data.isLeaf && data.searchMatch.inValue);
+
+  const fadeContent = {
+    "opacity-60": !isRelevantContent,
+  };
+
   return (
     <div ref={row} style={{ ...style, marginLeft: `${data.nesting}em` }}>
-      <div ref={content} className="flex items-start">
+      <div
+        ref={content}
+        className={classNames("flex items-start", fadeContent)}
+      >
         <NodeOpen data={data} isOpen={isOpen} setOpen={setOpen} />
         <NodeKey data={data} />
         <NodeValue data={data} isOpen={isOpen} />
@@ -245,8 +330,13 @@ function JsonNode({
   );
 }
 
-// eslint-disable-next-line
-function JsonTree(props: { json: Json }) {
+type JsonViewerProps = {
+  json: Json;
+  search: string;
+};
+
+function JsonViewer({ json, search }: JsonViewerProps): JSX.Element {
+  // TODO move to commons
   const [, fakeUpdate] = React.useState<any>();
   const rerender = React.useCallback(() => fakeUpdate({}), []);
 
@@ -270,11 +360,11 @@ function JsonTree(props: { json: Json }) {
     <AutoSizer>
       {({ height, width }) => (
         <Tree
-          treeWalker={jsonTreeWalker(props.json)}
+          treeWalker={jsonTreeWalker(json, search)}
           height={height}
           width={width}
         >
-          {JsonNode}
+          {JsonTreeNode}
         </Tree>
       )}
     </AutoSizer>
@@ -286,6 +376,7 @@ export function ViewerApp(props: { jsonText: string; wasmFile: string }) {
   // TODO investigate multiple invocations failure
   const query = ".";
 
+  // TODO temporary disable JQ
   const [jq, setJQ] = useState(null);
   useEffect(() => {
     newJQ({ locateFile: () => props.wasmFile }).then((module: any) =>
@@ -314,14 +405,16 @@ export function ViewerApp(props: { jsonText: string; wasmFile: string }) {
   //   ? JSON.stringify(json, null, 2).substring(0, 10_000)
   //   : "loading...";
 
+  const [search, setSearch] = useState("");
+
   return (
     <div className="flex flex-col h-full pl-4 pt-4 font-mono">
       <div className="mb-2">
-        <h1 className="text-red-600">Json Viewer</h1>
+        <SearchBox setSearch={setSearch} />
       </div>
       <div className="flex-1">
         {/* <p style={{ whiteSpace: "pre-wrap" }}>{jsonTree}</p> */}
-        <JsonTree json={json} />
+        <JsonViewer json={json} search={search} />
       </div>
     </div>
   );
