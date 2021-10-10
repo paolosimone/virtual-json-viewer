@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { AutoSizer } from "react-virtualized";
 import "react-virtualized/styles.css";
 import {
@@ -11,7 +11,7 @@ import {
 import { NodeComponentProps } from "react-vtree/dist/es/Tree";
 import "tailwindcss/tailwind.css";
 import newJQ from "vendor/jq-web.wasm";
-import { SearchBox } from "./SearchBox";
+import { Toolbar } from "./toolbar/Toolbar";
 import "./ViewerApp.css";
 
 type Json = JsonLiteral | JsonCollection;
@@ -67,7 +67,7 @@ function isLeaf(json: Json): boolean {
 const MIN_HEIGHT = 30;
 
 type JsonNode = {
-  key: Nullable<string>;
+  key: string;
   value: Json;
   parent: Nullable<JsonNodeData>;
 };
@@ -127,7 +127,7 @@ function getNodeData(
 ): TreeWalkerValue<JsonNodeData> {
   return {
     data: {
-      id: parent ? parent.id + key : String(key),
+      id: parent ? `${parent.id}.${key}` : key,
       isOpenByDefault: (searchMatch?.inValue || false) && !isLeaf(value),
       nesting: parent ? parent.nesting + 1 : 0,
       isLeaf: isLeaf(value),
@@ -164,23 +164,26 @@ function isRelevantMatch(match: Nullable<SearchMatch>): boolean {
   return match.inAncestor || match.inValue || match.inKey;
 }
 
+function getRoots(json: Json): JsonNode[] {
+  if (isLeaf(json)) {
+    return [{ key: "", value: json, parent: null }];
+  }
+
+  return Array.from(jsonIterator(json as JsonCollection)).map(
+    ([key, value]) => ({ key: key, value: value, parent: null })
+  );
+}
+
 function jsonTreeWalker(json: Json, search: string): TreeWalker<JsonNodeData> {
   return function* () {
-    if (isLeaf(json)) {
-      const node = { key: null, value: json, parent: null };
+    for (const node of getRoots(json)) {
       const match = matchNode(node, search);
       if (isRelevantMatch(match)) {
         yield getNodeData(node, match);
       }
-    } else {
-      for (let [key, value] of jsonIterator(json as JsonCollection)) {
-        const node = { key: key, value: value, parent: null };
-        const match = matchNode(node, search);
-        if (isRelevantMatch(match)) {
-          yield getNodeData(node, match);
-        }
-      }
     }
+
+    // TODO fix empty search result
 
     while (true) {
       // if leaf, will return `undefined`, ending the loop
@@ -229,8 +232,8 @@ type NodeKeyProps = {
   data: JsonNodeData;
 };
 
-function NodeKey({ data: { key } }: NodeKeyProps): JSX.Element {
-  if (key === null) {
+function NodeKey({ data: { key, parent } }: NodeKeyProps): JSX.Element {
+  if (!key && !parent) {
     return <span />;
   }
 
@@ -264,21 +267,23 @@ function NodeValue({
 }
 
 // -- v1
-// TODO search match style
 // TODO collapse / expand all
 // TODO popup
 // TODO clean and refactor code
 // TODO readme
+// TODO logo
 // -- v2
 // TODO jq (in new tabs)
-// -- v3
-// TODO raw data
-// TODO pretty print / minify
 // -- backlog
+// TODO raw
+// TODO raw pretty print / minify
 // TODO copy
 // TODO save
+// TODO search highlight
+// TODO search hide faded
+// TODO search match case
+// TODO search regex search
 // TODO dark mode
-// TODO highlight search matches
 // TODO clickable links
 // TODO internationalization
 // TODO profiling
@@ -336,16 +341,14 @@ type JsonViewerProps = {
 };
 
 function JsonViewer({ json, search }: JsonViewerProps): JSX.Element {
-  // TODO move to commons
   const [, fakeUpdate] = React.useState<any>();
-  const rerender = React.useCallback(() => fakeUpdate({}), []);
 
   // force rerender on window resize (with throttle)
   useEffect(() => {
     let timeoutId: NodeJS.Timeout | null = null;
     const onResize = () => {
       if (timeoutId) clearTimeout(timeoutId);
-      timeoutId = setTimeout(rerender, 100);
+      timeoutId = setTimeout(() => fakeUpdate({}), 100);
     };
 
     window.addEventListener("resize", onResize);
@@ -354,12 +357,49 @@ function JsonViewer({ json, search }: JsonViewerProps): JSX.Element {
       window.removeEventListener("resize", onResize);
       if (timeoutId) clearTimeout(timeoutId);
     };
-  }, [rerender]);
+  }, [fakeUpdate]);
+
+  // TODO memoize treewalker
+  const tree = useRef<Tree<JsonNodeData>>(null);
+  const setOpen = useCallback(
+    (isOpen: boolean) => {
+      function subtreeCallback(
+        node: VariableSizeNodePublicState<JsonNodeData>,
+        ownerNode: VariableSizeNodePublicState<JsonNodeData>
+      ) {
+        if (node !== ownerNode) {
+          node.isOpen = !node.data.isLeaf && isOpen;
+        }
+      }
+      const newState = Object.fromEntries(
+        getRoots(json).map(({ key, value }) => [
+          key,
+          { open: !isLeaf(value) && isOpen, subtreeCallback },
+        ])
+      );
+      tree.current?.recomputeTree(newState);
+    },
+    [json, tree]
+  );
+
+  useEffect(() => {
+    const expand = () => setOpen(true);
+    document.addEventListener("expand", expand, false);
+
+    const collapse = () => setOpen(false);
+    document.addEventListener("collapse", collapse, false);
+
+    return () => {
+      document.removeEventListener("expand", expand);
+      document.removeEventListener("collapse", collapse);
+    };
+  }, [setOpen]);
 
   return (
     <AutoSizer>
       {({ height, width }) => (
         <Tree
+          ref={tree}
           treeWalker={jsonTreeWalker(json, search)}
           height={height}
           width={width}
@@ -387,16 +427,12 @@ export function ViewerApp(props: { jsonText: string; wasmFile: string }) {
   const [json, setJson] = useState(null);
   useEffect(() => {
     if (jq == null) {
-      console.log("jq is null");
       return;
     }
 
     setJson(null);
     (jq as any).invoke(props.jsonText, query).then((jsonText: string) => {
-      console.log("invoke done");
-      const parseStart = performance.now();
       const json = JSON.parse(jsonText);
-      console.log(`JSON.parse: ${performance.now() - parseStart} ms`);
       setJson(json);
     });
   }, [jq, props.jsonText, query]);
@@ -409,9 +445,7 @@ export function ViewerApp(props: { jsonText: string; wasmFile: string }) {
 
   return (
     <div className="flex flex-col h-full pl-4 pt-4 font-mono">
-      <div className="mb-2">
-        <SearchBox setSearch={setSearch} />
-      </div>
+      <Toolbar onSearch={setSearch} />
       <div className="flex-1">
         {/* <p style={{ whiteSpace: "pre-wrap" }}>{jsonTree}</p> */}
         <JsonViewer json={json} search={search} />

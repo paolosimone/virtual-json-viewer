@@ -3,10 +3,10 @@ import React, { FormEvent, useEffect } from "react";
 const TYPING_DELAY = 300;
 
 export type SearchBoxProps = {
-  setSearch: (search: string) => void;
+  onSearch: (search: string) => void;
 };
 
-export function SearchBox({ setSearch }: SearchBoxProps): JSX.Element {
+export function SearchBox({ onSearch }: SearchBoxProps): JSX.Element {
   let timeoutId: Nullable<NodeJS.Timeout> = null;
 
   const maybeClearTimeout = () => {
@@ -16,7 +16,7 @@ export function SearchBox({ setSearch }: SearchBoxProps): JSX.Element {
   const onChange = (e: FormEvent<HTMLInputElement>) => {
     maybeClearTimeout();
     const search = (e.target as HTMLInputElement).value;
-    timeoutId = setTimeout(() => setSearch(search), TYPING_DELAY);
+    timeoutId = setTimeout(() => onSearch(search), TYPING_DELAY);
   };
 
   useEffect(() => maybeClearTimeout);
