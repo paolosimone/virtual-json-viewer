@@ -169,21 +169,28 @@ function getRoots(json: Json): JsonNode[] {
     return [{ key: "", value: json, parent: null }];
   }
 
-  return Array.from(jsonIterator(json as JsonCollection)).map(
-    ([key, value]) => ({ key: key, value: value, parent: null })
-  );
+  return [...jsonIterator(json as JsonCollection)].map(([key, value]) => ({
+    key: key,
+    value: value,
+    parent: null,
+  }));
 }
 
 function jsonTreeWalker(json: Json, search: string): TreeWalker<JsonNodeData> {
   return function* () {
+    let existsMatch = false;
     for (const node of getRoots(json)) {
       const match = matchNode(node, search);
       if (isRelevantMatch(match)) {
+        existsMatch = true;
         yield getNodeData(node, match);
       }
     }
 
-    // TODO fix empty search result
+    if (!existsMatch) {
+      const placeholderNode = { key: "", value: "Not found", parent: null };
+      yield getNodeData(placeholderNode, null);
+    }
 
     while (true) {
       // if leaf, will return `undefined`, ending the loop
@@ -267,9 +274,8 @@ function NodeValue({
 }
 
 // -- v1
-// TODO collapse / expand all
-// TODO popup
 // TODO clean and refactor code
+// TODO popup
 // TODO readme
 // TODO logo
 // -- v2
