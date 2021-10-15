@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from "react";
+import React, { useCallback, useMemo, useRef } from "react";
 import { AutoSizer } from "react-virtualized";
 import {
   VariableSizeNodePublicState as NodeState,
@@ -31,15 +31,15 @@ export function TreeViewer({ json, search }: TreeViewerProps): JSX.Element {
   const collapse = useCallback(() => setOpen(json, tree, false), [json, tree]);
   useEventBusListener(EventType.Collapse, collapse);
 
+  const treeWalker = useMemo(
+    () => jsonTreeWalker(json, search),
+    [json, search]
+  );
+
   return (
     <AutoSizer>
       {({ height, width }) => (
-        <Tree
-          ref={tree}
-          treeWalker={jsonTreeWalker(json, search)}
-          height={height}
-          width={width}
-        >
+        <Tree ref={tree} treeWalker={treeWalker} height={height} width={width}>
           {TreeNode}
         </Tree>
       )}
