@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { PopupApp } from "./popup/PopupApp";
+import { App as PopupApp } from "./popup/App";
 
 ReactDOM.render(
   <React.StrictMode>

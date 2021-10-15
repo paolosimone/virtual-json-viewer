@@ -1,9 +1,8 @@
-import React from "react";
 import ReactDOM from "react-dom";
-import { ViewerApp } from "./viewer/ViewerApp";
+import { App as ViewerApp } from "./viewer/App";
 
 // TODO test in firefox
-chrome.runtime.sendMessage("check-json", (isJson: boolean) => {
+chrome.runtime.sendMessage("checkJson", (isJson: boolean) => {
   if (!isJson) {
     return;
   }
@@ -39,7 +38,7 @@ function loadJsonViewer() {
   ReactDOM.render(
     <ViewerApp
       jsonText={jsonText}
-      wasmFile={chrome.runtime.getURL("jq.wasm")}
+      jqWasmFile={chrome.runtime.getURL("jq.wasm")}
     />,
     div
   );

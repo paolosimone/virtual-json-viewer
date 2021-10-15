@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { LauncherApp } from "./launcher/LauncherApp";
+import { App as LauncherApp } from "./launcher/App";
 
 ReactDOM.render(
   <React.StrictMode>
