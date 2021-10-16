@@ -1,1 +1,1 @@
-export { TreeViewer } from "./TreeViewer";
+export * from "./TreeViewer";

@@ -1,2 +1,2 @@
-export { useEventBusListener } from "./UseEventBusListener";
-export { useWindowSize } from "./UseWindowSize";
+export * from "./UseEventBusListener";
+export * from "./UseWindowSize";

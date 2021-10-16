@@ -1,5 +1,5 @@
-import { Search } from "viewer/commons/Controls";
 import * as J from "viewer/commons/JsonUtils";
+import { Search } from "viewer/commons/Search";
 import { JsonNode, SearchMatch } from "./JsonNode";
 
 export class NodeFilter {
@@ -46,11 +46,11 @@ interface SearchStrategy {
   isMatch(text: string): boolean;
 }
 
-function buildSearchStrategy(search: Search): SearchStrategy {
-  return new CaseInsensitiveSearchStrategy(search.text);
+function buildSearchStrategy({ text }: Search): SearchStrategy {
+  return new CaseInsensitiveSearch(text);
 }
 
-class CaseInsensitiveSearchStrategy implements SearchStrategy {
+class CaseInsensitiveSearch implements SearchStrategy {
   searchText: string;
 
   constructor(searchText: string) {
@@ -66,12 +66,18 @@ interface KeepStrategy {
   keep(match: SearchMatch): boolean;
 }
 
-function buildKeepStrategy(_search: Search): KeepStrategy {
-  return new AnyMatchKeepStrategy();
+function buildKeepStrategy({ showMismatch }: Search): KeepStrategy {
+  return showMismatch ? new KeepFullPaths() : new KeepPathsUntilMatch();
 }
 
-class AnyMatchKeepStrategy implements KeepStrategy {
+class KeepFullPaths implements KeepStrategy {
   keep(match: SearchMatch): boolean {
-    return match.inAncestor || match.inValue || match.inKey;
+    return match.inAncestor || match.inKey || match.inValue;
+  }
+}
+
+class KeepPathsUntilMatch implements KeepStrategy {
+  keep(match: SearchMatch): boolean {
+    return match.inKey || match.inValue;
   }
 }

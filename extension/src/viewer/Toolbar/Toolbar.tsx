@@ -3,13 +3,12 @@ import { SearchBox, SearchBoxProps } from "./SearchBox";
 
 export type ToolbarProps = SearchBoxProps;
 
-export function Toolbar({ setSearch }: ToolbarProps): JSX.Element {
-  // TODO style
+export function Toolbar({ search, setSearch }: ToolbarProps): JSX.Element {
   return (
     <div className="mb-2">
       <button onClick={expand}>Expand</button>
       <button onClick={collapse}>Collapse</button>
-      <SearchBox setSearch={setSearch} />
+      <SearchBox search={search} setSearch={setSearch} />
     </div>
   );
 }

@@ -1,8 +1,9 @@
-// TODO option to enable case sensitive match
 export type Search = {
   text: string;
+  showMismatch: boolean;
 };
 
 export const EmptySearch: Search = {
   text: "",
+  showMismatch: true,
 };

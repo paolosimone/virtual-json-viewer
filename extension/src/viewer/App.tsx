@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import "tailwindcss/tailwind.css";
-import { EmptySearch } from "./commons/Controls";
+import { EmptySearch } from "./commons/Search";
 import { Toolbar } from "./Toolbar";
 import { TreeViewer } from "./TreeViewer";
 
@@ -15,7 +15,7 @@ export function App({ jsonText }: AppProps): JSX.Element {
 
   return (
     <div className="flex flex-col h-full pl-4 pt-4 font-mono">
-      <Toolbar setSearch={setSearch} />
+      <Toolbar search={search} setSearch={setSearch} />
       <div className="flex-1">
         <TreeViewer json={json} search={search} />
       </div>

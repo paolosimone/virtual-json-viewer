@@ -4,8 +4,8 @@ import {
   VariableSizeNodePublicState as NodeState,
   VariableSizeTree as Tree,
 } from "react-vtree";
-import { Search } from "viewer/commons/Controls";
 import { EventType } from "viewer/commons/EventBus";
+import { Search } from "viewer/commons/Search";
 import { useEventBusListener, useWindowSize } from "viewer/hooks";
 import { JsonNodeData } from "./model/JsonNode";
 import { getRootNodes, isLeaf, jsonTreeWalker } from "./model/JsonTreeWalker";
