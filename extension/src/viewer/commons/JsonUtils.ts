@@ -46,7 +46,8 @@ export function* iterator(
       yield [i.toString(), json[i]];
     }
   } else if (isObject(json)) {
-    for (let key in json) {
+    const keys = Object.keys(json).sort();
+    for (let key of keys) {
       yield [key, json[key]];
     }
   }
