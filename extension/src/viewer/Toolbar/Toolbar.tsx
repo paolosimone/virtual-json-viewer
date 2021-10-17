@@ -1,14 +1,33 @@
+import { IconButton } from "viewer/components";
 import { dispatch, EventType } from "../commons/EventBus";
 import { SearchBox, SearchBoxProps } from "./SearchBox";
 
-export type ToolbarProps = SearchBoxProps;
+export type ToolbarProps = {
+  searchBox: SearchBoxProps;
+};
 
-export function Toolbar({ search, setSearch }: ToolbarProps): JSX.Element {
+export function Toolbar({ searchBox }: ToolbarProps): JSX.Element {
   return (
-    <div className="mb-2">
-      <button onClick={expand}>Expand</button>
-      <button onClick={collapse}>Collapse</button>
-      <SearchBox search={search} setSearch={setSearch} />
+    <div className="flex bg-gray-100">
+      <IconButton
+        className="w-7 h-7 ml-1 mr-0.5"
+        title="Expand"
+        icon="expand-all"
+        onClick={expand}
+      />
+
+      <IconButton
+        className="w-7 h-7 ml-0.5 mr-0.5"
+        title="Collapse"
+        icon="collapse-all"
+        onClick={collapse}
+      />
+
+      <SearchBox
+        className="flex-1 ml-1 pr-1"
+        search={searchBox.search}
+        setSearch={searchBox.setSearch}
+      />
     </div>
   );
 }

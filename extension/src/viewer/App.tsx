@@ -13,10 +13,16 @@ export function App({ jsonText }: AppProps): JSX.Element {
   const json = useMemo(() => JSON.parse(jsonText), [jsonText]);
   const [search, setSearch] = useState(EmptySearch);
 
+  const searchBox = useMemo(
+    () => ({ search: search, setSearch: setSearch }),
+    [search, setSearch]
+  );
+  const toolbarProps = { searchBox: searchBox };
+
   return (
-    <div className="flex flex-col h-full pl-4 pt-4 font-mono">
-      <Toolbar search={search} setSearch={setSearch} />
-      <div className="flex-1">
+    <div className="flex flex-col h-full font-mono">
+      <Toolbar {...toolbarProps} />
+      <div className="flex-1 mt-1.5 pl-1.5">
         <TreeViewer json={json} search={search} />
       </div>
     </div>

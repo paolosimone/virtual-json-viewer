@@ -24,7 +24,7 @@ export function TreeNode({
   const fadeContent = { "opacity-60": !isMatched(data) };
 
   return (
-    <div ref={parent} style={{ ...style, marginLeft: `${data.nesting}em` }}>
+    <div ref={parent} style={{ ...style, paddingLeft: `${data.nesting}em` }}>
       <div
         ref={content}
         className={classNames("flex items-start", fadeContent)}
@@ -42,13 +42,13 @@ type Ref = React.RefObject<HTMLDivElement>;
 type ParentContentRefs = [Ref, Ref];
 
 function useFitContent(resize: Resize): ParentContentRefs {
+  const PADDING_HEIGHT = 2;
   const parent = useRef<HTMLDivElement>(null);
   const content = useRef<HTMLDivElement>(null);
 
-  // TODO MIN_HEIGHT = 0 + margin?
   const fitContent = () => {
-    const parentHeight = parent.current?.clientHeight ?? 30;
-    const contentHeight = Math.max(content.current?.clientHeight ?? 0, 30);
+    const parentHeight = parent.current?.clientHeight ?? 0;
+    const contentHeight = (content.current?.clientHeight ?? 0) + PADDING_HEIGHT;
     if (contentHeight !== parentHeight) {
       resize(contentHeight, true);
     }

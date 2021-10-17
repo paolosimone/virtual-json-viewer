@@ -22,7 +22,6 @@ export function TreeViewer({ json, search }: TreeViewerProps): JSX.Element {
   // force update on window resize
   useWindowSize(RESIZE_DELAY);
 
-  // TODO memoize treewalker
   const tree = useRef<Tree<JsonNodeData>>(null);
 
   const expand = useCallback(() => setOpen(json, tree, true), [json, tree]);

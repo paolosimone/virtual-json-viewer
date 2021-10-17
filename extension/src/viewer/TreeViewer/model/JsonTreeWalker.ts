@@ -100,7 +100,7 @@ function getNodeData(
       childrenCount: J.isCollection(value) ? J.length(value) : null,
       value: value,
       parent: parent,
-      defaultHeight: 30, //TODO mettere a 0?
+      defaultHeight: 30,
       searchMatch: searchMatch,
     },
   };

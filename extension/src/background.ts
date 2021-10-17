@@ -7,7 +7,6 @@
 
 const jsonContentType = /^application\/([a-z]+\+)?json($|;)/;
 
-// TODO replace with a timed cache, just in case
 const jsonUrls = new Set<string>();
 
 function isRedirect(status: number): boolean {

@@ -1,14 +1,20 @@
+import classNames from "classnames";
 import { Dispatch, FormEvent, SetStateAction, useEffect, useRef } from "react";
+import { IconButton } from "viewer/components";
 import { Search } from "../commons/Search";
 
 const TYPING_DELAY = 300;
 
-export type SearchBoxProps = {
+export type SearchBoxProps = Props<{
   search: Search;
   setSearch: Dispatch<SetStateAction<Search>>;
-};
+}>;
 
-export function SearchBox({ search, setSearch }: SearchBoxProps): JSX.Element {
+export function SearchBox({
+  search,
+  setSearch,
+  className,
+}: SearchBoxProps): JSX.Element {
   function setText(text: string) {
     setSearch((search: Search) => ({ ...search, text: text }));
   }
@@ -21,22 +27,29 @@ export function SearchBox({ search, setSearch }: SearchBoxProps): JSX.Element {
   }
 
   return (
-    <span>
-      <InputSearch text={search.text} setText={setText} />
-      <ToggleShowMismatch
-        showMismatch={search.showMismatch}
-        toggleShowMismatch={toggleShowMismatch}
+    <span className={classNames("border rounded flex bg-white", className)}>
+      <InputSearch className="flex-1" text={search.text} setText={setText} />
+      <IconButton
+        className="w-7 h-7"
+        title="Hide mismatch"
+        icon="eye-closed"
+        onClick={toggleShowMismatch}
+        isActive={!search.showMismatch}
       />
     </span>
   );
 }
 
-type InputSearchProps = {
+type InputSearchProps = Props<{
   text: string;
   setText: (text: string) => void;
-};
+}>;
 
-function InputSearch({ text, setText }: InputSearchProps): JSX.Element {
+function InputSearch({
+  text,
+  setText,
+  className,
+}: InputSearchProps): JSX.Element {
   // throttle onChange event to wait until user stop typing
   let timeoutId: Nullable<NodeJS.Timeout> = null;
 
@@ -64,23 +77,9 @@ function InputSearch({ text, setText }: InputSearchProps): JSX.Element {
     <input
       ref={ref}
       type="search"
-      className="border"
+      className={classNames("focus:outline-none", className)}
       onChange={onChange}
       placeholder="search"
     />
-  );
-}
-
-type ToggleShowMismatchProps = {
-  showMismatch: boolean;
-  toggleShowMismatch: () => void;
-};
-
-function ToggleShowMismatch({
-  showMismatch,
-  toggleShowMismatch,
-}: ToggleShowMismatchProps): JSX.Element {
-  return (
-    <button onClick={toggleShowMismatch}>hide:{String(!showMismatch)}</button>
   );
 }
