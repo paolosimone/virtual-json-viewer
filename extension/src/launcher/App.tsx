@@ -1,38 +1,53 @@
-import React, { useState } from "react";
-import { App as ViewerApp } from "../viewer/App";
+import classNames from "classnames";
+import { OptionsWrapper } from "./OptionsWrapper";
+import { PopupWrapper } from "./PopupWrapper";
+import { ViewerWrapper } from "./ViewerWrapper";
 
-function JsonPicker(props: { onFileRead: (content: string) => void }) {
-  // TODO add load button
-  // TODO formatting
-  const reader = new FileReader();
-  reader.addEventListener("load", function () {
-    props.onFileRead(reader.result as string);
-  });
-  const onChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
-    const files = event.target.files;
-    if (files?.length) {
-      reader.readAsText(files[0]);
-    }
-  };
+export function App() {
+  // extremely basic routing, no need for React Router
+  switch (window.location.pathname) {
+    case "/viewer":
+      return <ViewerWrapper />;
+    case "/popup":
+      return <PopupWrapper />;
+    case "/options":
+      return <OptionsWrapper />;
+    default:
+      return <PagePicker />;
+  }
+}
+
+function PagePicker(): JSX.Element {
   return (
-    <form>
-      <input type="file" accept=".json" multiple={false} onChange={onChange} />
-    </form>
+    <div className="h-screen p-4 grid grid-cols-3 gap-4 items-center">
+      <LauncherButton className="h-1/3" title="Viewer" href="/viewer" />
+      <LauncherButton className="h-1/3" title="Popup" href="/popup" />
+      <LauncherButton className="h-1/3" title="Options" href="/options" />
+    </div>
   );
 }
 
-// TODO launch all pages
-export function App() {
-  const [jsonText, setJsonText] = useState("{}");
+type LauncherButtonProps = Props<{
+  title: string;
+  href: string;
+}>;
 
+function LauncherButton({ title, href, className }: LauncherButtonProps) {
   return (
-    <div className="flex flex-col h-screen">
-      <div>
-        <JsonPicker onFileRead={setJsonText} />
-      </div>
-      <div className="flex-1">
-        <ViewerApp jsonText={jsonText} jqWasmFile="jq.wasm" />
-      </div>
-    </div>
+    <button
+      className={classNames(
+        "rounded-md bg-gray-100 hover:bg-gray-200 text-4xl",
+        className
+      )}
+      onClick={navigateTo(href)}
+    >
+      {title}
+    </button>
   );
+}
+
+function navigateTo(href: string): () => void {
+  return () => {
+    window.location.href = href;
+  };
 }

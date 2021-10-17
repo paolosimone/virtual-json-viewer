@@ -1,23 +1,10 @@
-import React from "react";
-import "./App.css";
+import "tailwindcss/tailwind.css";
 
-export function App() {
+export function App(): JSX.Element {
   return (
-    <div className="App">
-      <header className="App-header">
-        <p>Popup page</p>
-        <p>
-          Edit <code>src/views/Popup/App.tsx</code> and save.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="flex flex-col justify-center items-center bg-gray-100">
+      <div className="m-4">Thank you for using Virtual Json Viewer</div>
+      <div className="m-4">Options are coming s👀n</div>
     </div>
   );
 }
