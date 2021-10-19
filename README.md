@@ -5,7 +5,6 @@ Json viewer browser plugin built with react-vtree
 yarn create-react-app my-app --template complex-browserext-typescript
 
 // -- v1
-// TODO logo
 // TODO sample json
 // TODO readme
 // -- v2

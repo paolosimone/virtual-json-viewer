@@ -7,7 +7,10 @@ chrome.runtime.sendMessage("checkJson", (isJson: boolean) => {
     return;
   }
 
-  disableDefaultRendering();
+  // workaround: improve loading time on large json
+  setTextVisibility(false);
+
+  addFavicon(chrome.runtime.getURL("static/logo/16.png"));
 
   if (document.readyState === "complete") {
     loadJsonViewer();
@@ -16,23 +19,15 @@ chrome.runtime.sendMessage("checkJson", (isJson: boolean) => {
   }
 });
 
-// workaround: improve loading time on large json
-function disableDefaultRendering() {
-  addCSS(`pre { display: none; }`);
-}
-
 function loadJsonViewer() {
   const jsonElement = document.getElementsByTagName("pre")[0];
   const jsonText = jsonElement.innerText;
 
   const div = document.createElement("div");
-  div.style.cssText = `height: 100vh`;
+  div.style.cssText = "height: 100vh";
   jsonElement.parentNode?.replaceChild(div, jsonElement);
 
-  // TODO remove pre css
-
-  // For some obscure reason `ReactDOM.render` doesn't inject CSS
-  // ...so we add it manually :shrug:
+  setTextVisibility(true);
   addCSSRef(chrome.runtime.getURL("static/css/content.css"));
 
   ReactDOM.render(
@@ -44,9 +39,19 @@ function loadJsonViewer() {
   );
 }
 
-function addCSS(style: string) {
+function setTextVisibility(visible: boolean) {
+  if (visible) {
+    const elem = document.getElementById("hide-text");
+    elem?.parentNode?.removeChild(elem);
+  } else {
+    addCSS("pre { display: none; }", "hide-text");
+  }
+}
+
+function addCSS(style: string, id?: string) {
   const styleElement = document.createElement("style");
   styleElement.innerHTML = style;
+  if (id) styleElement.id = id;
   document.head.appendChild(styleElement);
 }
 
@@ -55,5 +60,12 @@ function addCSSRef(href: string) {
   linkElement.href = href;
   linkElement.type = "text/css";
   linkElement.rel = "stylesheet";
+  document.head.appendChild(linkElement);
+}
+
+function addFavicon(href: string) {
+  const linkElement = document.createElement("link");
+  linkElement.href = href;
+  linkElement.rel = "icon";
   document.head.appendChild(linkElement);
 }

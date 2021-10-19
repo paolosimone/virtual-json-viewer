@@ -5,8 +5,8 @@ const ManifestPlugin = require("webpack-manifest-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 // Make the build output compatible with chrome extension structure
-function convertToChromeExtension(config, env) {
-  const isEnvProduction = env === "production";
+function convertToChromeExtension(config) {
+  const isEnvProduction = process.env.NODE_ENV === "production";
 
   // Replace single entry point in the config with multiple ones
   // Note: you may remove any property below except "popup" to exclude respective entry point from compilation
@@ -74,6 +74,7 @@ function convertToChromeExtension(config, env) {
       inject: true,
       chunks: ["dev"],
       template: paths.appHtml,
+      favicon: paths.appPublic + "/logo/16.png"
     });
     config.plugins.push(indexHtmlPlugin);
   }
