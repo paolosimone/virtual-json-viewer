@@ -1,4 +1,4 @@
-import { IconButton } from "viewer/components";
+import { Icon, IconButton } from "viewer/components";
 import { dispatch, EventType } from "../commons/EventBus";
 import { SearchBox, SearchBoxProps } from "./SearchBox";
 
@@ -12,14 +12,14 @@ export function Toolbar({ searchBox }: ToolbarProps): JSX.Element {
       <IconButton
         className="w-7 h-7 ml-1 mr-0.5"
         title="Expand"
-        icon="expand-all"
+        icon={Icon.ExpandAll}
         onClick={expand}
       />
 
       <IconButton
         className="w-7 h-7 ml-0.5 mr-0.5"
         title="Collapse"
-        icon="collapse-all"
+        icon={Icon.CollapseAll}
         onClick={collapse}
       />
 

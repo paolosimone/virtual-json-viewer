@@ -74,7 +74,7 @@ function convertToChromeExtension(config) {
       inject: true,
       chunks: ["dev"],
       template: paths.appHtml,
-      favicon: paths.appPublic + "/logo/16.png"
+      favicon: paths.appPublic + "/logo/16.png",
     });
     config.plugins.push(indexHtmlPlugin);
   }

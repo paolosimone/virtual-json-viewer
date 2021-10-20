@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { Dispatch, FormEvent, SetStateAction, useEffect, useRef } from "react";
-import { IconButton } from "viewer/components";
+import { Icon, IconButton } from "viewer/components";
 import { Search } from "../commons/Search";
 
 const TYPING_DELAY = 300;
@@ -32,7 +32,7 @@ export function SearchBox({
       <IconButton
         className="w-7 h-7"
         title="Hide mismatch"
-        icon="eye-closed"
+        icon={Icon.EyeClosed}
         onClick={toggleShowMismatch}
         isActive={!search.showMismatch}
       />

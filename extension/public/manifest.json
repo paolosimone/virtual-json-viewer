@@ -19,8 +19,8 @@
     }
   ],
   "icons": {
-    "16": "logo/192.png",
-    "48": "logo/192.png",
+    "16": "logo/16.png",
+    "48": "logo/48.png",
     "192": "logo/192.png"
   },
   "web_accessible_resources": [
@@ -32,7 +32,7 @@
     "default_icon": {
       "192": "logo/192.png"
     },
-    "default_title": "Options",
+    "default_title": "Virtual Json Viewer",
     "default_popup": "popup.html"
   },
   "options_ui": {
