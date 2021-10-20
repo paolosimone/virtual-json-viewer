@@ -10,7 +10,7 @@ chrome.runtime.sendMessage("checkJson", (isJson: boolean) => {
   // workaround: improve loading time on large json
   setTextVisibility(false);
 
-  addFavicon(chrome.runtime.getURL("static/logo/16.png"));
+  addFavicon(chrome.runtime.getURL("logo/16.png"));
 
   if (document.readyState === "complete") {
     loadJsonViewer();
