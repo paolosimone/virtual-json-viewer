@@ -1,0 +1,22 @@
+{
+  "root": {
+    "miss": {
+      "array": [1, 2, 3, 4],
+      "object": {}
+    },
+    "content_only": {
+      "array": [1, 2, 3, 4],
+      "object": {"key_1": "miss", "key_2": "miss"}
+    },
+    "match_key_only": {
+      "array": [1, 2, 3, 4],
+      "object": {"key_1": "miss", "key_2": "miss"}
+    },
+    "match_key_and_content": {
+      "array": [1, 2, 3, 4],
+      "object": {"key_1": "match", "key_2": "miss"}
+    },
+    "match_array": [1, 2, "match", 4]
+  }
+}
+
