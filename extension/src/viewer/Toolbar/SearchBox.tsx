@@ -30,7 +30,7 @@ export function SearchBox({
     <span className={classNames("border rounded flex bg-white", className)}>
       <InputSearch className="flex-1" text={search.text} setText={setText} />
       <IconButton
-        className="w-7 h-7"
+        className="w-7 h-7 px-0.5"
         title="Hide mismatch"
         icon={Icon.EyeClosed}
         onClick={toggleShowMismatch}

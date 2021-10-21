@@ -1,3 +1,4 @@
+import { Icon, IconButton } from "viewer/components";
 import { JsonNodeData } from "../model/JsonNode";
 
 export type OpenProps = {
@@ -11,16 +12,15 @@ export function OpenButton({
   isOpen,
   setOpen,
 }: OpenProps): JSX.Element {
-  if (isLeaf) {
-    return <span className="w-5 mr-0.5" />;
-  }
-
   return (
-    <button
-      className="w-5 mr-0.5 text-gray-600"
-      onClick={() => setOpen(!isOpen)}
-    >
-      {isOpen ? "⮟" : "⮞"}
-    </button>
+    <span className="w-5 mr-0.5">
+      {!isLeaf && (
+        <IconButton
+          icon={isOpen ? Icon.ChevronDown : Icon.ChevronRight}
+          onClick={() => setOpen(!isOpen)}
+          className="w-4 h-4 align-middle"
+        />
+      )}
+    </span>
   );
 }
