@@ -9,12 +9,14 @@ _*Coming soon_
 > "Oh my! There are plenty of json viewers, why making a new one?"
 
 Rightful question, and the answer is quite simple: the others weren't good enough [for my needs].  
+
 I am a backend developer and in my everyday job I have to debug large json payloads, 
 so large that every other plugin for chrome I tried freezed without showing any content.
 
 > "Good for you, but **my** payloads are small, pretty and strawberry flavoured"
 
 That's ok, if you are satisfied by your current plugin, no need to change.  
+
 And if you want to come back later don't worry, we'll still be here, with blazing fast loading time, 
 built-in search, JQ filtering and many other features... but no strawberries, sorry
 
@@ -22,23 +24,25 @@ built-in search, JQ filtering and many other features... but no strawberries, so
 
 _Note:_ This add-on has been developed and tested on Google Chrome 94
 
-### From build
+### Get the build
+
+__From Release__
 
 1. Download the latest build from the [release page](https://github.com/paolosimone/virtual-json-viewer/releases)
 1. Extract the content
+
+__From Source__
+
+1. Clone or download this repository
+1. `cd virtual-json-viewer/extension`
+1. `yarn install`
+1. `yarn build`
+
+### Install the plugin
+
 1. Open the Extension Management page by navigating to `chrome://extensions`
 1. Enable Developer Mode by clicking the toggle switch next to Developer mode
-1. Click the Load unpacked button and select the `build` directory
-
-### From source
-
-Clone this repository, then simply: 
-
-```bash
-cd virtual-json-viewer/extension
-yarn install
-yarn build
-```
+1. Click the load unpacked button and select the `build` directory
 
 # Features
 

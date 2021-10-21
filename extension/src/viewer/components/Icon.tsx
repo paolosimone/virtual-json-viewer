@@ -1,4 +1,6 @@
-// It's easier to render svg icons as JSX elements than 
+// Credits: https://github.com/microsoft/vscode-icons
+
+// It's easier to render svg icons as JSX elements than
 // list all of them as a "web_accessible_resources" in manifest
 
 export type IconProps = {
@@ -7,6 +9,32 @@ export type IconProps = {
 
 export interface Icon {
   (props: IconProps): JSX.Element;
+}
+
+export function ChevronDown({ fill }: IconProps): JSX.Element {
+  return (
+    <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+        d="M7.97637 10.0719L12.3337 5.7146L12.9524 6.33332L8.28573 11L7.66701 11L3.00034 6.33332L3.61906 5.7146L7.97637 10.0719Z"
+        fill={fill}
+      />
+    </svg>
+  );
+}
+
+export function ChevronRight({ fill }: IconProps): JSX.Element {
+  return (
+    <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+        d="M10.0722 8.02397L5.71484 3.66666L6.33356 3.04794L11.0002 7.71461V8.33333L6.33356 13L5.71484 12.3813L10.0722 8.02397Z"
+        fill={fill}
+      />
+    </svg>
+  );
 }
 
 export function CollapseAll({ fill }: IconProps): JSX.Element {
