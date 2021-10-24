@@ -4,7 +4,7 @@ Browser plugin that uses [virtual DOM](https://github.com/Lodin/react-vtree) to 
 
 _*Coming soon_
 
-# Why?
+## Why?
 
 > "Oh my! There are plenty of json viewers, why making a new one?"
 
@@ -20,7 +20,7 @@ That's ok, if you are satisfied by your current plugin, no need to change.
 And if you want to come back later don't worry, we'll still be here, with blazing fast loading time, 
 built-in search, JQ filtering and many other features... but no strawberries, sorry
 
-# Installation
+## Installation
 
 _Note:_ This add-on has been developed and tested on Google Chrome 94
 
@@ -44,7 +44,7 @@ __From Source__
 1. Enable Developer Mode by clicking the toggle switch next to Developer mode
 1. Click the load unpacked button and select the `build` directory
 
-# Features
+## Features
 
 - [X] JSON rendering using virtual DOM and collapsable nodes
 - [X] Sort JSON keys alphabetically
@@ -65,7 +65,7 @@ __From Source__
 - [ ] Case sensitive search
 - [ ] Highlight search results
 
-# Contributing
+## Contributing
 
 Sorry, I am not accepting contributions at the moment...
 But feel free to open an issue in case of bug, feature request or suggestion!
@@ -76,20 +76,20 @@ Run `yarn start` to serve the application locally (`http://localhost:3000`).
 
 Always `yarn format` before creating a commit.
 
-# References
+## References
 
-|Tool|Usage|
-|---|---|
-|[cra-template-complex-browserext-typescript](https://github.com/hindmost/cra-template-complex-browserext-typescript)|Project scaffolding, huge help!|
-|[customize-cra](https://github.com/arackaf/customize-cra)|Break webpack config, then fix it|
-|[jq-wasm]()|Coming soon...|
-|[React](https://reactjs.org/)|Learn how to write a frontend application without jQuery and bootstrap|
-|[react-vtree](https://github.com/Lodin/react-vtree)|Render the JSON. I'd say it's a pretty important role|
-|[TailwindCSS](https://tailwindcss.com/)|Prevent me from touching CSS files|
-|[Typescript](https://www.typescriptlang.org/)|Try to forget I'm actually producing JS 🤢|
-|[vscode-icons](https://github.com/microsoft/vscode-icons)|Keep UI buttons clean and intuitive|
+|Tool                                                                                                                       |Usage                                          |
+|---------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------|
+|[cra-template-complex-browserext-typescript](https://github.com/hindmost/cra-template-complex-browserext-typescript)       |Project scaffolding, huge help!                |
+|[customize-cra](https://github.com/arackaf/customize-cra)                                                                  |Break webpack config, then fix it              |
+|[jq-wasm](https://github.com/paolosimone/jq-wasm)                                                                          |JQ in the browser                              |
+|[React](https://reactjs.org/)                                                                                              |Learn how to write a frontend application without jQuery and bootstrap|
+|[react-vtree](https://github.com/Lodin/react-vtree)                                                                        |Render the JSON. I'd say it's a pretty important role|
+|[TailwindCSS](https://tailwindcss.com/)                                                                                    |Prevent me from touching CSS files|
+|[Typescript](https://www.typescriptlang.org/)                                                                              |Try to forget I'm actually producing JS 🤢|
+|[vscode-icons](https://github.com/microsoft/vscode-icons)                                                                  |Keep UI buttons clean and intuitive|
 
 
-# License
+## License
 
 MIT License
