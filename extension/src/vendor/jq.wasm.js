@@ -1,7 +1,7 @@
 
 var newJQ = (function() {
   var _scriptDir = typeof document !== 'undefined' && document.currentScript ? document.currentScript.src : undefined;
-  
+  if (typeof __filename !== 'undefined') _scriptDir = _scriptDir || __filename;
   return (
 function(newJQ) {
   newJQ = newJQ || {};
@@ -57,27 +57,28 @@ Module["preRun"] = function() {
 Module["invoke"] = function(jsonString, filter, options = []) {
  return new Promise(function(resolve, reject) {
   try {
-    stdin.load(jsonString)
-    callMain(options.concat(filter))
-
-    if (EXITSTATUS) {
-      reject(new Error(stderr.toString()))
-    } else {
-      resolve(stdout.toString())
-    }
+   stdin.load(jsonString);
+   callMain(options.concat(filter));
+   if (EXITSTATUS) {
+    reject(new Error(stderr.toString()));
+   } else {
+    resolve(stdout.toString());
+   }
   } catch (e) {
-    reject(e)
+   reject(e);
   } finally {
-    stdin.load("")
-    stdout.flush()
-    stderr.flush()
+   stdin.load("");
+   stdout.flush();
+   stderr.flush();
   }
  });
 };
 
 Module["noInitialRun"] = true;
 
-Module["noExitRuntime"] = true;
+if (!Module.hasOwnProperty("noExitRuntime")) {
+ Module["noExitRuntime"] = true;
+}
 
 var moduleOverrides = {};
 
@@ -97,9 +98,11 @@ var quit_ = function(status, toThrow) {
  throw toThrow;
 };
 
-var ENVIRONMENT_IS_WEB = true;
+var ENVIRONMENT_IS_WEB = typeof window === "object";
 
-var ENVIRONMENT_IS_WORKER = false;
+var ENVIRONMENT_IS_WORKER = typeof importScripts === "function";
+
+var ENVIRONMENT_IS_NODE = typeof process === "object" && typeof process.versions === "object" && typeof process.versions.node === "string";
 
 var scriptDirectory = "";
 
@@ -112,7 +115,59 @@ function locateFile(path) {
 
 var read_, readAsync, readBinary, setWindowTitle;
 
-if (ENVIRONMENT_IS_WEB || ENVIRONMENT_IS_WORKER) {
+var nodeFS;
+
+var nodePath;
+
+if (ENVIRONMENT_IS_NODE) {
+ if (ENVIRONMENT_IS_WORKER) {
+  scriptDirectory = require("path").dirname(scriptDirectory) + "/";
+ } else {
+  scriptDirectory = __dirname + "/";
+ }
+ read_ = function shell_read(filename, binary) {
+  if (!nodeFS) nodeFS = require("fs");
+  if (!nodePath) nodePath = require("path");
+  filename = nodePath["normalize"](filename);
+  return nodeFS["readFileSync"](filename, binary ? null : "utf8");
+ };
+ readBinary = function readBinary(filename) {
+  var ret = read_(filename, true);
+  if (!ret.buffer) {
+   ret = new Uint8Array(ret);
+  }
+  assert(ret.buffer);
+  return ret;
+ };
+ readAsync = function readAsync(filename, onload, onerror) {
+  if (!nodeFS) nodeFS = require("fs");
+  if (!nodePath) nodePath = require("path");
+  filename = nodePath["normalize"](filename);
+  nodeFS["readFile"](filename, function(err, data) {
+   if (err) onerror(err); else onload(data.buffer);
+  });
+ };
+ if (process["argv"].length > 1) {
+  thisProgram = process["argv"][1].replace(/\\/g, "/");
+ }
+ arguments_ = process["argv"].slice(2);
+ process["on"]("uncaughtException", function(ex) {
+  if (!(ex instanceof ExitStatus)) {
+   throw ex;
+  }
+ });
+ process["on"]("unhandledRejection", abort);
+ quit_ = function(status, toThrow) {
+  if (keepRuntimeAlive()) {
+   process["exitCode"] = status;
+   throw toThrow;
+  }
+  process["exit"](status);
+ };
+ Module["inspect"] = function() {
+  return "[Emscripten Module object]";
+ };
+} else if (ENVIRONMENT_IS_WEB || ENVIRONMENT_IS_WORKER) {
  if (ENVIRONMENT_IS_WORKER) {
   scriptDirectory = self.location.href;
  } else if (typeof document !== "undefined" && document.currentScript) {
@@ -184,7 +239,7 @@ var wasmBinary;
 
 if (Module["wasmBinary"]) wasmBinary = Module["wasmBinary"];
 
-var noExitRuntime = Module["noExitRuntime"] || true;
+var noExitRuntime = Module["noExitRuntime"] || false;
 
 if (typeof WebAssembly !== "object") {
  abort("no native wasm support detected");
@@ -348,6 +403,8 @@ var __ATINIT__ = [];
 
 var __ATMAIN__ = [];
 
+var __ATEXIT__ = [];
+
 var __ATPOSTRUN__ = [];
 
 var runtimeInitialized = false;
@@ -383,6 +440,9 @@ function preMain() {
 }
 
 function exitRuntime() {
+ callRuntimeCallbacks(__ATEXIT__);
+ FS.quit();
+ TTY.shutdown();
  runtimeExited = true;
 }
 
@@ -467,6 +527,10 @@ function isDataURI(filename) {
  return filename.startsWith(dataURIPrefix);
 }
 
+function isFileURI(filename) {
+ return filename.startsWith("file://");
+}
+
 var wasmBinaryFile;
 
 wasmBinaryFile = "jq.wasm";
@@ -492,7 +556,7 @@ function getBinary(file) {
 
 function getBinaryPromise() {
  if (!wasmBinary && (ENVIRONMENT_IS_WEB || ENVIRONMENT_IS_WORKER)) {
-  if (typeof fetch === "function") {
+  if (typeof fetch === "function" && !isFileURI(wasmBinaryFile)) {
    return fetch(wasmBinaryFile, {
     credentials: "same-origin"
    }).then(function(response) {
@@ -503,6 +567,14 @@ function getBinaryPromise() {
    }).catch(function() {
     return getBinary(wasmBinaryFile);
    });
+  } else {
+   if (readAsync) {
+    return new Promise(function(resolve, reject) {
+     readAsync(wasmBinaryFile, function(response) {
+      resolve(new Uint8Array(response));
+     }, reject);
+    });
+   }
   }
  }
  return Promise.resolve().then(function() {
@@ -517,10 +589,10 @@ function createWasm() {
  function receiveInstance(instance, module) {
   var exports = instance.exports;
   Module["asm"] = exports;
-  wasmMemory = Module["asm"]["B"];
+  wasmMemory = Module["asm"]["C"];
   updateGlobalBufferAndViews(wasmMemory.buffer);
-  wasmTable = Module["asm"]["F"];
-  addOnInit(Module["asm"]["C"]);
+  wasmTable = Module["asm"]["H"];
+  addOnInit(Module["asm"]["D"]);
   removeRunDependency("wasm-instantiate");
  }
  addRunDependency("wasm-instantiate");
@@ -537,7 +609,7 @@ function createWasm() {
   });
  }
  function instantiateAsync() {
-  if (!wasmBinary && typeof WebAssembly.instantiateStreaming === "function" && !isDataURI(wasmBinaryFile) && typeof fetch === "function") {
+  if (!wasmBinary && typeof WebAssembly.instantiateStreaming === "function" && !isDataURI(wasmBinaryFile) && !isFileURI(wasmBinaryFile) && typeof fetch === "function") {
    return fetch(wasmBinaryFile, {
     credentials: "same-origin"
    }).then(function(response) {
@@ -674,7 +746,15 @@ function getRandomDevice() {
    crypto.getRandomValues(randomBuffer);
    return randomBuffer[0];
   };
- } else return function() {
+ } else if (ENVIRONMENT_IS_NODE) {
+  try {
+   var crypto_module = require("crypto");
+   return function() {
+    return crypto_module["randomBytes"](1)[0];
+   };
+  } catch (e) {}
+ }
+ return function() {
   abort("randomDevice");
  };
 }
@@ -803,7 +883,21 @@ var TTY = {
   get_char: function(tty) {
    if (!tty.input.length) {
     var result = null;
-    if (typeof window != "undefined" && typeof window.prompt == "function") {
+    if (ENVIRONMENT_IS_NODE) {
+     var BUFSIZE = 256;
+     var buf = Buffer.alloc(BUFSIZE);
+     var bytesRead = 0;
+     try {
+      bytesRead = nodeFS.readSync(process.stdin.fd, buf, 0, BUFSIZE, null);
+     } catch (e) {
+      if (e.toString().includes("EOF")) bytesRead = 0; else throw e;
+     }
+     if (bytesRead > 0) {
+      result = buf.slice(0, bytesRead).toString("utf-8");
+     } else {
+      result = null;
+     }
+    } else if (typeof window != "undefined" && typeof window.prompt == "function") {
      result = window.prompt("Input: ");
      if (result !== null) {
       result += "\n";
@@ -3153,6 +3247,13 @@ function _abort() {
  abort();
 }
 
+function _atexit(func, arg) {
+ __ATEXIT__.unshift({
+  func: func,
+  arg: arg
+ });
+}
+
 function _emscripten_memcpy_big(dest, src, num) {
  HEAPU8.copyWithin(dest, src, src + num);
 }
@@ -4093,30 +4194,31 @@ function intArrayFromString(stringy, dontAddNull, length) {
 
 var asmLibraryArg = {
  "a": ___assert_fail,
- "h": ___sys_fcntl64,
- "z": ___sys_fstat64,
- "w": ___sys_getuid32,
- "x": ___sys_ioctl,
- "e": ___sys_open,
+ "j": ___sys_fcntl64,
+ "x": ___sys_fstat64,
+ "v": ___sys_getuid32,
+ "y": ___sys_ioctl,
+ "f": ___sys_open,
  "u": ___sys_readlink,
- "j": ___sys_stat64,
+ "i": ___sys_stat64,
  "b": _abort,
+ "e": _atexit,
  "q": _emscripten_memcpy_big,
  "r": _emscripten_resize_heap,
  "s": _environ_get,
  "t": _environ_sizes_get,
  "c": _exit,
  "d": _fd_close,
- "g": _fd_fdstat_get,
- "y": _fd_read,
+ "h": _fd_fdstat_get,
+ "z": _fd_read,
  "p": _fd_seek,
- "i": _fd_write,
- "k": _getpwuid,
+ "k": _fd_write,
+ "B": _getpwuid,
  "n": _gmtime_r,
  "m": _localtime_r,
  "A": _raise,
- "f": _strftime,
- "v": _strptime,
+ "g": _strftime,
+ "w": _strptime,
  "l": _time,
  "o": _timegm
 };
@@ -4124,35 +4226,39 @@ var asmLibraryArg = {
 var asm = createWasm();
 
 var ___wasm_call_ctors = Module["___wasm_call_ctors"] = function() {
- return (___wasm_call_ctors = Module["___wasm_call_ctors"] = Module["asm"]["C"]).apply(null, arguments);
+ return (___wasm_call_ctors = Module["___wasm_call_ctors"] = Module["asm"]["D"]).apply(null, arguments);
 };
 
 var _main = Module["_main"] = function() {
- return (_main = Module["_main"] = Module["asm"]["D"]).apply(null, arguments);
+ return (_main = Module["_main"] = Module["asm"]["E"]).apply(null, arguments);
 };
 
 var ___errno_location = Module["___errno_location"] = function() {
- return (___errno_location = Module["___errno_location"] = Module["asm"]["E"]).apply(null, arguments);
+ return (___errno_location = Module["___errno_location"] = Module["asm"]["F"]).apply(null, arguments);
+};
+
+var _fflush = Module["_fflush"] = function() {
+ return (_fflush = Module["_fflush"] = Module["asm"]["G"]).apply(null, arguments);
 };
 
 var _malloc = Module["_malloc"] = function() {
- return (_malloc = Module["_malloc"] = Module["asm"]["G"]).apply(null, arguments);
+ return (_malloc = Module["_malloc"] = Module["asm"]["I"]).apply(null, arguments);
 };
 
 var __get_tzname = Module["__get_tzname"] = function() {
- return (__get_tzname = Module["__get_tzname"] = Module["asm"]["H"]).apply(null, arguments);
+ return (__get_tzname = Module["__get_tzname"] = Module["asm"]["J"]).apply(null, arguments);
 };
 
 var __get_daylight = Module["__get_daylight"] = function() {
- return (__get_daylight = Module["__get_daylight"] = Module["asm"]["I"]).apply(null, arguments);
+ return (__get_daylight = Module["__get_daylight"] = Module["asm"]["K"]).apply(null, arguments);
 };
 
 var __get_timezone = Module["__get_timezone"] = function() {
- return (__get_timezone = Module["__get_timezone"] = Module["asm"]["J"]).apply(null, arguments);
+ return (__get_timezone = Module["__get_timezone"] = Module["asm"]["L"]).apply(null, arguments);
 };
 
 var stackAlloc = Module["stackAlloc"] = function() {
- return (stackAlloc = Module["stackAlloc"] = Module["asm"]["K"]).apply(null, arguments);
+ return (stackAlloc = Module["stackAlloc"] = Module["asm"]["M"]).apply(null, arguments);
 };
 
 var calledRun;
@@ -4251,7 +4357,7 @@ if (Module["preInit"]) {
  }
 }
 
-var shouldRunNow = true;
+var shouldRunNow = false;
 
 if (Module["noInitialRun"]) shouldRunNow = false;
 

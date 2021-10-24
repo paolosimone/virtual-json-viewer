@@ -5,7 +5,11 @@ export function ViewerWrapper(): JSX.Element {
   const [jsonText, setJsonText] = useState("");
 
   if (!jsonText) {
-    return <JsonPicker onFileRead={setJsonText} />;
+    return (
+      <div className="h-screen grid grid-cols-1 place-items-center">
+        <JsonPicker onFileRead={setJsonText} />
+      </div>
+    );
   }
 
   return (

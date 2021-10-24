@@ -28,7 +28,7 @@ export function SearchBox({
 
   return (
     <span className={classNames("border rounded flex bg-white", className)}>
-      <InputSearch className="flex-1" text={search.text} setText={setText} />
+      <SearchInput className="flex-1" text={search.text} setText={setText} />
       <IconButton
         className="w-7 h-7 px-0.5"
         title="Hide mismatch"
@@ -40,16 +40,16 @@ export function SearchBox({
   );
 }
 
-type InputSearchProps = Props<{
+type SearchInputProps = Props<{
   text: string;
   setText: (text: string) => void;
 }>;
 
-function InputSearch({
+function SearchInput({
   text,
   setText,
   className,
-}: InputSearchProps): JSX.Element {
+}: SearchInputProps): JSX.Element {
   // throttle onChange event to wait until user stop typing
   let timeoutId: Nullable<NodeJS.Timeout> = null;
 

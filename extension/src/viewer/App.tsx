@@ -1,6 +1,8 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import "tailwindcss/tailwind.css";
+import { EmptyJQFilter } from "./commons/JQFilter";
 import { EmptySearch } from "./commons/Search";
+import { useJQFilter, useStateObject } from "./hooks";
 import { Toolbar } from "./Toolbar";
 import { TreeViewer } from "./TreeViewer";
 
@@ -9,46 +11,28 @@ export type AppProps = {
   jqWasmFile: string;
 };
 
-export function App({ jsonText }: AppProps): JSX.Element {
-  const json = useMemo(() => JSON.parse(jsonText), [jsonText]);
-  const [search, setSearch] = useState(EmptySearch);
+export function App({ jsonText, jqWasmFile }: AppProps): JSX.Element {
+  const jqFilterState = useStateObject(EmptyJQFilter);
+  const searchState = useStateObject(EmptySearch);
+  const toolbarProps = {
+    searchState: searchState,
+    jqFilterState: jqFilterState,
+  };
 
-  const searchBox = useMemo(
-    () => ({ search: search, setSearch: setSearch }),
-    [search, setSearch]
+  const showJsonText = useJQFilter(
+    jqWasmFile,
+    jsonText,
+    jqFilterState.state.expression
   );
-  const toolbarProps = { searchBox: searchBox };
+
+  const json = useMemo(() => JSON.parse(showJsonText), [showJsonText]);
 
   return (
     <div className="flex flex-col h-full font-mono">
       <Toolbar {...toolbarProps} />
       <div className="flex-1 mt-1.5 pl-1.5">
-        <TreeViewer json={json} search={search} />
+        <TreeViewer json={json} search={searchState.state} />
       </div>
     </div>
   );
 }
-
-// Coming soon...
-//
-// import newJQ from "vendor/jq-web.wasm";
-//
-// const [jq, setJQ] = useState(null);
-// useEffect(() => {
-//   newJQ({ locateFile: () => props.wasmFile }).then((module: any) =>
-//     setJQ(module)
-//   );
-// }, [props.wasmFile]);
-
-// const [json, setJson] = useState(null);
-// useEffect(() => {
-//   if (jq == null) {
-//     return;
-//   }
-
-//   setJson(null);
-//   (jq as any).invoke(props.jsonText, query).then((jsonText: string) => {
-//     const json = JSON.parse(jsonText);
-//     setJson(json);
-//   });
-// }, [jq, props.jsonText, query]);
