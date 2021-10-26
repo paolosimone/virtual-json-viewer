@@ -43,13 +43,16 @@ type ParentContentRefs = [Ref, Ref];
 
 function useFitContent(resize: Resize): ParentContentRefs {
   const PADDING_HEIGHT = 2;
+  const TOLERANCE = 2;
+
   const parent = useRef<HTMLDivElement>(null);
   const content = useRef<HTMLDivElement>(null);
 
   const fitContent = () => {
     const parentHeight = parent.current?.clientHeight ?? 0;
     const contentHeight = (content.current?.clientHeight ?? 0) + PADDING_HEIGHT;
-    if (contentHeight !== parentHeight) {
+    const delta = Math.abs(contentHeight - parentHeight);
+    if (delta > TOLERANCE) {
       resize(contentHeight, true);
     }
   };
