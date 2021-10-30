@@ -11,6 +11,7 @@ chrome.runtime.sendMessage("checkJson", (isJson: boolean) => {
   setTextVisibility(false);
 
   addFavicon(chrome.runtime.getURL("logo/16.png"));
+  updateTitle();
 
   if (document.readyState === "complete") {
     loadJsonViewer();
@@ -68,4 +69,11 @@ function addFavicon(href: string) {
   linkElement.href = href;
   linkElement.rel = "icon";
   document.head.appendChild(linkElement);
+}
+
+function updateTitle() {
+  const segments = window.location.pathname.split("/");
+  // handle potential trailing slash
+  const last = segments.pop() || segments.pop();
+  if (last) document.title = last;
 }
