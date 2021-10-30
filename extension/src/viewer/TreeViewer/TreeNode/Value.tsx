@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import * as J from "viewer/commons/JsonUtils";
 import { JsonNodeData } from "../model/JsonNode";
 
@@ -15,9 +16,14 @@ export function Value({
   }
 
   if (J.isCollection(value)) {
-    const count = childrenCount ? `↤ ${childrenCount} ↦` : "";
+    const count = childrenCount ? ` ${childrenCount} ` : "";
     const preview = J.isArray(value) ? `[${count}]` : `{${count}}`;
-    return <span className="truncate text-gray-600">{preview}</span>;
+    const fade = { "opacity-40": childrenCount };
+    return (
+      <span className={classNames("truncate text-gray-600", fade)}>
+        {preview}
+      </span>
+    );
   }
 
   if (J.isString(value)) {

@@ -10,7 +10,7 @@ export function Key({ data }: KeyProps): JSX.Element {
   }
 
   return (
-    <span className="mr-4 whitespace-pre-wrap text-blue-600">{data.key}:</span>
+    <span className="mr-4 whitespace-pre-wrap text-blue-700">{data.key}:</span>
   );
 }
 

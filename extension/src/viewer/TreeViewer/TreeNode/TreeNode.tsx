@@ -42,7 +42,7 @@ type Ref = React.RefObject<HTMLDivElement>;
 type ParentContentRefs = [Ref, Ref];
 
 function useFitContent(resize: Resize): ParentContentRefs {
-  const PADDING_HEIGHT = 2;
+  const PADDING_HEIGHT = 4;
   const TOLERANCE = 2;
 
   const parent = useRef<HTMLDivElement>(null);

@@ -1,8 +1,9 @@
 import classNames from "classnames";
 import { Dispatch, FormEvent, SetStateAction, useEffect, useRef } from "react";
-import { Icon, IconButton } from "viewer/components";
+import { Icon, IconButton, IconLabel } from "viewer/components";
 import { Search } from "../commons/Search";
 
+// TODO setting typing delay
 const TYPING_DELAY = 300;
 
 export type SearchBoxProps = Props<{
@@ -19,6 +20,10 @@ export function SearchBox({
     setSearch((search: Search) => ({ ...search, text: text }));
   }
 
+  function clearSearch() {
+    setText("");
+  }
+
   function toggleShowMismatch() {
     setSearch((search: Search) => ({
       ...search,
@@ -26,9 +31,26 @@ export function SearchBox({
     }));
   }
 
+  const isEmpty = search.text === "";
+
   return (
-    <span className={classNames("border rounded flex bg-white", className)}>
-      <InputSearch className="flex-1" text={search.text} setText={setText} />
+    <span className={classNames("border rounded flex bg-white ", className)}>
+      {isEmpty ? (
+        <IconLabel
+          className="w-5 h-5 ml-1 mr-2 self-center"
+          icon={Icon.Search}
+        />
+      ) : (
+        <IconButton
+          className="w-5 h-5 ml-1 mr-2 self-center"
+          title="Clear"
+          icon={Icon.Close}
+          onClick={clearSearch}
+        />
+      )}
+
+      <SearchInput className="flex-1" text={search.text} setText={setText} />
+
       <IconButton
         className="w-7 h-7 px-0.5"
         title="Hide mismatch"
@@ -40,16 +62,16 @@ export function SearchBox({
   );
 }
 
-type InputSearchProps = Props<{
+type SearchInputProps = Props<{
   text: string;
   setText: (text: string) => void;
 }>;
 
-function InputSearch({
+function SearchInput({
   text,
   setText,
   className,
-}: InputSearchProps): JSX.Element {
+}: SearchInputProps): JSX.Element {
   // throttle onChange event to wait until user stop typing
   let timeoutId: Nullable<NodeJS.Timeout> = null;
 
@@ -76,7 +98,7 @@ function InputSearch({
   return (
     <input
       ref={ref}
-      type="search"
+      type="input"
       className={classNames("focus:outline-none", className)}
       onChange={onChange}
       placeholder="search"

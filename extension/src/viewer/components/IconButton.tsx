@@ -9,6 +9,7 @@ export type IconButtonProps = Props<{
   onClick: () => void;
   title?: string;
   isActive?: boolean;
+  disabled?: boolean;
 }>;
 
 export function IconButton({
@@ -16,24 +17,30 @@ export function IconButton({
   icon,
   onClick,
   isActive,
+  disabled,
   className,
   style,
 }: IconButtonProps): JSX.Element {
-  // User-defined JSX elements require a capital letter
-  const ButtonIcon = icon;
+  // JSX element requires a capital letter
+  const CustomIcon = icon;
 
   return (
     <button
       className={classNames(
-        "rounded hover:bg-gray-200",
-        { "bg-gray-300": isActive },
+        "rounded",
+        {
+          "hover:bg-gray-200": !disabled,
+          "cursor-not-allowed": disabled,
+          "bg-gray-300": isActive,
+        },
         className
       )}
       style={style}
       title={title}
       onClick={onClick}
+      disabled={disabled}
     >
-      <ButtonIcon fill={fill} />
+      <CustomIcon fill={fill} />
     </button>
   );
 }
