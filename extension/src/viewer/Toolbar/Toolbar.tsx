@@ -17,7 +17,7 @@ export function Toolbar({
 }: ToolbarProps): JSX.Element {
   return (
     <div className="flex flex-col bg-gray-100">
-      <div className="flex">
+      <div className="flex mb-0.5">
         <IconButton
           className="w-7 h-7 px-0.5 ml-1 mr-0.5"
           title="Expand"

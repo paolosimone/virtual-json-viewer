@@ -24,7 +24,7 @@ export function App({ jsonText, jqWasmFile }: AppProps): JSX.Element {
   if (json === undefined) {
     return (
       <div className="flex flex-col h-full font-mono">
-        {error && <Alert message={error.message} />}
+        <Alert message={error?.message ?? "Something went wrong"} />
         <div className="p-3 whitespace-pre">{jsonText}</div>
       </div>
     );

@@ -22,7 +22,7 @@ export function IconButton({
   style,
 }: IconButtonProps): JSX.Element {
   // JSX element requires a capital letter
-  const ButtonIcon = icon;
+  const CustomIcon = icon;
 
   return (
     <button
@@ -40,7 +40,7 @@ export function IconButton({
       onClick={onClick}
       disabled={disabled}
     >
-      <ButtonIcon fill={fill} />
+      <CustomIcon fill={fill} />
     </button>
   );
 }
