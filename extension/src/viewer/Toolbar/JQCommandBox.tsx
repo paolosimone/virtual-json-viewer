@@ -7,23 +7,23 @@ import {
   useRef,
   useState,
 } from "react";
-import { JQFilter } from "viewer/commons/JQFilter";
+import { JQCommand } from "viewer/commons/JQCommand";
 import { Icon, IconButton } from "viewer/components";
 
-export type JQFilterBoxProps = Props<{
-  filter: JQFilter;
-  setFilter: Dispatch<SetStateAction<JQFilter>>;
+export type JQCommandBoxProps = Props<{
+  command: JQCommand;
+  setCommand: Dispatch<SetStateAction<JQCommand>>;
 }>;
 
-export function JQFilterBox({
-  filter,
-  setFilter,
+export function JQCommandBox({
+  command,
+  setCommand,
   className,
-}: JQFilterBoxProps): JSX.Element {
-  const [expression, setExpression] = useState(filter.expression);
+}: JQCommandBoxProps): JSX.Element {
+  const [filter, setFilter] = useState(command.filter);
 
-  function applyExpression() {
-    setFilter((filter: JQFilter) => ({ ...filter, expression: expression }));
+  function applyFilter() {
+    setCommand((command: JQCommand) => ({ ...command, filter: filter }));
   }
 
   return (
@@ -32,46 +32,46 @@ export function JQFilterBox({
       <span
         className={classNames("border rounded flex flex-1 bg-white", className)}
       >
-        <ExpressionInput
+        <FilterInput
           className="flex-1"
-          expression={expression}
-          setExpression={setExpression}
-          onSubmit={applyExpression}
+          filter={filter}
+          setFilter={setFilter}
+          onSubmit={applyFilter}
         />
         <IconButton
           className="w-5 h-5"
           title="Apply filter"
           icon={Icon.Run}
-          onClick={applyExpression}
+          onClick={applyFilter}
         />
       </span>
     </span>
   );
 }
 
-type ExpressionInputProps = Props<{
-  expression: string;
-  setExpression: (text: string) => void;
+type FilterInputProps = Props<{
+  filter: string;
+  setFilter: (text: string) => void;
   onSubmit: () => void;
 }>;
 
-function ExpressionInput({
-  expression,
-  setExpression,
+function FilterInput({
+  filter,
+  setFilter,
   onSubmit,
   className,
-}: ExpressionInputProps): JSX.Element {
+}: FilterInputProps): JSX.Element {
   // restore the input element internal state on rerender
   const ref = useRef<HTMLInputElement>(null);
   useEffect(() => {
     if (ref.current) {
-      ref.current.value = expression;
+      ref.current.value = filter;
     }
-  }, [ref, expression]);
+  }, [ref, filter]);
 
   const onChange = (e: FormEvent<HTMLInputElement>) => {
     const text = (e.target as HTMLInputElement).value.trim();
-    setExpression(text);
+    setFilter(text);
   };
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {

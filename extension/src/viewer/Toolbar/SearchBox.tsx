@@ -3,6 +3,7 @@ import { Dispatch, FormEvent, SetStateAction, useEffect, useRef } from "react";
 import { Icon, IconButton } from "viewer/components";
 import { Search } from "../commons/Search";
 
+// TODO setting typing delay
 const TYPING_DELAY = 300;
 
 export type SearchBoxProps = Props<{

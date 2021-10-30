@@ -1,19 +1,19 @@
-import { JQFilter } from "viewer/commons/JQFilter";
+import { JQCommand } from "viewer/commons/JQCommand";
 import { Search } from "viewer/commons/Search";
 import { Icon, IconButton } from "viewer/components";
 import { StateObject } from "viewer/hooks";
 import { dispatch, EventType } from "../commons/EventBus";
-import { JQFilterBox } from "./JQFilterBox";
+import { JQCommandBox } from "./JQCommandBox";
 import { SearchBox } from "./SearchBox";
 
 export type ToolbarProps = {
   searchState: StateObject<Search>;
-  jqFilterState: StateObject<JQFilter>;
+  jqCommandState: StateObject<JQCommand>;
 };
 
 export function Toolbar({
   searchState,
-  jqFilterState,
+  jqCommandState,
 }: ToolbarProps): JSX.Element {
   return (
     <div className="flex flex-col bg-gray-100">
@@ -34,14 +34,14 @@ export function Toolbar({
 
         <SearchBox
           className="flex-1 ml-1 pr-1"
-          search={searchState.state}
-          setSearch={searchState.setState}
+          search={searchState.value}
+          setSearch={searchState.setValue}
         />
       </div>
       <div>
-        <JQFilterBox
-          filter={jqFilterState.state}
-          setFilter={jqFilterState.setState}
+        <JQCommandBox
+          command={jqCommandState.value}
+          setCommand={jqCommandState.setValue}
         />
       </div>
     </div>

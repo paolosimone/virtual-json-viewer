@@ -4,6 +4,8 @@ import { Search } from "../../commons/Search";
 import { JsonNode, JsonNodeData, SearchMatch } from "./JsonNode";
 import { NodeFilter } from "./NodeFilter";
 
+// TODO setting sort keys
+
 export function jsonTreeWalker(
   json: Json,
   search: Search
@@ -108,6 +110,6 @@ function getNodeData(
 
 const NOT_FOUND_PLACEHOLDER: JsonNode = {
   key: "",
-  value: "Not found",
+  value: null,
   parent: null,
 };

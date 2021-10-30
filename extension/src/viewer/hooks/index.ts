@@ -1,4 +1,4 @@
 export * from "./UseEventBusListener";
-export * from "./UseJQFilter";
+export * from "./UseJQ";
 export * from "./UseStateObject";
 export * from "./UseWindowSize";

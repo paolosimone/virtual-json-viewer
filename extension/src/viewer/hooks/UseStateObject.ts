@@ -1,15 +1,15 @@
 import { Dispatch, SetStateAction, useMemo, useState } from "react";
 
 export type StateObject<S> = {
-  state: S;
-  setState: Dispatch<SetStateAction<S>>;
+  value: S;
+  setValue: Dispatch<SetStateAction<S>>;
 };
 
 export function useStateObject<S>(initialState: S | (() => S)): StateObject<S> {
-  const [state, setState] = useState(initialState);
+  const [value, setValue] = useState(initialState);
 
   return useMemo(
-    () => ({ state: state, setState: setState }),
-    [state, setState]
+    () => ({ value: value, setValue: setValue }),
+    [value, setValue]
   );
 }
