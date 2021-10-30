@@ -21,7 +21,7 @@ export function App({ jsonText, jqWasmFile }: AppProps): JSX.Element {
   const jqResult = useJQ(jqWasmFile, jsonText, jqCommandState.value);
   const [json, error] = useParseOutcome(jsonText, jqResult);
 
-  if (!json) {
+  if (json === undefined) {
     return (
       <div className="flex flex-col h-full font-mono">
         {error && <Alert message={error.message} />}
@@ -48,7 +48,7 @@ export function App({ jsonText, jqWasmFile }: AppProps): JSX.Element {
   );
 }
 
-type ParseOutcome = [Nullable<Json>, Nullable<Error>];
+type ParseOutcome = [Json | undefined, Error | undefined];
 
 function useParseOutcome(
   jsonText: string,
@@ -69,14 +69,14 @@ function useParseOutcome(
   }, [jqResult, jsonText, jsonResult]);
 
   if (jsonResult instanceof Error) {
-    return [null, jsonResult];
+    return [undefined, jsonResult];
   }
 
   if (jqJsonResult instanceof Error) {
     return [jsonResult, jqJsonResult];
   }
 
-  return [jqJsonResult, null];
+  return [jqJsonResult, undefined];
 }
 
 function tryParse(jsonText: string): Result<Json> {
