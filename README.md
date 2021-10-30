@@ -1,8 +1,6 @@
 # Virtual Json Viewer
 
-Browser plugin that uses [virtual DOM](https://github.com/Lodin/react-vtree) to render JSONs with built-in search, [JQ filtering](https://stedolan.github.io/jq/manual/)* and many other [features](#features).
-
-_*Coming soon_
+Browser plugin that uses [virtual DOM](https://github.com/Lodin/react-vtree) to render JSONs with built-in search, [JQ filtering](https://stedolan.github.io/jq) and many other [features](#features).
 
 ## Why?
 
@@ -53,17 +51,17 @@ __From Source__
 - [X] Collapse/expand all nodes
 - [X] Full text search
 - [X] Option to completely hide subtrees without any search match
-- [ ] JQ filtering
+- [X] JQ filtering
 - [ ] Raw JSON viewer
 - [ ] Prettify/minify JSON
 - [ ] Copy JSON to clipboard
 - [ ] Download JSON
 - [ ] Dark mode
-- [ ] Clickable links
+- [ ] Highlight search results
 - [ ] Option page
 - [ ] Internationalization
 - [ ] Case sensitive search
-- [ ] Highlight search results
+- [ ] Clickable links
 
 ## Contributing
 
