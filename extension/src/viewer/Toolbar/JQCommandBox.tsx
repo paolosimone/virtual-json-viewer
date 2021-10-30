@@ -18,7 +18,6 @@ export type JQCommandBoxProps = Props<{
 export function JQCommandBox({
   command,
   setCommand,
-  className,
 }: JQCommandBoxProps): JSX.Element {
   const [filter, setFilter] = useState(command.filter);
 
@@ -26,20 +25,43 @@ export function JQCommandBox({
     setCommand((command: JQCommand) => ({ ...command, filter: filter }));
   }
 
+  function clearFilter() {
+    setFilter("");
+    setCommand((command: JQCommand) => ({ ...command, filter: "" }));
+  }
+
+  const isEmpty = filter === "";
+
   return (
     <span className="flex">
-      <label className="mx-4 ">jq</label>
-      <span
-        className={classNames("border rounded flex flex-1 bg-white", className)}
-      >
+      <IconButton
+        className="w-5 h-5 self-center mx-2"
+        title="JQ Manual"
+        icon={Icon.Question}
+        onClick={openJQManual}
+      />
+
+      <span className="border rounded flex flex-1 bg-white">
+        {isEmpty ? (
+          <label className="mx-1 mr-2 select-none">jq</label>
+        ) : (
+          <IconButton
+            className="w-5 h-5 ml-1 mr-2 self-center"
+            title="Clear"
+            icon={Icon.Close}
+            onClick={clearFilter}
+          />
+        )}
+
         <FilterInput
           className="flex-1"
           filter={filter}
           setFilter={setFilter}
           onSubmit={applyFilter}
         />
+
         <IconButton
-          className="w-5 h-5"
+          className="w-5 h-5 self-center"
           title="Apply filter"
           icon={Icon.Run}
           onClick={applyFilter}
@@ -88,4 +110,8 @@ function FilterInput({
       placeholder="."
     />
   );
+}
+
+function openJQManual() {
+  window.open("https://stedolan.github.io/jq/manual/v1.6/", "_blank");
 }
