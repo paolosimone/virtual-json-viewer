@@ -10,14 +10,11 @@ export type IconLabelProps = Props<{
 }>;
 
 export function IconLabel({
+  icon: CustomIcon,
   title,
-  icon,
   className,
   style,
 }: IconLabelProps): JSX.Element {
-  // JSX element requires a capital letter
-  const CustomIcon = icon;
-
   return (
     <label
       className={classNames("rounded", className)}

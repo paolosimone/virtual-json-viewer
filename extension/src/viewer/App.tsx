@@ -1,8 +1,7 @@
 import { useMemo } from "react";
 import "tailwindcss/tailwind.css";
-import { EmptyJQCommand } from "./commons/JQCommand";
-import { EmptySearch } from "./commons/Search";
-import { Alert, Toolbar, TreeViewer } from "./components";
+import { EmptyJQCommand, EmptySearch, ViewerMode } from "./commons/state";
+import { Alert, RawViewer, Toolbar, TreeViewer } from "./components";
 import { useJQ, useStateObject } from "./hooks";
 
 export type AppProps = {
@@ -10,9 +9,8 @@ export type AppProps = {
   jqWasmFile: string;
 };
 
-// TODO refactor toolbar & treeviewer -> components
-
 export function App({ jsonText, jqWasmFile }: AppProps): JSX.Element {
+  const viewerModeState = useStateObject(ViewerMode.Tree);
   const searchState = useStateObject(EmptySearch);
   const jqCommandState = useStateObject(EmptyJQCommand);
 
@@ -31,16 +29,23 @@ export function App({ jsonText, jqWasmFile }: AppProps): JSX.Element {
   // TODO setting text size
 
   const toolbarProps = {
+    viewerModeState: viewerModeState,
     searchState: searchState,
     jqCommandState: jqCommandState,
   };
 
   return (
-    <div className="flex flex-col h-full font-mono">
+    <div className="flex flex-col h-full overflow-hidden font-mono">
       <Toolbar {...toolbarProps} />
+
       {error && <Alert message={error.message} />}
-      <div className="flex-1 mt-1.5 pl-1.5 text-sm">
-        <TreeViewer json={json} search={searchState.value} />
+
+      <div className="flex-1 mt-1.5 ml-1.5 overflow-auto text-sm">
+        {viewerModeState.value === ViewerMode.Tree && (
+          <TreeViewer json={json} search={searchState.value} />
+        )}
+
+        {viewerModeState.value === ViewerMode.Raw && <RawViewer json={json} />}
       </div>
     </div>
   );

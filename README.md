@@ -52,12 +52,12 @@ __From Source__
 - [X] Full text search
 - [X] Option to completely hide subtrees without any search match
 - [X] JQ filtering
-- [ ] Raw JSON viewer
-- [ ] Prettify/minify JSON
-- [ ] Copy JSON to clipboard
-- [ ] Download JSON
-- [ ] Dark mode
+- [X] Raw JSON viewer
+- [X] Prettify/minify Raw JSON
 - [ ] Highlight search results
+- [ ] Download JSON
+- [ ] Copy JSON to clipboard
+- [ ] Dark mode
 - [ ] Option page
 - [ ] Internationalization
 - [ ] Case sensitive search

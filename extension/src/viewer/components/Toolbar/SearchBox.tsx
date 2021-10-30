@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { Dispatch, FormEvent, SetStateAction, useEffect, useRef } from "react";
 import { Icon, IconButton, IconLabel } from "viewer/components";
-import { Search } from "../../commons/Search";
+import { Search } from "../../commons/state";
 
 // TODO setting typing delay
 const TYPING_DELAY = 300;

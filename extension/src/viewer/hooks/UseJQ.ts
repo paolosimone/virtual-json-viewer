@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import newJQ from "vendor/jq.wasm";
-import { JQCommand } from "viewer/commons/JQCommand";
+import { JQCommand } from "viewer/commons/state";
 
 export function useJQ(
   jqWasmFile: string,

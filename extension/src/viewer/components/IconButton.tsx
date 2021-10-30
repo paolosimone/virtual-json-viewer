@@ -13,24 +13,21 @@ export type IconButtonProps = Props<{
 }>;
 
 export function IconButton({
-  title,
-  icon,
+  icon: CustomIcon,
   onClick,
+  title,
   isActive,
   disabled,
   className,
   style,
 }: IconButtonProps): JSX.Element {
-  // JSX element requires a capital letter
-  const CustomIcon = icon;
-
   return (
     <button
       className={classNames(
         "rounded",
         {
           "hover:bg-gray-200": !disabled,
-          "cursor-not-allowed": disabled,
+          "cursor-default": disabled,
           "bg-gray-300": isActive,
         },
         className
