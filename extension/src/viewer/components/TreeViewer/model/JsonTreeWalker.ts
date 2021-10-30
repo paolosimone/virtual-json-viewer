@@ -1,6 +1,6 @@
 import { TreeWalker, TreeWalkerValue } from "react-vtree";
 import * as J from "viewer/commons/JsonUtils";
-import { Search } from "../../commons/Search";
+import { Search } from "../../../commons/Search";
 import { JsonNode, JsonNodeData, SearchMatch } from "./JsonNode";
 import { NodeFilter } from "./NodeFilter";
 

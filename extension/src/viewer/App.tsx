@@ -2,10 +2,8 @@ import { useMemo } from "react";
 import "tailwindcss/tailwind.css";
 import { EmptyJQCommand } from "./commons/JQCommand";
 import { EmptySearch } from "./commons/Search";
-import { Alert } from "./components";
+import { Alert, Toolbar, TreeViewer } from "./components";
 import { useJQ, useStateObject } from "./hooks";
-import { Toolbar } from "./Toolbar";
-import { TreeViewer } from "./TreeViewer";
 
 export type AppProps = {
   jsonText: string;

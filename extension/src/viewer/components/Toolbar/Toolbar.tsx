@@ -2,7 +2,7 @@ import { JQCommand } from "viewer/commons/JQCommand";
 import { Search } from "viewer/commons/Search";
 import { Icon, IconButton } from "viewer/components";
 import { StateObject } from "viewer/hooks";
-import { dispatch, EventType } from "../commons/EventBus";
+import { dispatch, EventType } from "../../commons/EventBus";
 import { JQCommandBox } from "./JQCommandBox";
 import { SearchBox } from "./SearchBox";
 
