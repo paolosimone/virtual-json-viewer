@@ -7,7 +7,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { JQCommand } from "viewer/commons/JQCommand";
+import { JQCommand } from "viewer/commons/state";
 import { Icon, IconButton } from "viewer/components";
 
 export type JQCommandBoxProps = Props<{

@@ -1,6 +1,6 @@
 import { TreeWalker, TreeWalkerValue } from "react-vtree";
 import * as J from "viewer/commons/JsonUtils";
-import { Search } from "../../../commons/Search";
+import { Search } from "../../../commons/state";
 import { JsonNode, JsonNodeData, SearchMatch } from "./JsonNode";
 import { NodeFilter } from "./NodeFilter";
 
@@ -54,7 +54,7 @@ function filteredTreeWalker(
   json: Json,
   search: Search
 ): TreeWalker<JsonNodeData> {
-  const filter = NodeFilter.fromSearch(search);
+  const filter = new NodeFilter(search);
 
   return function* () {
     let existsMatch = false;
