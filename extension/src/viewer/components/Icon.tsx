@@ -146,6 +146,19 @@ export function Run({ fill }: IconProps): JSX.Element {
   );
 }
 
+export function Save({ fill }: IconProps): JSX.Element {
+  return (
+    <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M13.3532 1.146L14.8532 2.646L15.0002 3V14.5L14.5002 15H1.50024L1.00024 14.5V1.5L1.50024 1H13.0002L13.3532 1.146ZM2.00024 2V14H14.0002V3.208L12.7932 2H11.0002V6H4.00024V2H2.00024ZM8.00024 2V5H10.0002V2H8.00024Z"
+        fill={fill}
+      />
+    </svg>
+  );
+}
+
 export function Search({ fill }: IconProps): JSX.Element {
   return (
     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

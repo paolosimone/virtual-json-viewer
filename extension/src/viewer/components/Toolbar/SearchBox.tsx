@@ -38,7 +38,7 @@ export function SearchBox({
   return (
     <span
       className={classNames(
-        "border rounded flex items-center bg-white ",
+        "border rounded flex items-center pr-1 bg-white ",
         className
       )}
     >

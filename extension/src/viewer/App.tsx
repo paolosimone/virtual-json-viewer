@@ -34,6 +34,7 @@ export function App({ jsonText, jqWasmFile }: AppProps): JSX.Element {
     viewerModeState: viewerModeState,
     searchState: searchState,
     jqCommandState: jqCommandState,
+    json: json,
   };
 
   const Viewer =
