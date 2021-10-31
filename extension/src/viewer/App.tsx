@@ -36,6 +36,9 @@ export function App({ jsonText, jqWasmFile }: AppProps): JSX.Element {
     jqCommandState: jqCommandState,
   };
 
+  const Viewer =
+    viewerModeState.value === ViewerMode.Tree ? TreeViewer : RawViewer;
+
   return (
     <div className="flex flex-col h-full overflow-hidden font-mono">
       <Toolbar {...toolbarProps} />
@@ -43,13 +46,7 @@ export function App({ jsonText, jqWasmFile }: AppProps): JSX.Element {
       {error && <Alert message={error.message} />}
 
       <div className="flex-1 mt-1.5 ml-1.5 overflow-auto text-sm">
-        {viewerModeState.value === ViewerMode.Tree && (
-          <TreeViewer json={json} search={searchState.value} />
-        )}
-
-        {viewerModeState.value === ViewerMode.Raw && (
-          <RawViewer json={json} search={searchState.value} />
-        )}
+        <Viewer json={json} search={searchState.value} />
       </div>
     </div>
   );
