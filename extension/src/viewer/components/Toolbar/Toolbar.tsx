@@ -19,6 +19,8 @@ export function Toolbar({
   jqCommandState,
   className,
 }: ToolbarProps): JSX.Element {
+  const isTreeView = viewerModeState.value === ViewerMode.Tree;
+
   return (
     <div className={classNames("flex flex-col bg-gray-100", className)}>
       <div className="flex items-center mb-0.5">
@@ -50,6 +52,7 @@ export function Toolbar({
           className="flex-1 ml-1 pr-1"
           search={searchState.value}
           setSearch={searchState.setValue}
+          disableShowMismatch={!isTreeView}
         />
       </div>
 

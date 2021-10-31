@@ -3,23 +3,18 @@ import { Search } from "viewer/commons/state";
 import { JsonNode, SearchMatch } from "./JsonNode";
 
 export class NodeFilter {
+  search: Search;
   searchStrategy: SearchStrategy;
   keepStrategy: KeepStrategy;
 
-  public static fromSearch(search: Search): NodeFilter {
+  constructor(search: Search) {
     if (!search.text) {
       throw new Error("Search query is empty");
     }
 
-    return new NodeFilter(
-      buildSearchStrategy(search),
-      buildKeepStrategy(search)
-    );
-  }
-
-  constructor(searchStrategy: SearchStrategy, keepStrategy: KeepStrategy) {
-    this.searchStrategy = searchStrategy;
-    this.keepStrategy = keepStrategy;
+    this.search = search;
+    this.searchStrategy = buildSearchStrategy(search);
+    this.keepStrategy = buildKeepStrategy(search);
   }
 
   public match({ key, value, parent }: JsonNode): Nullable<SearchMatch> {
@@ -33,6 +28,7 @@ export class NodeFilter {
       parent?.searchMatch?.inKey || parent?.searchMatch?.inAncestor || false;
 
     const searchMatch = {
+      search: this.search,
       inKey: matchKey,
       inValue: matchValue,
       inAncestor: matchAncestor,

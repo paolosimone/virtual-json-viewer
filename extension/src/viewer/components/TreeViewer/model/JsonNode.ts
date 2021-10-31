@@ -1,3 +1,5 @@
+import { Search } from "viewer/commons/state";
+
 export type JsonNode = {
   key: string;
   value: Json;
@@ -18,6 +20,7 @@ export type JsonNodeData = {
 };
 
 export type SearchMatch = {
+  search: Search;
   inKey: boolean;
   inValue: boolean;
   inAncestor: boolean;

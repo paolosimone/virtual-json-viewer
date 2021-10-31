@@ -45,7 +45,9 @@ export function App({ jsonText, jqWasmFile }: AppProps): JSX.Element {
           <TreeViewer json={json} search={searchState.value} />
         )}
 
-        {viewerModeState.value === ViewerMode.Raw && <RawViewer json={json} />}
+        {viewerModeState.value === ViewerMode.Raw && (
+          <RawViewer json={json} search={searchState.value} />
+        )}
       </div>
     </div>
   );
@@ -53,6 +55,7 @@ export function App({ jsonText, jqWasmFile }: AppProps): JSX.Element {
 
 type ParseOutcome = [Json | undefined, Error | undefined];
 
+// TODO refactor
 function useParseOutcome(
   jsonText: string,
   jqResult: Result<string>

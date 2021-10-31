@@ -54,7 +54,7 @@ function filteredTreeWalker(
   json: Json,
   search: Search
 ): TreeWalker<JsonNodeData> {
-  const filter = NodeFilter.fromSearch(search);
+  const filter = new NodeFilter(search);
 
   return function* () {
     let existsMatch = false;

@@ -2,6 +2,7 @@ import classNames from "classnames";
 import { useEffect, useRef } from "react";
 import { VariableSizeNodePublicState as NodeState } from "react-vtree";
 import { NodeComponentProps } from "react-vtree/dist/es/Tree";
+import { Search } from "viewer/commons/state";
 import { JsonNodeData } from "../model/JsonNode";
 import { Key } from "./Key";
 import { OpenButton } from "./OpenButton";
@@ -21,17 +22,19 @@ export function TreeNode({
 }: JsonTreeNode): JSX.Element {
   const [parent, content] = useFitContent(resize);
 
-  const fadeContent = { "opacity-60": !isMatched(data) };
+  const searchAnalysis = analyzeSearchMatch(data);
+  const fade = { "opacity-60": !searchAnalysis.inMatchingPath };
 
   return (
     <div ref={parent} style={{ ...style, paddingLeft: `${data.nesting}em` }}>
-      <div
-        ref={content}
-        className={classNames("flex items-start", fadeContent)}
-      >
+      <div ref={content} className={classNames("flex items-start", fade)}>
         <OpenButton data={data} isOpen={isOpen} setOpen={setOpen} />
-        <Key data={data} />
-        <Value data={data} isOpen={isOpen} />
+        <Key data={data} search={searchAnalysis.keySearch} />
+        <Value
+          data={data}
+          isOpen={isOpen}
+          search={searchAnalysis.valueSearch}
+        />
       </div>
     </div>
   );
@@ -62,10 +65,23 @@ function useFitContent(resize: Resize): ParentContentRefs {
   return [parent, content];
 }
 
-function isMatched({ searchMatch, isLeaf }: JsonNodeData) {
+type SearchMatchAnalysis = {
+  inMatchingPath: boolean;
+  keySearch: Nullable<Search>;
+  valueSearch: Nullable<Search>;
+};
+
+function analyzeSearchMatch({
+  searchMatch,
+  isLeaf,
+}: JsonNodeData): SearchMatchAnalysis {
   if (!searchMatch) {
-    return true;
+    return { inMatchingPath: true, keySearch: null, valueSearch: null };
   }
 
-  return searchMatch.inKey || (isLeaf && searchMatch.inValue);
+  return {
+    inMatchingPath: searchMatch.inKey || searchMatch.inValue,
+    keySearch: searchMatch.inKey ? searchMatch.search : null,
+    valueSearch: isLeaf && searchMatch.inValue ? searchMatch.search : null,
+  };
 }

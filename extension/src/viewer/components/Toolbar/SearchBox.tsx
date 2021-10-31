@@ -9,12 +9,14 @@ const TYPING_DELAY = 300;
 export type SearchBoxProps = Props<{
   search: Search;
   setSearch: Dispatch<SetStateAction<Search>>;
+  disableShowMismatch?: boolean;
 }>;
 
 export function SearchBox({
   search,
   setSearch,
   className,
+  disableShowMismatch,
 }: SearchBoxProps): JSX.Element {
   function setText(text: string) {
     setSearch((search: Search) => ({ ...search, text: text }));
@@ -34,15 +36,17 @@ export function SearchBox({
   const isEmpty = search.text === "";
 
   return (
-    <span className={classNames("border rounded flex bg-white ", className)}>
+    <span
+      className={classNames(
+        "border rounded flex items-center bg-white ",
+        className
+      )}
+    >
       {isEmpty ? (
-        <IconLabel
-          className="w-5 h-5 ml-1 mr-2 self-center"
-          icon={Icon.Search}
-        />
+        <IconLabel className="w-5 h-5 ml-1 mr-2" icon={Icon.Search} />
       ) : (
         <IconButton
-          className="w-5 h-5 ml-1 mr-2 self-center"
+          className="w-5 h-5 ml-1 mr-2"
           title="Clear"
           icon={Icon.Close}
           onClick={clearSearch}
@@ -51,13 +55,15 @@ export function SearchBox({
 
       <SearchInput className="flex-1" text={search.text} setText={setText} />
 
-      <IconButton
-        className="w-7 h-7 px-0.5"
-        title="Hide mismatch"
-        icon={Icon.EyeClosed}
-        onClick={toggleShowMismatch}
-        isActive={!search.showMismatch}
-      />
+      {!disableShowMismatch && (
+        <IconButton
+          className="w-6 h-6"
+          title="Hide mismatch"
+          icon={Icon.EyeClosed}
+          onClick={toggleShowMismatch}
+          isActive={!search.showMismatch}
+        />
+      )}
     </span>
   );
 }

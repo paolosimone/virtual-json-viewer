@@ -54,9 +54,8 @@ __From Source__
 - [X] JQ filtering
 - [X] Raw JSON viewer
 - [X] Prettify/minify Raw JSON
-- [ ] Highlight search results
+- [X] Highlight search results
 - [ ] Download JSON
-- [ ] Copy JSON to clipboard
 - [ ] Dark mode
 - [ ] Option page
 - [ ] Internationalization
@@ -85,6 +84,7 @@ Always `yarn format` before creating a commit.
 |[react-vtree](https://github.com/Lodin/react-vtree)                                                                        |Render the JSON. I'd say it's a pretty important role|
 |[TailwindCSS](https://tailwindcss.com/)                                                                                    |Prevent me from touching CSS files|
 |[Typescript](https://www.typescriptlang.org/)                                                                              |Try to forget I'm actually producing JS 🤢|
+|[uid](https://github.com/lukeed/uid)                                                                                       |Fast generation of unique keys for [React lists](https://reactjs.org/docs/lists-and-keys.html#keys) |
 |[vscode-icons](https://github.com/microsoft/vscode-icons)                                                                  |Keep UI buttons clean and intuitive|
 
 
