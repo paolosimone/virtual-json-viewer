@@ -38,7 +38,7 @@ export function ViewerModeToggle({
       />
 
       <IconButton
-        icon={Icon.SymbolNamespace}
+        icon={Icon.Json}
         onClick={toggleView}
         title="Raw"
         isActive={viewerMode === ViewerMode.Raw}
