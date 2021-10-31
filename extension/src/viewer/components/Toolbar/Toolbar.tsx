@@ -4,6 +4,7 @@ import { Icon, IconButton } from "viewer/components";
 import { StateObject } from "viewer/hooks";
 import { dispatch, EventType } from "../../commons/EventBus";
 import { JQCommandBox } from "./JQCommandBox";
+import { SaveButton } from "./SaveButton";
 import { SearchBox } from "./SearchBox";
 import { ViewerModeToggle } from "./ViewerModeToggle";
 
@@ -11,12 +12,14 @@ export type ToolbarProps = Props<{
   viewerModeState: StateObject<ViewerMode>;
   searchState: StateObject<Search>;
   jqCommandState: StateObject<JQCommand>;
+  json: Json;
 }>;
 
 export function Toolbar({
   viewerModeState,
   searchState,
   jqCommandState,
+  json,
   className,
 }: ToolbarProps): JSX.Element {
   const isTreeView = viewerModeState.value === ViewerMode.Tree;
@@ -48,8 +51,12 @@ export function Toolbar({
 
         <Separator />
 
+        <SaveButton className="w-6 h-6 px-px" json={json} />
+
+        <Separator />
+
         <SearchBox
-          className="flex-1 ml-1 pr-1"
+          className="flex-1"
           search={searchState.value}
           setSearch={searchState.setValue}
           disableShowMismatch={!isTreeView}

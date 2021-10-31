@@ -41,7 +41,7 @@ export function JQCommandBox({
         onClick={openJQManual}
       />
 
-      <span className="border rounded flex flex-1 bg-white">
+      <span className="border rounded flex flex-1 pr-1 bg-white">
         {isEmpty ? (
           <label className="mx-1 mr-2 select-none">jq</label>
         ) : (

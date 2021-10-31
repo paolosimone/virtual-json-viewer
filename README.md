@@ -55,7 +55,7 @@ __From Source__
 - [X] Raw JSON viewer
 - [X] Prettify/minify Raw JSON
 - [X] Highlight search results
-- [ ] Download JSON
+- [X] Download JSON
 - [ ] Dark mode
 - [ ] Option page
 - [ ] Internationalization
