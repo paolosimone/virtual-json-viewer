@@ -10,13 +10,16 @@ export type AppProps = {
 };
 
 export function App({ jsonText, jqWasmFile }: AppProps): JSX.Element {
+  // application state
   const viewerModeState = useStateObject(ViewerMode.Tree);
   const searchState = useStateObject(EmptySearch);
   const jqCommandState = useStateObject(EmptyJQCommand);
 
+  // parse json
   const jsonResult = useMemo(() => tryParse(jsonText), [jsonText]);
   const jqResult = useJQ(jqWasmFile, jsonText, jqCommandState.value);
 
+  // fatal error page
   if (jsonResult instanceof Error) {
     return (
       <div className="flex flex-col h-full font-mono">
@@ -26,6 +29,7 @@ export function App({ jsonText, jqWasmFile }: AppProps): JSX.Element {
     );
   }
 
+  // viewer page
   const [json, error] = resolveJson(jsonResult, jqResult);
 
   // TODO setting text size
@@ -46,7 +50,7 @@ export function App({ jsonText, jqWasmFile }: AppProps): JSX.Element {
 
       {error && <Alert message={error.message} />}
 
-      <div className="flex-1 mt-1.5 ml-1.5 overflow-auto text-sm">
+      <div className="flex-1 pt-1.5 pl-1.5 overflow-auto text-sm dark:bg-gray-700 dark:text-gray-200">
         <Viewer json={json} search={searchState.value} />
       </div>
     </div>

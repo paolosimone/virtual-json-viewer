@@ -6,7 +6,8 @@
   "permissions": [
     "<all_urls>", 
     "webRequest", 
-    "webRequestBlocking"
+    "webRequestBlocking",
+    "storage"
   ],
   "background": {
     "scripts": ["static/js/background.js"]
@@ -32,8 +33,7 @@
     "default_icon": {
       "192": "logo/192.png"
     },
-    "default_title": "Virtual Json Viewer",
-    "default_popup": "popup.html"
+    "default_title": "Virtual Json Viewer"
   },
   "options_ui": {
     "page": "options.html"

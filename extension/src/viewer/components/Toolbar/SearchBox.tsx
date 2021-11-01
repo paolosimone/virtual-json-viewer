@@ -38,22 +38,31 @@ export function SearchBox({
   return (
     <span
       className={classNames(
-        "border rounded flex items-center pr-1 bg-white ",
+        "flex items-center pr-1 border rounded border-gray-200 dark:border-gray-500 bg-white dark:bg-gray-400",
         className
       )}
     >
       {isEmpty ? (
-        <IconLabel className="w-5 h-5 ml-1 mr-2" icon={Icon.Search} />
+        <IconLabel
+          className="w-5 h-5 ml-1 mr-2"
+          icon={Icon.Search}
+          dark={false}
+        />
       ) : (
         <IconButton
           className="w-5 h-5 ml-1 mr-2"
           title="Clear"
           icon={Icon.Close}
           onClick={clearSearch}
+          dark={false}
         />
       )}
 
-      <SearchInput className="flex-1" text={search.text} setText={setText} />
+      <SearchInput
+        className="flex-1 dark:bg-gray-400 dark:placeholder-gray-700"
+        text={search.text}
+        setText={setText}
+      />
 
       {!disableShowMismatch && (
         <IconButton
@@ -62,6 +71,7 @@ export function SearchBox({
           icon={Icon.EyeClosed}
           onClick={toggleShowMismatch}
           isActive={!search.showMismatch}
+          dark={false}
         />
       )}
     </span>

@@ -11,6 +11,9 @@ export interface Icon {
   (props: IconProps): JSX.Element;
 }
 
+export const LIGHT_FILL = "#424242";
+export const DARK_FILL = "#C5C5C5";
+
 export function ChevronDown({ fill }: IconProps): JSX.Element {
   return (
     <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">

@@ -11,7 +11,6 @@ function convertToChromeExtension(config) {
   // Replace single entry point in the config with multiple ones
   // Note: you may remove any property below except "popup" to exclude respective entry point from compilation
   config.entry = {
-    popup: paths.appSrc + "/popup",
     options: paths.appSrc + "/options",
     background: paths.appSrc + "/background",
     content: paths.appSrc + "/content",
@@ -38,21 +37,6 @@ function convertToChromeExtension(config) {
     minifyCSS: true,
     minifyURLs: true,
   };
-
-  // Extra HtmlWebpackPlugin instance for popup page. Can't be removed.
-  const popupHtmlPlugin = new HtmlWebpackPlugin({
-    inject: true,
-    chunks: ["popup"],
-    template: paths.appPublic + "/popup.html",
-    filename: "popup.html",
-    minify: isEnvProduction && minifyOpts,
-  });
-  // Replace original HtmlWebpackPlugin instance in config.plugins with the above one
-  config.plugins = replacePlugin(
-    config.plugins,
-    (name) => /HtmlWebpackPlugin/i.test(name),
-    popupHtmlPlugin
-  );
 
   // Extra HtmlWebpackPlugin instance for options page
   const optionsHtmlPlugin = new HtmlWebpackPlugin({

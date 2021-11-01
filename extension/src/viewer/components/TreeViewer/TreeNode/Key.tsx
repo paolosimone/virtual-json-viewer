@@ -15,7 +15,7 @@ export function Key({ data, search }: KeyProps): JSX.Element {
   }
 
   return (
-    <span className="mr-4 whitespace-pre-wrap text-blue-700">
+    <span className="mr-4 whitespace-pre-wrap text-blue-700 dark:text-blue-400">
       {highlightedText}:
     </span>
   );

@@ -25,7 +25,12 @@ export function Toolbar({
   const isTreeView = viewerModeState.value === ViewerMode.Tree;
 
   return (
-    <div className={classNames("flex flex-col bg-gray-100", className)}>
+    <div
+      className={classNames(
+        "flex flex-col bg-gray-100 dark:bg-gray-800",
+        className
+      )}
+    >
       <div className="flex items-center mb-0.5">
         <ViewerModeToggle
           className="w-14 h-7 ml-1"
@@ -83,6 +88,6 @@ function collapse() {
 
 function Separator(): JSX.Element {
   return (
-    <div className="border-l-2 border-gray-600 border-opacity-40 h-3/4 mx-2" />
+    <div className="border-l border-gray-600 dark:border-gray-400 border-opacity-40 h-3/4 mx-2" />
   );
 }
