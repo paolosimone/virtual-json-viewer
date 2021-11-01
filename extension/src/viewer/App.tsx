@@ -1,8 +1,20 @@
 import { useMemo } from "react";
 import "tailwindcss/tailwind.css";
-import { EmptyJQCommand, EmptySearch, ViewerMode } from "./commons/state";
+import {
+  ThemeContext,
+  EmptyJQCommand,
+  EmptySearch,
+  ViewerMode,
+} from "./commons/state";
 import { Alert, RawViewer, Toolbar, TreeViewer } from "./components";
-import { JQResult, useJQ, useStateObject } from "./hooks";
+import { MultiContextProvider } from "./components/MultiContextProvider";
+import {
+  currentTheme,
+  JQResult,
+  useJQ,
+  useStateObject,
+  useTheme,
+} from "./hooks";
 
 export type AppProps = {
   jsonText: string;
@@ -10,13 +22,19 @@ export type AppProps = {
 };
 
 export function App({ jsonText, jqWasmFile }: AppProps): JSX.Element {
+  // global settings
+  const theme = currentTheme(useTheme()[0]);
+
+  // application state
   const viewerModeState = useStateObject(ViewerMode.Tree);
   const searchState = useStateObject(EmptySearch);
   const jqCommandState = useStateObject(EmptyJQCommand);
 
+  // parse json
   const jsonResult = useMemo(() => tryParse(jsonText), [jsonText]);
   const jqResult = useJQ(jqWasmFile, jsonText, jqCommandState.value);
 
+  // fatal error page
   if (jsonResult instanceof Error) {
     return (
       <div className="flex flex-col h-full font-mono">
@@ -26,6 +44,7 @@ export function App({ jsonText, jqWasmFile }: AppProps): JSX.Element {
     );
   }
 
+  // viewer page
   const [json, error] = resolveJson(jsonResult, jqResult);
 
   // TODO setting text size
@@ -41,15 +60,17 @@ export function App({ jsonText, jqWasmFile }: AppProps): JSX.Element {
     viewerModeState.value === ViewerMode.Tree ? TreeViewer : RawViewer;
 
   return (
-    <div className="flex flex-col h-full overflow-hidden font-mono">
-      <Toolbar {...toolbarProps} />
+    <MultiContextProvider contexts={[[ThemeContext, theme]]}>
+      <div className="flex flex-col h-full overflow-hidden font-mono">
+        <Toolbar {...toolbarProps} />
 
-      {error && <Alert message={error.message} />}
+        {error && <Alert message={error.message} />}
 
-      <div className="flex-1 mt-1.5 ml-1.5 overflow-auto text-sm">
-        <Viewer json={json} search={searchState.value} />
+        <div className="flex-1 pt-1.5 pl-1.5 overflow-auto text-sm dark:bg-gray-700 dark:text-gray-200">
+          <Viewer json={json} search={searchState.value} />
+        </div>
       </div>
-    </div>
+    </MultiContextProvider>
   );
 }
 

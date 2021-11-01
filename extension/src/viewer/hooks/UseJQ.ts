@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import newJQ from "vendor/jq.wasm";
 import { JQCommand } from "viewer/commons/state";
+import { Mutex, useEffectAsync } from ".";
 
 export type JQResult = Json | Error | undefined;
 
@@ -11,33 +12,28 @@ export function useJQ(
 ): JQResult {
   const [result, setResult] = useState<JQResult>(jsonText);
 
-  useEffect(() => {
-    if (!filter || filter === ".") {
-      setResult(undefined);
-      return;
-    }
+  useEffectAsync(
+    async (mutex: Mutex) => {
+      if (!mutex.hasLock()) {
+        return;
+      }
 
-    // acquire lock to prevent race conditions
-    let lock = true;
+      if (!filter || filter === ".") {
+        setResult(undefined);
+        return;
+      }
 
-    async function applyFilterAsync() {
       try {
         const module = { locateFile: () => jqWasmFile, noExitRuntime: false };
         const jq = await newJQ(module);
         const result = await jq.invoke(jsonText, filter);
-        if (lock) setResult(tryParse(result));
+        if (mutex.hasLock()) setResult(tryParse(result));
       } catch (e) {
-        if (lock) setResult(e as Error);
+        if (mutex.hasLock()) setResult(e as Error);
       }
-    }
-
-    applyFilterAsync();
-
-    // release lock on cleanup
-    return () => {
-      lock = false;
-    };
-  }, [jqWasmFile, jsonText, filter, setResult]);
+    },
+    [jqWasmFile, jsonText, filter, setResult]
+  );
 
   return result;
 }

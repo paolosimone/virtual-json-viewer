@@ -56,4 +56,8 @@ chrome.runtime.onMessage.addListener(
   }
 );
 
+chrome.browserAction.onClicked.addListener(() => {
+  chrome.runtime.openOptionsPage();
+});
+
 export {};

@@ -24,7 +24,7 @@ export function ViewerModeToggle({
   return (
     <span
       className={classNames(
-        "flex items-center rounded-sm ring-1 ring-gray-300",
+        "flex items-center rounded-sm ring-1 ring-gray-300 dark:ring-gray-400",
         className
       )}
     >

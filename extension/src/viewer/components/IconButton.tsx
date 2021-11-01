@@ -1,8 +1,7 @@
 import classNames from "classnames";
-import { Icon } from "./Icon";
-
-// light theme
-const fill = "#424242";
+import { useContext } from "react";
+import { ThemeContext, Theme } from "viewer/commons/state";
+import { DARK_FILL, Icon, LIGHT_FILL } from "./Icon";
 
 export type IconButtonProps = Props<{
   icon: Icon;
@@ -10,6 +9,7 @@ export type IconButtonProps = Props<{
   title?: string;
   isActive?: boolean;
   disabled?: boolean;
+  dark?: boolean;
 }>;
 
 export function IconButton({
@@ -19,17 +19,30 @@ export function IconButton({
   isActive,
   disabled,
   className,
+  dark,
   style,
 }: IconButtonProps): JSX.Element {
+  const darkTheme = useContext(ThemeContext) === Theme.Dark;
+  const useDark = dark !== undefined ? dark : darkTheme;
+
+  const fill = useDark ? DARK_FILL : LIGHT_FILL;
+
+  const lightColors = {
+    "hover:bg-gray-200": !disabled,
+    "bg-gray-300": isActive,
+  };
+
+  const darkColors = {
+    "hover:bg-gray-500": !disabled,
+    "bg-gray-600": isActive,
+  };
+
   return (
     <button
       className={classNames(
         "rounded",
-        {
-          "hover:bg-gray-200": !disabled,
-          "cursor-default": disabled,
-          "bg-gray-300": isActive,
-        },
+        { "cursor-default": disabled },
+        useDark ? darkColors : lightColors,
         className
       )}
       style={style}

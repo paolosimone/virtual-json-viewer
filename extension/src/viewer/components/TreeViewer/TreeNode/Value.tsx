@@ -39,9 +39,11 @@ function CollectionValue({
 }: CollectionValueProps): JSX.Element {
   const count = childrenCount ? ` ${childrenCount} ` : "";
   const preview = J.isArray(value) ? `[${count}]` : `{${count}}`;
-  const fade = { "opacity-40": childrenCount };
+  const fade = { "opacity-50": childrenCount };
   return (
-    <span className={classNames("truncate text-gray-600", fade)}>
+    <span
+      className={classNames("truncate text-gray-600 dark:text-gray-300", fade)}
+    >
       {preview}
     </span>
   );
@@ -53,7 +55,9 @@ type LiteralValueProps = Props<{
 }>;
 
 function LiteralValue({ value, search }: LiteralValueProps): JSX.Element {
-  const textColor = J.isString(value) ? "text-pink-600" : "text-green-600";
+  const textColor = J.isString(value)
+    ? "text-pink-600 dark:text-pink-400"
+    : "text-green-600 dark:text-green-400";
   const textValue = literalToString(value);
   const highlightedText = useHighlightedSearchResults(textValue, search);
   return (

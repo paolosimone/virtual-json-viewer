@@ -60,6 +60,7 @@ function useFitContent(resize: Resize): ParentContentRefs {
     }
   };
 
+  // fit content on every component update
   useEffect(fitContent);
 
   return [parent, content];

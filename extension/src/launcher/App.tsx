@@ -1,6 +1,5 @@
 import classNames from "classnames";
 import { OptionsWrapper } from "./OptionsWrapper";
-import { PopupWrapper } from "./PopupWrapper";
 import { ViewerWrapper } from "./ViewerWrapper";
 
 export function App() {
@@ -8,8 +7,6 @@ export function App() {
   switch (window.location.pathname) {
     case "/viewer":
       return <ViewerWrapper />;
-    case "/popup":
-      return <PopupWrapper />;
     case "/options":
       return <OptionsWrapper />;
     default:
@@ -19,10 +16,9 @@ export function App() {
 
 function PagePicker(): JSX.Element {
   return (
-    <div className="h-screen p-4 grid grid-cols-3 gap-4 items-center">
-      <LauncherButton className="h-1/3" title="Viewer" href="/viewer" />
-      <LauncherButton className="h-1/3" title="Popup" href="/popup" />
-      <LauncherButton className="h-1/3" title="Options" href="/options" />
+    <div className="h-screen p-4 grid grid-cols-2 gap-4 items-center">
+      <LauncherButton className="h-1/2" title="Viewer" href="/viewer" />
+      <LauncherButton className="h-1/2" title="Options" href="/options" />
     </div>
   );
 }

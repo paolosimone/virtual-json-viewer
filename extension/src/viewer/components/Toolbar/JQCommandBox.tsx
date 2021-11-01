@@ -33,38 +33,40 @@ export function JQCommandBox({
   const isEmpty = filter === "";
 
   return (
-    <span className="flex">
+    <span className="flex items-center">
       <IconButton
-        className="w-5 h-5 self-center mx-2"
+        className="w-5 h-5 mx-2"
         title="JQ Manual"
         icon={Icon.Question}
         onClick={openJQManual}
       />
 
-      <span className="border rounded flex flex-1 pr-1 bg-white">
+      <span className="flex items-center flex-1 pr-1 border rounded border-gray-200 dark:border-gray-500 bg-white dark:bg-gray-400">
         {isEmpty ? (
           <label className="mx-1 mr-2 select-none">jq</label>
         ) : (
           <IconButton
-            className="w-5 h-5 ml-1 mr-2 self-center"
+            className="w-5 h-5 ml-1 mr-2"
             title="Clear"
             icon={Icon.Close}
             onClick={clearFilter}
+            dark={false}
           />
         )}
 
         <FilterInput
-          className="flex-1"
+          className="flex-1 dark:bg-gray-400 dark:placeholder-gray-700"
           filter={filter}
           setFilter={setFilter}
           onSubmit={applyFilter}
         />
 
         <IconButton
-          className="w-5 h-5 self-center"
+          className="w-5 h-5"
           title="Apply filter"
           icon={Icon.Run}
           onClick={applyFilter}
+          dark={false}
         />
       </span>
     </span>
