@@ -6,20 +6,9 @@ const KEY = "theme";
 
 export function useTheme(): [Theme, Dispatch<Theme>] {
   const [theme, setTheme] = useStorage(KEY, DefaultTheme);
-
-  // apply theme on first render
-  useLayoutEffect(() => applyTheme(theme));
-
-  // apply theme every time it's updated
-  const setAndApplyTheme = useMemo(
-    () => (theme: Theme) => {
-      setTheme(theme);
-      applyTheme(theme);
-    },
-    [setTheme]
-  );
-
-  return [theme, setAndApplyTheme];
+  // apply theme on first render and every time it's updated
+  useLayoutEffect(() => applyTheme(theme), [theme]);
+  return [theme, setTheme];
 }
 
 export function useDarkThemeEnabled(): boolean {

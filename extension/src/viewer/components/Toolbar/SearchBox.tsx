@@ -95,6 +95,7 @@ function SearchInput({
     if (timeoutId) clearTimeout(timeoutId);
   };
 
+  // clear timeout on component unmount
   useEffect(() => maybeClearTimeout);
 
   const onChange = (e: FormEvent<HTMLInputElement>) => {

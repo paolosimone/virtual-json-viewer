@@ -16,7 +16,7 @@ function maybeHighlightSearchResults(
   text: Nullable<string>,
   search: Nullable<Search>
 ): ReactNode[] | Nullable<string> {
-  if (!search || !text) {
+  if (!search?.text || !text) {
     return text;
   }
 
