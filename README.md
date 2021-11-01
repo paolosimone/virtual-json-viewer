@@ -50,16 +50,16 @@ __From Source__
 - [X] Color-encoded value types
 - [X] Collapse/expand all nodes
 - [X] Full text search
+- [ ] Option to enable case sensitive
 - [X] Option to completely hide subtrees without any search match
 - [X] JQ filtering
 - [X] Raw JSON viewer
 - [X] Prettify/minify Raw JSON
 - [X] Highlight search results
 - [X] Download JSON
-- [ ] Dark mode
-- [ ] Option page
+- [X] Dark mode
 - [ ] Internationalization
-- [ ] Case sensitive search
+- [ ] Customizable settings
 - [ ] Clickable links
 
 ## Contributing

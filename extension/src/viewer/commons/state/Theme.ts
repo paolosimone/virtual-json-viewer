@@ -8,4 +8,5 @@ export enum Theme {
 
 export const DefaultTheme = Theme.System;
 
-export const ThemeContext = createContext(DefaultTheme);
+export type CurrentTheme = Theme.Light | Theme.Dark;
+export const ThemeContext = createContext<CurrentTheme>(Theme.Light);

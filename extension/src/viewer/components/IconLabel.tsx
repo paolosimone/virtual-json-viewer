@@ -1,5 +1,6 @@
 import classNames from "classnames";
-import { useDarkThemeEnabled } from "viewer/hooks";
+import { useContext } from "react";
+import { ThemeContext, Theme } from "viewer/commons/state";
 import { DARK_FILL, Icon, LIGHT_FILL } from "./Icon";
 
 export type IconLabelProps = Props<{
@@ -15,7 +16,7 @@ export function IconLabel({
   dark,
   style,
 }: IconLabelProps): JSX.Element {
-  const darkTheme = useDarkThemeEnabled();
+  const darkTheme = useContext(ThemeContext) === Theme.Dark;
   const useDark = dark !== undefined ? dark : darkTheme;
 
   const fill = useDark ? DARK_FILL : LIGHT_FILL;

@@ -1,5 +1,5 @@
-import { Dispatch, useLayoutEffect, useMemo } from "react";
-import { DefaultTheme, Theme } from "viewer/commons/state";
+import { Dispatch, useLayoutEffect } from "react";
+import { CurrentTheme, DefaultTheme, Theme } from "viewer/commons/state";
 import { useStorage } from ".";
 
 const KEY = "theme";
@@ -11,23 +11,19 @@ export function useTheme(): [Theme, Dispatch<Theme>] {
   return [theme, setTheme];
 }
 
-export function useDarkThemeEnabled(): boolean {
-  const [theme] = useTheme();
-  return useMemo(() => darkThemeEnabled(theme), [theme]);
+export function currentTheme(theme: Theme): CurrentTheme {
+  const darkThemeEnabled =
+    theme === Theme.Dark ||
+    (theme === Theme.System &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches);
+
+  return darkThemeEnabled ? Theme.Dark : Theme.Light;
 }
 
 function applyTheme(theme: Theme) {
-  if (darkThemeEnabled(theme)) {
+  if (currentTheme(theme) === Theme.Dark) {
     document.documentElement.classList.add(Theme.Dark);
   } else {
     document.documentElement.classList.remove(Theme.Dark);
   }
-}
-
-function darkThemeEnabled(theme: Theme): boolean {
-  return (
-    theme === Theme.Dark ||
-    (theme === Theme.System &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches)
-  );
 }
