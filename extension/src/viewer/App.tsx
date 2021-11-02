@@ -9,6 +9,11 @@ import {
   useStateObject,
   useTheme,
 } from "./hooks";
+import {
+  languageTranslations,
+  TranslationContext,
+  useLocalization,
+} from "./localization";
 import { EmptyJQCommand, EmptySearch, ThemeContext, ViewerMode } from "./state";
 
 export type AppProps = {
@@ -18,7 +23,9 @@ export type AppProps = {
 
 export function App({ jsonText, jqWasmFile }: AppProps): JSX.Element {
   // global settings
+  // TODO refactor theme
   const theme = currentTheme(useTheme()[0]);
+  const translation = languageTranslations[useLocalization()];
 
   // application state
   const viewerModeState = useStateObject(ViewerMode.Tree);
@@ -55,7 +62,12 @@ export function App({ jsonText, jqWasmFile }: AppProps): JSX.Element {
     viewerModeState.value === ViewerMode.Tree ? TreeViewer : RawViewer;
 
   return (
-    <MultiContextProvider contexts={[[ThemeContext, theme]]}>
+    <MultiContextProvider
+      contexts={[
+        [ThemeContext, theme],
+        [TranslationContext, translation],
+      ]}
+    >
       <div className="flex flex-col h-full overflow-hidden font-mono">
         <Toolbar {...toolbarProps} />
 

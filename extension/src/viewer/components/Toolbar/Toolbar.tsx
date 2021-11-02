@@ -1,6 +1,8 @@
 import classNames from "classnames";
+import { useContext } from "react";
 import { Icon, IconButton } from "viewer/components";
 import { StateObject } from "viewer/hooks";
+import { TranslationContext } from "viewer/localization";
 import { JQCommand, Search, ViewerMode } from "viewer/state";
 import { dispatch, EventType } from "../../commons/EventBus";
 import { JQCommandBox } from "./JQCommandBox";
@@ -23,6 +25,7 @@ export function Toolbar({
   className,
 }: ToolbarProps): JSX.Element {
   const isTreeView = viewerModeState.value === ViewerMode.Tree;
+  const t = useContext(TranslationContext);
 
   return (
     <div
@@ -42,7 +45,7 @@ export function Toolbar({
 
         <IconButton
           className="w-7 h-7 px-px"
-          title="Expand"
+          title={t.toolbar.expand}
           icon={Icon.ExpandAll}
           onClick={expand}
         />
