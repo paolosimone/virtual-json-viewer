@@ -1,5 +1,5 @@
-import { Search } from "viewer/commons/state";
 import { useHighlightedSearchResults } from "viewer/hooks";
+import { Search } from "viewer/state";
 import { JsonNodeData } from "../model/JsonNode";
 
 export type KeyProps = {

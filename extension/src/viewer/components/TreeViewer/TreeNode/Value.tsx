@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import * as J from "viewer/commons/JsonUtils";
-import { Search } from "viewer/commons/state";
 import { useHighlightedSearchResults } from "viewer/hooks";
+import { Search } from "viewer/state";
 import { JsonNodeData } from "../model/JsonNode";
 
 export type ValueProps = {

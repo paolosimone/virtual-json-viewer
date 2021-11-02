@@ -2,7 +2,7 @@ import classNames from "classnames";
 import { useEffect, useRef } from "react";
 import { VariableSizeNodePublicState as NodeState } from "react-vtree";
 import { NodeComponentProps } from "react-vtree/dist/es/Tree";
-import { Search } from "viewer/commons/state";
+import { Search } from "viewer/state";
 import { JsonNodeData } from "../model/JsonNode";
 import { Key } from "./Key";
 import { OpenButton } from "./OpenButton";

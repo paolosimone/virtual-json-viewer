@@ -45,22 +45,23 @@ __From Source__
 ## Features
 
 - [X] JSON rendering using virtual DOM and collapsable nodes
-- [X] Sort JSON keys alphabetically
-- [X] Preview nested item count for closed nodes
-- [X] Color-encoded value types
-- [X] Collapse/expand all nodes
+    - [X] Sort JSON keys alphabetically
+    - [X] Preview nested item count for closed nodes
+    - [X] Color-encoded value types
+    - [X] Collapse/expand all nodes
+    - [ ] Clickable links
 - [X] Full text search
-- [ ] Option to enable case sensitive
-- [X] Option to completely hide subtrees without any search match
+    - [X] Highlight search results
+    - [X] Option to completely hide subtrees without any search match
+    - [ ] Option to enable case sensitive
 - [X] JQ filtering
 - [X] Raw JSON viewer
-- [X] Prettify/minify Raw JSON
-- [X] Highlight search results
+    - [X] Prettify/minify 
 - [X] Download JSON
 - [X] Dark mode
-- [ ] Internationalization
+- [ ] Customizable theme
+- [ ] Support different languages
 - [ ] Customizable settings
-- [ ] Clickable links
 
 ## Contributing
 
@@ -69,7 +70,7 @@ But feel free to open an issue in case of bug, feature request or suggestion!
 
 ### Local development
 
-Run `yarn start` to serve the application locally (`http://localhost:3000`).
+Run `yarn start` to serve the extension as a web app with hot reload.
 
 Always `yarn format` before creating a commit.
 
@@ -83,7 +84,7 @@ Always `yarn format` before creating a commit.
 |[React](https://reactjs.org/)                                                                                              |Learn how to write a frontend application without jQuery and bootstrap|
 |[react-vtree](https://github.com/Lodin/react-vtree)                                                                        |Render the JSON. I'd say it's a pretty important role|
 |[TailwindCSS](https://tailwindcss.com/)                                                                                    |Prevent me from touching CSS files|
-|[Typescript](https://www.typescriptlang.org/)                                                                              |Try to forget I'm actually producing JS 🤢|
+|[Typescript](https://www.typescriptlang.org/)                                                                              |Try to forget I'm actually writing JS 🤢|
 |[uid](https://github.com/lukeed/uid)                                                                                       |Fast generation of unique keys for [React lists](https://reactjs.org/docs/lists-and-keys.html#keys) |
 |[vscode-icons](https://github.com/microsoft/vscode-icons)                                                                  |Keep UI buttons clean and intuitive|
 

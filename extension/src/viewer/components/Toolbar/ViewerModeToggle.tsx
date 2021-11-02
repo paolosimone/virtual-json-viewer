@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { Dispatch, SetStateAction, useCallback } from "react";
-import { ViewerMode } from "viewer/commons/state";
 import { Icon, IconButton } from "viewer/components";
+import { ViewerMode } from "viewer/state";
 
 export type ViewerModeToggleProps = Props<{
   viewerMode: ViewerMode;

@@ -1,4 +1,4 @@
-import { Search } from "viewer/commons/state";
+import { Search } from "viewer/state";
 
 export type JsonNode = {
   key: string;

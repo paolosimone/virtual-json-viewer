@@ -1,5 +1,5 @@
 import { Dispatch, useLayoutEffect } from "react";
-import { CurrentTheme, DefaultTheme, Theme } from "viewer/commons/state";
+import { CurrentTheme, DefaultTheme, Theme } from "viewer/state";
 import { useStorage } from ".";
 
 const KEY = "theme";

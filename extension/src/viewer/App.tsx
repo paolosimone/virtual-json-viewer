@@ -1,11 +1,5 @@
 import { useMemo } from "react";
 import "tailwindcss/tailwind.css";
-import {
-  ThemeContext,
-  EmptyJQCommand,
-  EmptySearch,
-  ViewerMode,
-} from "./commons/state";
 import { Alert, RawViewer, Toolbar, TreeViewer } from "./components";
 import { MultiContextProvider } from "./components/MultiContextProvider";
 import {
@@ -15,6 +9,7 @@ import {
   useStateObject,
   useTheme,
 } from "./hooks";
+import { EmptyJQCommand, EmptySearch, ThemeContext, ViewerMode } from "./state";
 
 export type AppProps = {
   jsonText: string;

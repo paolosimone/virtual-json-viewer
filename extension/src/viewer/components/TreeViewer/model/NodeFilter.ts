@@ -1,5 +1,5 @@
 import * as J from "viewer/commons/JsonUtils";
-import { Search } from "viewer/commons/state";
+import { Search } from "viewer/state";
 import { JsonNode, SearchMatch } from "./JsonNode";
 
 export class NodeFilter {

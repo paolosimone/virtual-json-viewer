@@ -1,7 +1,7 @@
 import "tailwindcss/tailwind.css";
-import { Theme } from "viewer/commons/state";
 import { Select } from "viewer/components";
 import { useTheme } from "viewer/hooks";
+import { Theme } from "viewer/state";
 
 export function App(): JSX.Element {
   const [theme, setTheme] = useTheme();

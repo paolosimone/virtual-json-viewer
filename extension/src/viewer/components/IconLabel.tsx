@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { useContext } from "react";
-import { ThemeContext, Theme } from "viewer/commons/state";
+import { Theme, ThemeContext } from "viewer/state";
 import { DARK_FILL, Icon, LIGHT_FILL } from "./Icon";
 
 export type IconLabelProps = Props<{

@@ -1,7 +1,7 @@
 import classNames from "classnames";
-import { JQCommand, Search, ViewerMode } from "viewer/commons/state";
 import { Icon, IconButton } from "viewer/components";
 import { StateObject } from "viewer/hooks";
+import { JQCommand, Search, ViewerMode } from "viewer/state";
 import { dispatch, EventType } from "../../commons/EventBus";
 import { JQCommandBox } from "./JQCommandBox";
 import { SaveButton } from "./SaveButton";

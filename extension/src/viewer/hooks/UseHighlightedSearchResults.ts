@@ -1,6 +1,6 @@
 import { ReactNode, useMemo } from "react";
-import { Search } from "viewer/commons/state";
 import { HighlightedText } from "viewer/components";
+import { Search } from "viewer/state";
 
 export function useHighlightedSearchResults(
   text: Nullable<string>,
