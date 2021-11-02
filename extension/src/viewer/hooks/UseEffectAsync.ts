@@ -3,11 +3,11 @@ import { DependencyList, useEffect } from "react";
 export function useEffectAsync(
   effectAsync: SynchronizedEffect,
   deps?: DependencyList
-) {
+): void {
   useEffect(
     () => {
       // acquire lock
-      let mutex = new Mutex();
+      const mutex = new Mutex();
 
       // apply effects only if mutex.hasLock()
       effectAsync(mutex);
@@ -36,7 +36,7 @@ export class Mutex {
     return this.lock;
   }
 
-  public release() {
+  public release(): void {
     this.lock = false;
   }
 }

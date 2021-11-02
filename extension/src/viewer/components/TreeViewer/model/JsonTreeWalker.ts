@@ -41,7 +41,7 @@ function fullTreeWalker(json: Json): TreeWalker<JsonNodeData> {
       const json = parent.data.value;
 
       if (J.isCollection(json)) {
-        for (let [key, value] of J.iterator(json)) {
+        for (const [key, value] of J.iterator(json)) {
           const node = { key: key, value: value, parent: parent.data };
           yield getNodeData(node);
         }
@@ -76,7 +76,7 @@ function filteredTreeWalker(
       const json = parent.data.value;
 
       if (J.isCollection(json)) {
-        for (let [key, value] of J.iterator(json)) {
+        for (const [key, value] of J.iterator(json)) {
           const node = { key: key, value: value, parent: parent.data };
           const match = filter.match(node);
           if (match) {

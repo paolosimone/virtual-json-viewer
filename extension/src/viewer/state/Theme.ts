@@ -1,12 +1,11 @@
 import { createContext } from "react";
 
 export enum Theme {
-  System = "system",
   Light = "light",
   Dark = "dark",
 }
 
-export const DefaultTheme = Theme.System;
+export const ThemeContext = createContext<Theme>(Theme.Light);
 
-export type CurrentTheme = Theme.Light | Theme.Dark;
-export const ThemeContext = createContext<CurrentTheme>(Theme.Light);
+export const SystemTheme = "system";
+export type ThemeSetting = Theme | typeof SystemTheme;

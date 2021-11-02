@@ -2,13 +2,7 @@ import { useMemo } from "react";
 import "tailwindcss/tailwind.css";
 import { Alert, RawViewer, Toolbar, TreeViewer } from "./components";
 import { MultiContextProvider } from "./components/MultiContextProvider";
-import {
-  currentTheme,
-  JQResult,
-  useJQ,
-  useStateObject,
-  useTheme,
-} from "./hooks";
+import { JQResult, useJQ, useStateObject, useTheme } from "./hooks";
 import { TranslationContext, useLocalization } from "./localization";
 import { EmptyJQCommand, EmptySearch, ThemeContext, ViewerMode } from "./state";
 
@@ -19,8 +13,7 @@ export type AppProps = {
 
 export function App({ jsonText, jqWasmFile }: AppProps): JSX.Element {
   // global settings
-  // TODO refactor theme
-  const theme = currentTheme(useTheme()[0]);
+  const [theme] = useTheme();
   const [translation] = useLocalization();
 
   // application state

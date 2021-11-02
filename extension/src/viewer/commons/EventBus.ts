@@ -3,14 +3,14 @@ export enum EventType {
   Collapse = "collapse",
 }
 
-export function subscribe(event: EventType, listener: EventListener) {
+export function subscribe(event: EventType, listener: EventListener): void {
   document.addEventListener(event, listener);
 }
 
-export function unsubscribe(event: EventType, listener: EventListener) {
+export function unsubscribe(event: EventType, listener: EventListener): void {
   document.removeEventListener(event, listener);
 }
 
-export function dispatch(event: EventType) {
+export function dispatch(event: EventType): void {
   document.dispatchEvent(new Event(event));
 }

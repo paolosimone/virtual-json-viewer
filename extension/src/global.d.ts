@@ -1,6 +1,7 @@
 // Handful common types
 declare type Nullable<T> = T | null;
 declare type Result<T> = T | Error;
+declare type EmptyObject = Record<string, never>;
 declare type Color = string;
 
 // Json recursive definition
