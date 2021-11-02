@@ -2,7 +2,7 @@ import classNames from "classnames";
 import { OptionsWrapper } from "./OptionsWrapper";
 import { ViewerWrapper } from "./ViewerWrapper";
 
-export function App() {
+export function App(): JSX.Element {
   // extremely basic routing, no need for React Router
   switch (window.location.pathname) {
     case "/viewer":

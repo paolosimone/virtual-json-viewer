@@ -1,8 +1,13 @@
 import classNames from "classnames";
 import { Dispatch, FormEvent } from "react";
 
+export type Option<T extends string> = {
+  value: T;
+  label: string;
+};
+
 export type SelectProps<T extends string> = Props<{
-  options: T[];
+  options: Option<T>[];
   setValue: Dispatch<T>;
   selected?: T;
 }>;
@@ -24,9 +29,9 @@ export function Select<T extends string>({
       onChange={setNewValue}
       value={selected}
     >
-      {options.map((opt: T) => (
-        <option value={opt} key={opt}>
-          {opt}
+      {options.map((opt) => (
+        <option value={opt.value} key={opt.value}>
+          {opt.label}
         </option>
       ))}
     </select>

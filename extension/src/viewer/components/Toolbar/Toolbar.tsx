@@ -1,7 +1,9 @@
 import classNames from "classnames";
-import { JQCommand, Search, ViewerMode } from "viewer/commons/state";
+import { useContext } from "react";
 import { Icon, IconButton } from "viewer/components";
 import { StateObject } from "viewer/hooks";
+import { TranslationContext } from "viewer/localization";
+import { JQCommand, Search, ViewerMode } from "viewer/state";
 import { dispatch, EventType } from "../../commons/EventBus";
 import { JQCommandBox } from "./JQCommandBox";
 import { SaveButton } from "./SaveButton";
@@ -22,12 +24,13 @@ export function Toolbar({
   json,
   className,
 }: ToolbarProps): JSX.Element {
+  const t = useContext(TranslationContext);
   const isTreeView = viewerModeState.value === ViewerMode.Tree;
 
   return (
     <div
       className={classNames(
-        "flex flex-col bg-gray-100 dark:bg-gray-800",
+        "flex flex-col py-1 px-0.5 bg-gray-100 dark:bg-gray-800",
         className
       )}
     >
@@ -42,14 +45,14 @@ export function Toolbar({
 
         <IconButton
           className="w-7 h-7 px-px"
-          title="Expand"
+          title={t.toolbar.expand}
           icon={Icon.ExpandAll}
           onClick={expand}
         />
 
         <IconButton
           className="w-7 h-7 px-px"
-          title="Collapse"
+          title={t.toolbar.collapse}
           icon={Icon.CollapseAll}
           onClick={collapse}
         />
@@ -58,10 +61,8 @@ export function Toolbar({
 
         <SaveButton className="w-6 h-6 px-px" json={json} />
 
-        <Separator />
-
         <SearchBox
-          className="flex-1"
+          className="flex-1 ml-2"
           search={searchState.value}
           setSearch={searchState.setValue}
           disableShowMismatch={!isTreeView}

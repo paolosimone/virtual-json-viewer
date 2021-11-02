@@ -1,6 +1,6 @@
 import { TreeWalker, TreeWalkerValue } from "react-vtree";
 import * as J from "viewer/commons/JsonUtils";
-import { Search } from "../../../commons/state";
+import { Search } from "../../../state";
 import { JsonNode, JsonNodeData, SearchMatch } from "./JsonNode";
 import { NodeFilter } from "./NodeFilter";
 
@@ -41,7 +41,7 @@ function fullTreeWalker(json: Json): TreeWalker<JsonNodeData> {
       const json = parent.data.value;
 
       if (J.isCollection(json)) {
-        for (let [key, value] of J.iterator(json)) {
+        for (const [key, value] of J.iterator(json)) {
           const node = { key: key, value: value, parent: parent.data };
           yield getNodeData(node);
         }
@@ -76,7 +76,7 @@ function filteredTreeWalker(
       const json = parent.data.value;
 
       if (J.isCollection(json)) {
-        for (let [key, value] of J.iterator(json)) {
+        for (const [key, value] of J.iterator(json)) {
           const node = { key: key, value: value, parent: parent.data };
           const match = filter.match(node);
           if (match) {

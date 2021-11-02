@@ -1,6 +1,6 @@
 import { useState } from "react";
 import newJQ from "vendor/jq.wasm";
-import { JQCommand } from "viewer/commons/state";
+import { JQCommand } from "viewer/state";
 import { Mutex, useEffectAsync } from ".";
 
 export type JQResult = Json | Error | undefined;

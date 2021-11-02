@@ -1,8 +1,8 @@
 import classNames from "classnames";
 import { useCallback, useMemo, useState } from "react";
 import { EventType } from "viewer/commons/EventBus";
-import { Search } from "viewer/commons/state";
 import { useEventBusListener, useHighlightedSearchResults } from "viewer/hooks";
+import { Search } from "viewer/state";
 
 export type RawViewerProps = Props<{
   json: Json;

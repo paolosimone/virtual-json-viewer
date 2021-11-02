@@ -3,12 +3,14 @@ import {
   Dispatch,
   FormEvent,
   SetStateAction,
+  useContext,
   useEffect,
   useRef,
   useState,
 } from "react";
-import { JQCommand } from "viewer/commons/state";
 import { Icon, IconButton } from "viewer/components";
+import { TranslationContext } from "viewer/localization";
+import { JQCommand } from "viewer/state";
 
 export type JQCommandBoxProps = Props<{
   command: JQCommand;
@@ -19,6 +21,7 @@ export function JQCommandBox({
   command,
   setCommand,
 }: JQCommandBoxProps): JSX.Element {
+  const t = useContext(TranslationContext);
   const [filter, setFilter] = useState(command.filter);
 
   function applyFilter() {
@@ -36,7 +39,7 @@ export function JQCommandBox({
     <span className="flex items-center">
       <IconButton
         className="w-5 h-5 mx-2"
-        title="JQ Manual"
+        title={t.toolbar.jq.manual}
         icon={Icon.Question}
         onClick={openJQManual}
       />
@@ -47,7 +50,7 @@ export function JQCommandBox({
         ) : (
           <IconButton
             className="w-5 h-5 ml-1 mr-2"
-            title="Clear"
+            title={t.toolbar.jq.clear}
             icon={Icon.Close}
             onClick={clearFilter}
             dark={false}
@@ -63,7 +66,7 @@ export function JQCommandBox({
 
         <IconButton
           className="w-5 h-5"
-          title="Apply filter"
+          title={t.toolbar.jq.run}
           icon={Icon.Run}
           onClick={applyFilter}
           dark={false}

@@ -1,0 +1,33 @@
+{
+  "settings": {
+    "labels": {
+      "language": "Language",
+      "theme": "Theme"
+    },
+    "language": {
+      "system": "System language"
+    },
+    "theme": {
+      "dark": "Dark",
+      "light": "Light",
+      "system": "System theme"
+    }
+  },
+  "toolbar": {
+    "treeView": "Tree",
+    "rawView": "Raw (slow)",
+    "expand": "Expand",
+    "collapse": "Collapse",
+    "save": "Download",
+    "search": {
+      "clear": "Clear",
+      "hideMismatch": "Hide mismatch",
+      "placeholder": "search"
+    },
+    "jq": {
+      "clear": "Clear",
+      "manual": "JQ Manual",
+      "run": "Apply filter"
+    }
+  }
+}

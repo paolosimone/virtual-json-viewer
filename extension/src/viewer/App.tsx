@@ -1,20 +1,10 @@
 import { useMemo } from "react";
 import "tailwindcss/tailwind.css";
-import {
-  ThemeContext,
-  EmptyJQCommand,
-  EmptySearch,
-  ViewerMode,
-} from "./commons/state";
 import { Alert, RawViewer, Toolbar, TreeViewer } from "./components";
 import { MultiContextProvider } from "./components/MultiContextProvider";
-import {
-  currentTheme,
-  JQResult,
-  useJQ,
-  useStateObject,
-  useTheme,
-} from "./hooks";
+import { JQResult, useJQ, useStateObject, useTheme } from "./hooks";
+import { TranslationContext, useLocalization } from "./localization";
+import { EmptyJQCommand, EmptySearch, ThemeContext, ViewerMode } from "./state";
 
 export type AppProps = {
   jsonText: string;
@@ -23,7 +13,8 @@ export type AppProps = {
 
 export function App({ jsonText, jqWasmFile }: AppProps): JSX.Element {
   // global settings
-  const theme = currentTheme(useTheme()[0]);
+  const [theme] = useTheme();
+  const [translation] = useLocalization();
 
   // application state
   const viewerModeState = useStateObject(ViewerMode.Tree);
@@ -60,7 +51,12 @@ export function App({ jsonText, jqWasmFile }: AppProps): JSX.Element {
     viewerModeState.value === ViewerMode.Tree ? TreeViewer : RawViewer;
 
   return (
-    <MultiContextProvider contexts={[[ThemeContext, theme]]}>
+    <MultiContextProvider
+      contexts={[
+        [ThemeContext, theme],
+        [TranslationContext, translation],
+      ]}
+    >
       <div className="flex flex-col h-full overflow-hidden font-mono">
         <Toolbar {...toolbarProps} />
 
