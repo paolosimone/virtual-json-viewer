@@ -13,7 +13,9 @@ export function useEffectAsync(
       effectAsync(mutex);
 
       // release lock when deps change
-      return mutex.release;
+      return () => {
+        mutex.release();
+      };
     },
     // eslint-disable-next-line
     deps ?? []

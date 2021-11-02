@@ -1,35 +1,19 @@
 import "tailwindcss/tailwind.css";
-import { Select } from "viewer/components";
-import { useTheme } from "viewer/hooks";
-import {
-  languageSettingValues,
-  useLocalizationSetting,
-} from "viewer/localization";
-import { Theme } from "viewer/state";
+import { TranslationContext, useLocalization } from "viewer/localization";
+import { LanguageSelect, ThemeSelect } from "./components";
 
 export function App(): JSX.Element {
-  const [theme, setTheme] = useTheme();
-  const [language, setLanguage] = useLocalizationSetting();
+  const [t, language, setLanguage] = useLocalization();
 
   return (
-    <div className="grid grid-cols-2 p-4 dark:bg-gray-700 dark:text-gray-200 text-base">
-      <label>Theme</label>
-      <span>
-        <Select
-          options={Object.values(Theme)}
-          selected={theme}
-          setValue={setTheme}
-        />
-      </span>
+    <TranslationContext.Provider value={t}>
+      <div className="grid grid-cols-2 gap-3 p-10 dark:bg-gray-700 dark:text-gray-200 text-base">
+        <label>{t.settings.labels.theme}</label>
+        <ThemeSelect />
 
-      <label>Language</label>
-      <span>
-        <Select
-          options={languageSettingValues}
-          selected={language}
-          setValue={setLanguage}
-        />
-      </span>
-    </div>
+        <label>{t.settings.labels.language}</label>
+        <LanguageSelect language={language} setLanguage={setLanguage} />
+      </div>
+    </TranslationContext.Provider>
   );
 }

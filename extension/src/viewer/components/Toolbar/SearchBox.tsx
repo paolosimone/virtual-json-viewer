@@ -1,6 +1,14 @@
 import classNames from "classnames";
-import { Dispatch, FormEvent, SetStateAction, useEffect, useRef } from "react";
+import {
+  Dispatch,
+  FormEvent,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useRef,
+} from "react";
 import { Icon, IconButton, IconLabel } from "viewer/components";
+import { TranslationContext } from "viewer/localization";
 import { Search } from "../../state";
 
 // TODO setting typing delay
@@ -18,6 +26,8 @@ export function SearchBox({
   className,
   disableShowMismatch,
 }: SearchBoxProps): JSX.Element {
+  const t = useContext(TranslationContext);
+
   function setText(text: string) {
     setSearch((search: Search) => ({ ...search, text: text }));
   }
@@ -51,7 +61,7 @@ export function SearchBox({
       ) : (
         <IconButton
           className="w-5 h-5 ml-1 mr-2"
-          title="Clear"
+          title={t.toolbar.search.clear}
           icon={Icon.Close}
           onClick={clearSearch}
           dark={false}
@@ -67,7 +77,7 @@ export function SearchBox({
       {!disableShowMismatch && (
         <IconButton
           className="w-6 h-6"
-          title="Hide mismatch"
+          title={t.toolbar.search.hideMismatch}
           icon={Icon.EyeClosed}
           onClick={toggleShowMismatch}
           isActive={!search.showMismatch}
@@ -88,6 +98,8 @@ function SearchInput({
   setText,
   className,
 }: SearchInputProps): JSX.Element {
+  const t = useContext(TranslationContext);
+
   // throttle onChange event to wait until user stop typing
   let timeoutId: Nullable<NodeJS.Timeout> = null;
 
@@ -118,7 +130,7 @@ function SearchInput({
       type="input"
       className={classNames("focus:outline-none", className)}
       onChange={onChange}
-      placeholder="search"
+      placeholder={t.toolbar.search.placeholder}
     />
   );
 }

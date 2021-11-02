@@ -1,5 +1,33 @@
 {
+  "settings": {
+    "labels": {
+      "language": "Lingua",
+      "theme": "Tema"
+    },
+    "language": {
+      "system": "Lingua di sistema"
+    },
+    "theme": {
+      "dark": "Scuro",
+      "light": "Chiaro",
+      "system": "Tema di sistema"
+    }
+  },
   "toolbar": {
-    "expand": "Apri"
+    "treeView": "Vista navigabile",
+    "rawView": "Testo (lento)",
+    "expand": "Espandi",
+    "collapse": "Chiudi",
+    "save": "Salva",
+    "search": {
+      "clear": "Cancella",
+      "hideMismatch": "Nascondi rami senza risultati",
+      "placeholder": "cerca"
+    },
+    "jq": {
+      "clear": "Cancella",
+      "manual": "Manuale",
+      "run": "Applica il filtro"
+    }
   }
 }

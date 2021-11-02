@@ -1,22 +1,36 @@
 import { Dispatch } from "react";
 import { useStorage } from "viewer/hooks";
-import { FallbackLanguage, Language, LanguageSetting, SystemLanguage } from ".";
+import {
+  FallbackLanguage,
+  Language,
+  LanguageSetting,
+  languageTranslations,
+  SystemLanguage,
+  Translation,
+} from ".";
 
 const KEY = "language";
 
-export function useLocalizationSetting(): [
+export function useLocalization(): [
+  Translation,
   LanguageSetting,
   Dispatch<LanguageSetting>
 ] {
-  return useStorage<LanguageSetting>(KEY, SystemLanguage);
+  const [language, setLanguage] = useStorage<LanguageSetting>(
+    KEY,
+    SystemLanguage
+  );
+  const translation = resolveTranslation(language);
+  return [translation, language, setLanguage];
 }
 
-export function useLocalization(): Language {
-  const [languageSetting] = useLocalizationSetting();
+function resolveTranslation(languageSetting: LanguageSetting) {
+  const language =
+    languageSetting === SystemLanguage
+      ? resolveSystemLanguage()
+      : languageSetting;
 
-  return languageSetting === SystemLanguage
-    ? resolveSystemLanguage()
-    : languageSetting;
+  return languageTranslations[language];
 }
 
 function resolveSystemLanguage(): Language {

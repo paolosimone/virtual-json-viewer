@@ -59,8 +59,7 @@ __From Source__
     - [X] Prettify/minify 
 - [X] Download JSON
 - [X] Dark mode
-- [ ] Customizable theme
-- [ ] Support different languages
+- [X] Internationalization
 - [ ] Customizable settings
 
 ## Contributing

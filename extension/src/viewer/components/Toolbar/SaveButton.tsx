@@ -1,5 +1,6 @@
-import { useCallback } from "react";
+import { useCallback, useContext } from "react";
 import { Icon, IconButton } from "viewer/components";
+import { TranslationContext } from "viewer/localization";
 
 export type SaveButtonProps = Props<{
   json: Json;
@@ -9,12 +10,13 @@ export type SaveButtonProps = Props<{
 const TAB_SIZE = 2;
 
 export function SaveButton({ json, className }: SaveButtonProps): JSX.Element {
+  const t = useContext(TranslationContext);
   const save = useCallback(() => saveJson(json, TAB_SIZE), [json]);
 
   return (
     <IconButton
       className={className}
-      title="Download"
+      title={t.toolbar.save}
       icon={Icon.Save}
       onClick={save}
     />

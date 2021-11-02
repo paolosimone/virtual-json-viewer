@@ -1,6 +1,7 @@
 import classNames from "classnames";
-import { Dispatch, SetStateAction, useCallback } from "react";
+import { Dispatch, SetStateAction, useCallback, useContext } from "react";
 import { Icon, IconButton } from "viewer/components";
+import { TranslationContext } from "viewer/localization";
 import { ViewerMode } from "viewer/state";
 
 export type ViewerModeToggleProps = Props<{
@@ -13,6 +14,8 @@ export function ViewerModeToggle({
   setViewerMode,
   className,
 }: ViewerModeToggleProps): JSX.Element {
+  const t = useContext(TranslationContext);
+
   const toggleView = useCallback(
     () =>
       setViewerMode((viewerMode) =>
@@ -22,16 +25,11 @@ export function ViewerModeToggle({
   );
 
   return (
-    <span
-      className={classNames(
-        "flex items-center rounded-sm ring-1 ring-gray-300 dark:ring-gray-400",
-        className
-      )}
-    >
+    <span className={classNames("flex items-center rounded-sm", className)}>
       <IconButton
         icon={Icon.ListTree}
         onClick={toggleView}
-        title="Tree"
+        title={t.toolbar.treeView}
         isActive={viewerMode === ViewerMode.Tree}
         disabled={viewerMode === ViewerMode.Tree}
         className="w-1/2 p-0.5"
@@ -40,7 +38,7 @@ export function ViewerModeToggle({
       <IconButton
         icon={Icon.Json}
         onClick={toggleView}
-        title="Raw"
+        title={t.toolbar.rawView}
         isActive={viewerMode === ViewerMode.Raw}
         disabled={viewerMode === ViewerMode.Raw}
         className="w-1/2 p-0.5"

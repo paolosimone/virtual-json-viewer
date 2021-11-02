@@ -9,11 +9,7 @@ import {
   useStateObject,
   useTheme,
 } from "./hooks";
-import {
-  languageTranslations,
-  TranslationContext,
-  useLocalization,
-} from "./localization";
+import { TranslationContext, useLocalization } from "./localization";
 import { EmptyJQCommand, EmptySearch, ThemeContext, ViewerMode } from "./state";
 
 export type AppProps = {
@@ -25,7 +21,7 @@ export function App({ jsonText, jqWasmFile }: AppProps): JSX.Element {
   // global settings
   // TODO refactor theme
   const theme = currentTheme(useTheme()[0]);
-  const translation = languageTranslations[useLocalization()];
+  const [translation] = useLocalization();
 
   // application state
   const viewerModeState = useStateObject(ViewerMode.Tree);

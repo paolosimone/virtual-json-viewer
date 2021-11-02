@@ -14,6 +14,11 @@ export const languageTranslations: Record<Language, Translation> = {
   [Language.Italian]: it,
 };
 
+export const languageLabels: Record<Language, string> = {
+  [Language.English]: "English",
+  [Language.Italian]: "Italiano",
+};
+
 export const FallbackLanguage = Language.English;
 export const TranslationContext = createContext(
   languageTranslations[FallbackLanguage]
@@ -21,6 +26,3 @@ export const TranslationContext = createContext(
 
 export const SystemLanguage = "system";
 export type LanguageSetting = Language | typeof SystemLanguage;
-export const languageSettingValues = [SystemLanguage as LanguageSetting].concat(
-  Object.values(Language)
-);
