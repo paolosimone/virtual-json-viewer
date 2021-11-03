@@ -2,7 +2,8 @@
   "settings": {
     "labels": {
       "language": "Lingua",
-      "theme": "Tema"
+      "theme": "Tema",
+      "textSize": "Dimensioni caratteri"
     },
     "language": {
       "system": "Lingua di sistema"
@@ -11,6 +12,13 @@
       "dark": "Scuro",
       "light": "Chiaro",
       "system": "Tema di sistema"
+    },
+    "textSize": {
+      "XS": "Molto piccolo",
+      "S": "Piccolo",
+      "M": "Medio",
+      "L": "Grande",
+      "XL": "Molto grande"
     }
   },
   "toolbar": {

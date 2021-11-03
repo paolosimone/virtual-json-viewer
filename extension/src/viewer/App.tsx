@@ -1,10 +1,23 @@
+import classNames from "classnames";
 import { useMemo } from "react";
 import "tailwindcss/tailwind.css";
 import { Alert, RawViewer, Toolbar, TreeViewer } from "./components";
 import { MultiContextProvider } from "./components/MultiContextProvider";
-import { JQResult, useJQ, useStateObject, useTheme } from "./hooks";
+import {
+  JQResult,
+  useJQ,
+  useSettings,
+  useStateObject,
+  useTheme,
+} from "./hooks";
 import { TranslationContext, useLocalization } from "./localization";
-import { EmptyJQCommand, EmptySearch, ThemeContext, ViewerMode } from "./state";
+import {
+  EmptyJQCommand,
+  EmptySearch,
+  resolveTextSizeClass,
+  ThemeContext,
+  ViewerMode,
+} from "./state";
 
 export type AppProps = {
   jsonText: string;
@@ -15,6 +28,7 @@ export function App({ jsonText, jqWasmFile }: AppProps): JSX.Element {
   // global settings
   const [theme] = useTheme();
   const [translation] = useLocalization();
+  const [settings] = useSettings();
 
   // application state
   const viewerModeState = useStateObject(ViewerMode.Tree);
@@ -38,8 +52,6 @@ export function App({ jsonText, jqWasmFile }: AppProps): JSX.Element {
   // viewer page
   const [json, error] = resolveJson(jsonResult, jqResult);
 
-  // TODO setting text size
-
   const toolbarProps = {
     viewerModeState: viewerModeState,
     searchState: searchState,
@@ -62,7 +74,12 @@ export function App({ jsonText, jqWasmFile }: AppProps): JSX.Element {
 
         {error && <Alert message={error.message} />}
 
-        <div className="flex-1 pt-1.5 pl-1.5 overflow-auto text-sm dark:bg-gray-700 dark:text-gray-200">
+        <div
+          className={classNames(
+            "flex-1 pt-1.5 pl-1.5 overflow-auto dark:bg-gray-700 dark:text-gray-200",
+            resolveTextSizeClass(settings.textSize)
+          )}
+        >
           <Viewer json={json} search={searchState.value} />
         </div>
       </div>

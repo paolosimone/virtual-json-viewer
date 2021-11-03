@@ -13,7 +13,7 @@ so large that every other plugin for chrome I tried freezed without showing any 
 
 > "Good for you, but **my** payloads are small, pretty and strawberry flavoured"
 
-That's ok, if you are satisfied by your current plugin, no need to change.  
+That's ok, if you are happy with your current plugin, no need to change.  
 
 And if you want to come back later don't worry, we'll still be here, with blazing fast loading time, 
 built-in search, JQ filtering and many other features... but no strawberries, sorry
@@ -49,11 +49,10 @@ __From Source__
     - [X] Preview nested item count for closed nodes
     - [X] Color-encoded value types
     - [X] Collapse/expand all nodes
-    - [ ] Clickable links
 - [X] Full text search
     - [X] Highlight search results
     - [X] Option to completely hide subtrees without any search match
-    - [ ] Option to enable case sensitive
+    - [ ] Option to enable case sensitive search
 - [X] JQ filtering
 - [X] Raw JSON viewer
     - [X] Prettify/minify 
