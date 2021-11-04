@@ -45,6 +45,15 @@ export function App(): JSX.Element {
             updateSettings({ indentation: newValue })
           }
         />
+
+        <label>{t.settings.labels.searchDelay}</label>
+        <NumberInput
+          min={0}
+          value={settings.searchDelay}
+          setValue={(newValue: number) =>
+            updateSettings({ searchDelay: newValue })
+          }
+        />
       </div>
     </TranslationContext.Provider>
   );

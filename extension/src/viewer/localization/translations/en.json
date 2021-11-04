@@ -4,7 +4,8 @@
       "language": "Language",
       "theme": "Theme",
       "textSize": "Text size",
-      "indentation": "Indentation"
+      "indentation": "Indentation",
+      "searchDelay": "Search delay (ms)"
     },
     "language": {
       "system": "System language"
