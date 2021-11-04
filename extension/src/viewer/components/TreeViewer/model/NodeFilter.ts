@@ -42,8 +42,10 @@ interface SearchStrategy {
   isMatch(text: string): boolean;
 }
 
-function buildSearchStrategy({ text }: Search): SearchStrategy {
-  return new CaseInsensitiveSearch(text);
+function buildSearchStrategy({ caseSensitive, text }: Search): SearchStrategy {
+  return caseSensitive
+    ? new CaseSensitiveSearch(text)
+    : new CaseInsensitiveSearch(text);
 }
 
 class CaseInsensitiveSearch implements SearchStrategy {
@@ -55,6 +57,18 @@ class CaseInsensitiveSearch implements SearchStrategy {
 
   isMatch(text: string): boolean {
     return text.toLowerCase().includes(this.searchText);
+  }
+}
+
+class CaseSensitiveSearch implements SearchStrategy {
+  searchText: string;
+
+  constructor(searchText: string) {
+    this.searchText = searchText;
+  }
+
+  isMatch(text: string): boolean {
+    return text.includes(this.searchText);
   }
 }
 

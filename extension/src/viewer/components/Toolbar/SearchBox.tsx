@@ -33,6 +33,13 @@ export function SearchBox({
     setText("");
   }
 
+  function toggleCaseSensitive() {
+    setSearch((search: Search) => ({
+      ...search,
+      caseSensitive: !search.caseSensitive,
+    }));
+  }
+
   function toggleShowMismatch() {
     setSearch((search: Search) => ({
       ...search,
@@ -81,6 +88,15 @@ export function SearchBox({
           dark={false}
         />
       )}
+
+      <IconButton
+        className="w-6 h-6 ml-1"
+        title={t.toolbar.search.caseSensitive}
+        icon={Icon.CaseSensitive}
+        onClick={toggleCaseSensitive}
+        isActive={search.caseSensitive}
+        dark={false}
+      />
     </span>
   );
 }

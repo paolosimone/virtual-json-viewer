@@ -52,14 +52,14 @@ __From Source__
 - [X] Full text search
     - [X] Highlight search results
     - [X] Option to completely hide subtrees without any search match
-    - [ ] Option to enable case sensitive search
+    - [X] Option to enable case sensitive search
 - [X] JQ filtering
 - [X] Raw JSON viewer
     - [X] Prettify/minify 
 - [X] Download JSON
 - [X] Dark mode
 - [X] Internationalization
-- [ ] Customizable settings
+- [X] Customizable settings
 
 ## Contributing
 
