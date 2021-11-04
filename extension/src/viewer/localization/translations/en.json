@@ -1,5 +1,6 @@
 {
   "settings": {
+    "reset": "Reset default settings",
     "labels": {
       "language": "Language",
       "theme": "Theme",
