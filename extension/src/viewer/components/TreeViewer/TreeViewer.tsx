@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef } from "react";
+import React, { useCallback, useContext, useMemo, useRef } from "react";
 import { AutoSizer } from "react-virtualized";
 import {
   VariableSizeNodePublicState as NodeState,
@@ -6,7 +6,7 @@ import {
 } from "react-vtree";
 import { EventType } from "viewer/commons/EventBus";
 import { useEventBusListener, useWindowSize } from "viewer/hooks";
-import { Search } from "viewer/state";
+import { Search, SettingsContext } from "viewer/state";
 import { JsonNodeData } from "./model/JsonNode";
 import { getRootNodes, isLeaf, jsonTreeWalker } from "./model/JsonTreeWalker";
 import { TreeNode } from "./TreeNode";
@@ -19,6 +19,8 @@ export type TreeViewerProps = {
 };
 
 export function TreeViewer({ json, search }: TreeViewerProps): JSX.Element {
+  const { sortKeys } = useContext(SettingsContext);
+
   // force update on window resize
   useWindowSize(RESIZE_DELAY);
 
@@ -31,8 +33,8 @@ export function TreeViewer({ json, search }: TreeViewerProps): JSX.Element {
   useEventBusListener(EventType.Collapse, collapse);
 
   const treeWalker = useMemo(
-    () => jsonTreeWalker(json, search),
-    [json, search]
+    () => jsonTreeWalker(json, sortKeys, search),
+    [json, sortKeys, search]
   );
 
   return (
