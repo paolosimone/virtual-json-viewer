@@ -33,6 +33,7 @@
     "save": "Salva",
     "search": {
       "clear": "Cancella",
+      "caseSensitive": "Maiuscole/Minuscole",
       "hideMismatch": "Nascondi rami senza risultati",
       "placeholder": "cerca"
     },

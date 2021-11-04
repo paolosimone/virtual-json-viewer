@@ -23,5 +23,6 @@ function maybeHighlightSearchResults(
   return HighlightedText({
     text: text,
     selection: search.text,
+    caseSensitive: search.caseSensitive,
   });
 }

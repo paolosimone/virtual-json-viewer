@@ -33,6 +33,7 @@
     "save": "Download",
     "search": {
       "clear": "Clear",
+      "caseSensitive": "Case sensitive",
       "hideMismatch": "Hide mismatch",
       "placeholder": "search"
     },
