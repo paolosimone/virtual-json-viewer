@@ -3,7 +3,8 @@
     "labels": {
       "language": "Language",
       "theme": "Theme",
-      "textSize": "Text size"
+      "textSize": "Text size",
+      "indentation": "Indentation"
     },
     "language": {
       "system": "System language"

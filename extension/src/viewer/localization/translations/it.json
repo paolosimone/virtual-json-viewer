@@ -3,7 +3,8 @@
     "labels": {
       "language": "Lingua",
       "theme": "Tema",
-      "textSize": "Dimensioni caratteri"
+      "textSize": "Dimensioni caratteri",
+      "indentation": "Indentazione"
     },
     "language": {
       "system": "Lingua di sistema"

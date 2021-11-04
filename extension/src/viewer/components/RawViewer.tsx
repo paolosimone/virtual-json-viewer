@@ -1,23 +1,20 @@
 import classNames from "classnames";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useContext, useMemo, useState } from "react";
 import { EventType } from "viewer/commons/EventBus";
 import { useEventBusListener, useHighlightedSearchResults } from "viewer/hooks";
-import { Search } from "viewer/state";
+import { Search, SettingsContext } from "viewer/state";
 
 export type RawViewerProps = Props<{
   json: Json;
   search: Search;
 }>;
 
-// TODO setting tab size
-
-const TAB_SIZE = 2;
-
 export function RawViewer({
   json,
   search,
   className,
 }: RawViewerProps): JSX.Element {
+  const { indentation } = useContext(SettingsContext);
   const [minify, setMinify] = useState(false);
 
   const expand = useCallback(() => setMinify(false), [setMinify]);
@@ -26,14 +23,13 @@ export function RawViewer({
   const collapse = useCallback(() => setMinify(true), [setMinify]);
   useEventBusListener(EventType.Collapse, collapse);
 
-  const indent = minify ? undefined : TAB_SIZE;
+  const space = minify ? undefined : indentation;
+  console.log(space);
 
   const raw = useMemo(
-    () => JSON.stringify(json, undefined, indent),
-    [json, indent]
+    () => JSON.stringify(json, undefined, space),
+    [json, space]
   );
-
-  // TODO setting highlight
 
   const highlightedText = useHighlightedSearchResults(raw, search);
 

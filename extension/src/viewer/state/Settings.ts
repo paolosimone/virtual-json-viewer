@@ -3,6 +3,7 @@ import { createContext } from "react";
 export type Settings = {
   version: number;
   textSize: TextSize;
+  indentation: number;
 };
 
 export enum TextSize {
@@ -16,6 +17,7 @@ export enum TextSize {
 export const DefaultSettings: Settings = {
   version: 1,
   textSize: TextSize.Medium,
+  indentation: 4,
 };
 
 export const SettingsContext = createContext<Settings>(DefaultSettings);

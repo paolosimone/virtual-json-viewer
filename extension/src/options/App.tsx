@@ -3,7 +3,12 @@ import "tailwindcss/tailwind.css";
 import { useSettings, useTheme } from "viewer/hooks";
 import { TranslationContext, useLocalization } from "viewer/localization";
 import { resolveTextSizeClass, TextSize } from "viewer/state";
-import { LanguageSelect, TextSizeSelect, ThemeSelect } from "./components";
+import {
+  LanguageSelect,
+  NumberInput,
+  TextSizeSelect,
+  ThemeSelect,
+} from "./components";
 
 export function App(): JSX.Element {
   const [_, theme, setTheme] = useTheme();
@@ -29,6 +34,15 @@ export function App(): JSX.Element {
           textSize={settings.textSize}
           setTextSize={(newTextSize: TextSize) =>
             updateSettings({ textSize: newTextSize })
+          }
+        />
+
+        <label>{t.settings.labels.indentation}</label>
+        <NumberInput
+          min={1}
+          value={settings.indentation}
+          setValue={(newValue: number) =>
+            updateSettings({ indentation: newValue })
           }
         />
       </div>

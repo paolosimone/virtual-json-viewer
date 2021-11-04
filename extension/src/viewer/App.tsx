@@ -15,6 +15,7 @@ import {
   EmptyJQCommand,
   EmptySearch,
   resolveTextSizeClass,
+  SettingsContext,
   ThemeContext,
   ViewerMode,
 } from "./state";
@@ -67,6 +68,7 @@ export function App({ jsonText, jqWasmFile }: AppProps): JSX.Element {
       contexts={[
         [ThemeContext, theme],
         [TranslationContext, translation],
+        [SettingsContext, settings],
       ]}
     >
       <div className="flex flex-col h-full overflow-hidden font-mono">
