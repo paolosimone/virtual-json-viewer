@@ -39,14 +39,16 @@ export function isEmpty(json: JsonCollection): boolean {
 }
 
 export function* iterator(
-  json: JsonCollection
+  json: JsonCollection,
+  sortKeys?: boolean
 ): Generator<[string, Json], void, void> {
   if (isArray(json)) {
     for (let i = 0; i < json.length; i++) {
       yield [i.toString(), json[i]];
     }
   } else if (isObject(json)) {
-    const keys = Object.keys(json).sort();
+    const keys = Object.keys(json);
+    if (sortKeys) keys.sort();
     for (const key of keys) {
       yield [key, json[key]];
     }

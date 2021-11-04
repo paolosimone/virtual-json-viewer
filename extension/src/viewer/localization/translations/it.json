@@ -1,8 +1,13 @@
 {
   "settings": {
+    "reset": "Ritorna ai valori di default",
     "labels": {
       "language": "Lingua",
-      "theme": "Tema"
+      "theme": "Tema",
+      "textSize": "Dimensioni caratteri",
+      "indentation": "Indentazione",
+      "searchDelay": "Ritardo nella ricerca (ms)",
+      "sortKeys": "Ordina le chiavi"
     },
     "language": {
       "system": "Lingua di sistema"
@@ -11,6 +16,13 @@
       "dark": "Scuro",
       "light": "Chiaro",
       "system": "Tema di sistema"
+    },
+    "textSize": {
+      "XS": "Molto piccolo",
+      "S": "Piccolo",
+      "M": "Medio",
+      "L": "Grande",
+      "XL": "Molto grande"
     }
   },
   "toolbar": {

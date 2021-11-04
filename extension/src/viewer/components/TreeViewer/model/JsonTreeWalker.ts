@@ -4,34 +4,40 @@ import { Search } from "../../../state";
 import { JsonNode, JsonNodeData, SearchMatch } from "./JsonNode";
 import { NodeFilter } from "./NodeFilter";
 
-// TODO setting sort keys
-
 export function jsonTreeWalker(
   json: Json,
+  sortKeys: boolean,
   search: Search
 ): TreeWalker<JsonNodeData> {
-  return search.text ? filteredTreeWalker(json, search) : fullTreeWalker(json);
+  return search.text
+    ? filteredTreeWalker(json, sortKeys, search)
+    : fullTreeWalker(json, sortKeys);
 }
 
-export function getRootNodes(json: Json): JsonNode[] {
+export function getRootNodes(json: Json, sortKeys?: boolean): JsonNode[] {
   if (isLeaf(json)) {
     return [{ key: "", value: json, parent: null }];
   }
 
-  return [...J.iterator(json as JsonCollection)].map(([key, value]) => ({
-    key: key,
-    value: value,
-    parent: null,
-  }));
+  return [...J.iterator(json as JsonCollection, sortKeys)].map(
+    ([key, value]) => ({
+      key: key,
+      value: value,
+      parent: null,
+    })
+  );
 }
 
 export function isLeaf(json: Json): boolean {
   return J.isLiteral(json) || J.isEmpty(json);
 }
 
-function fullTreeWalker(json: Json): TreeWalker<JsonNodeData> {
+function fullTreeWalker(
+  json: Json,
+  sortKeys: boolean
+): TreeWalker<JsonNodeData> {
   return function* () {
-    for (const node of getRootNodes(json)) {
+    for (const node of getRootNodes(json, sortKeys)) {
       yield getNodeData(node);
     }
 
@@ -41,7 +47,7 @@ function fullTreeWalker(json: Json): TreeWalker<JsonNodeData> {
       const json = parent.data.value;
 
       if (J.isCollection(json)) {
-        for (const [key, value] of J.iterator(json)) {
+        for (const [key, value] of J.iterator(json, sortKeys)) {
           const node = { key: key, value: value, parent: parent.data };
           yield getNodeData(node);
         }
@@ -52,13 +58,14 @@ function fullTreeWalker(json: Json): TreeWalker<JsonNodeData> {
 
 function filteredTreeWalker(
   json: Json,
+  sortKeys: boolean,
   search: Search
 ): TreeWalker<JsonNodeData> {
   const filter = new NodeFilter(search);
 
   return function* () {
     let existsMatch = false;
-    for (const node of getRootNodes(json)) {
+    for (const node of getRootNodes(json, sortKeys)) {
       const match = filter.match(node);
       if (match) {
         existsMatch = true;
@@ -76,7 +83,7 @@ function filteredTreeWalker(
       const json = parent.data.value;
 
       if (J.isCollection(json)) {
-        for (const [key, value] of J.iterator(json)) {
+        for (const [key, value] of J.iterator(json, sortKeys)) {
           const node = { key: key, value: value, parent: parent.data };
           const match = filter.match(node);
           if (match) {

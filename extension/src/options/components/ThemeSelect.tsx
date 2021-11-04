@@ -1,14 +1,19 @@
-import { useContext } from "react";
+import { Dispatch, useContext } from "react";
 import { Select } from "viewer/components";
-import { useTheme } from "viewer/hooks";
 import { TranslationContext } from "viewer/localization";
 import { SystemTheme, Theme, ThemeSetting } from "viewer/state";
 
-export type ThemeSelectProps = Props<EmptyObject>;
+export type ThemeSelectProps = Props<{
+  theme: ThemeSetting;
+  setTheme: Dispatch<ThemeSetting>;
+}>;
 
-export function ThemeSelect({ className }: ThemeSelectProps): JSX.Element {
+export function ThemeSelect({
+  theme,
+  setTheme,
+  className,
+}: ThemeSelectProps): JSX.Element {
   const t = useContext(TranslationContext);
-  const [_asdf, theme, setTheme] = useTheme();
 
   const systemOption = {
     value: SystemTheme as ThemeSetting,

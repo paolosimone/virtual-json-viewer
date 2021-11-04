@@ -1,8 +1,13 @@
 {
   "settings": {
+    "reset": "Reset default settings",
     "labels": {
       "language": "Language",
-      "theme": "Theme"
+      "theme": "Theme",
+      "textSize": "Text size",
+      "indentation": "Indentation",
+      "searchDelay": "Search delay (ms)",
+      "sortKeys": "Sort keys"
     },
     "language": {
       "system": "System language"
@@ -11,6 +16,13 @@
       "dark": "Dark",
       "light": "Light",
       "system": "System theme"
+    },
+    "textSize": {
+      "XS": "Extra small",
+      "S": "Small",
+      "M": "Medium",
+      "L": "Large",
+      "XL": "Extra large"
     }
   },
   "toolbar": {

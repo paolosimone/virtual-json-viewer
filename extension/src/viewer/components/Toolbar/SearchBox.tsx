@@ -9,10 +9,7 @@ import {
 } from "react";
 import { Icon, IconButton, IconLabel } from "viewer/components";
 import { TranslationContext } from "viewer/localization";
-import { Search } from "../../state";
-
-// TODO setting typing delay
-const TYPING_DELAY = 300;
+import { Search, SettingsContext } from "viewer/state";
 
 export type SearchBoxProps = Props<{
   search: Search;
@@ -99,6 +96,7 @@ function SearchInput({
   className,
 }: SearchInputProps): JSX.Element {
   const t = useContext(TranslationContext);
+  const { searchDelay } = useContext(SettingsContext);
 
   // throttle onChange event to wait until user stop typing
   let timeoutId: Nullable<NodeJS.Timeout> = null;
@@ -113,7 +111,7 @@ function SearchInput({
   const onChange = (e: FormEvent<HTMLInputElement>) => {
     maybeClearTimeout();
     const text = (e.target as HTMLInputElement).value;
-    timeoutId = setTimeout(() => setText(text), TYPING_DELAY);
+    timeoutId = setTimeout(() => setText(text), searchDelay);
   };
 
   // restore the input element internal state on rerender
