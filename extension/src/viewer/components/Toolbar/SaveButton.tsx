@@ -1,10 +1,11 @@
 import { useCallback, useContext } from "react";
+import * as Json from "viewer/commons/Json";
 import { Icon, IconButton } from "viewer/components";
 import { TranslationContext } from "viewer/localization";
 import { SettingsContext } from "viewer/state";
 
 export type SaveButtonProps = Props<{
-  json: Json;
+  json: Json.Root;
 }>;
 
 export function SaveButton({ json, className }: SaveButtonProps): JSX.Element {
@@ -22,13 +23,13 @@ export function SaveButton({ json, className }: SaveButtonProps): JSX.Element {
   );
 }
 
-function saveJson(json: Json, indent: number) {
+function saveJson(json: Json.Root, indent: number) {
   let filename = document.title;
   if (!filename.endsWith(".json")) {
     filename += ".json";
   }
 
-  const text = JSON.stringify(json, undefined, indent);
+  const text = Json.toString(json, { sortKeys: true, space: indent });
 
   const element = document.createElement("a");
   element.setAttribute(

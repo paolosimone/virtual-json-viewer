@@ -1,11 +1,12 @@
 import classNames from "classnames";
 import { useCallback, useContext, useMemo, useState } from "react";
 import { EventType } from "viewer/commons/EventBus";
+import * as Json from "viewer/commons/Json";
 import { useEventBusListener, useHighlightedSearchResults } from "viewer/hooks";
 import { Search, SettingsContext } from "viewer/state";
 
 export type RawViewerProps = Props<{
-  json: Json;
+  json: Json.Root;
   search: Search;
 }>;
 
@@ -27,13 +28,13 @@ export function RawViewer({
   console.log(space);
 
   const raw = useMemo(
-    () => JSON.stringify(json, undefined, space),
+    () => Json.toString(json, { sortKeys: true, space: space }),
     [json, space]
   );
 
   const highlightedText = useHighlightedSearchResults(raw, search);
 
-  const wrap = minify ? "whitespace-pre-wrap" : "whitespace-pre";
+  const wrap = minify ? "break-all" : "whitespace-pre";
 
   return (
     <div className={classNames(wrap, className)} spellCheck={false}>

@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import { useMemo } from "react";
 import "tailwindcss/tailwind.css";
+import * as Json from "viewer/commons/Json";
 import { Alert, RawViewer, Toolbar, TreeViewer } from "./components";
 import { MultiContextProvider } from "./components/MultiContextProvider";
 import {
@@ -37,7 +38,7 @@ export function App({ jsonText, jqWasmFile }: AppProps): JSX.Element {
   const jqCommandState = useStateObject(EmptyJQCommand);
 
   // parse json
-  const jsonResult = useMemo(() => tryParse(jsonText), [jsonText]);
+  const jsonResult = useMemo(() => Json.tryParse(jsonText), [jsonText]);
   const jqResult = useJQ(jqWasmFile, jsonText, jqCommandState.value);
 
   // fatal error page
@@ -90,9 +91,9 @@ export function App({ jsonText, jqWasmFile }: AppProps): JSX.Element {
 }
 
 function resolveJson(
-  jsonResult: Json,
+  jsonResult: Json.Root,
   jqResult: JQResult
-): [Json, Nullable<Error>] {
+): [Json.Root, Nullable<Error>] {
   if (jqResult === undefined) {
     return [jsonResult, null];
   }
@@ -102,12 +103,4 @@ function resolveJson(
   }
 
   return [jqResult, null];
-}
-
-function tryParse(jsonText: string): Result<Json> {
-  try {
-    return JSON.parse(jsonText);
-  } catch (e) {
-    return e as Error;
-  }
 }

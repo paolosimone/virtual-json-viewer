@@ -55,14 +55,6 @@ export function App(): JSX.Element {
               updateSettings({ searchDelay: newValue })
             }
           />
-
-          <label>{t.settings.labels.sortKeys}</label>
-          <input
-            className="self-center"
-            type="checkbox"
-            checked={settings.sortKeys}
-            onChange={() => updateSettings({ sortKeys: !settings.sortKeys })}
-          />
         </div>
 
         <div className="flex items-center justify-center pt-6">

@@ -1,4 +1,4 @@
-import * as J from "viewer/commons/JsonUtils";
+import * as Json from "viewer/commons/Json";
 import { Search } from "viewer/state";
 import { JsonNode, SearchMatch } from "./JsonNode";
 
@@ -18,11 +18,11 @@ export class NodeFilter {
   }
 
   public match({ key, value, parent }: JsonNode): Nullable<SearchMatch> {
-    const isArrayElement = parent !== null && J.isArray(parent.value);
+    const isArrayElement = parent !== null && Json.isArray(parent.value);
     const matchKey = !isArrayElement && this.searchStrategy.isMatch(key);
 
     const matchValue =
-      value !== null && this.searchStrategy.isMatch(JSON.stringify(value));
+      value !== null && this.searchStrategy.isMatch(Json.toString(value));
 
     const matchAncestor =
       parent?.searchMatch?.inKey || parent?.searchMatch?.inAncestor || false;

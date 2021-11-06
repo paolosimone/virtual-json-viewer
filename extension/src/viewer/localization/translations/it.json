@@ -6,8 +6,7 @@
       "theme": "Tema",
       "textSize": "Dimensioni caratteri",
       "indentation": "Indentazione",
-      "searchDelay": "Ritardo nella ricerca (ms)",
-      "sortKeys": "Ordina le chiavi"
+      "searchDelay": "Ritardo nella ricerca (ms)"
     },
     "language": {
       "system": "Lingua di sistema"

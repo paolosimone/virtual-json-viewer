@@ -1,43 +1,35 @@
 import { TreeWalker, TreeWalkerValue } from "react-vtree";
-import * as J from "viewer/commons/JsonUtils";
+import * as Json from "viewer/commons/Json";
 import { Search } from "../../../state";
 import { JsonNode, JsonNodeData, SearchMatch } from "./JsonNode";
 import { NodeFilter } from "./NodeFilter";
 
 export function jsonTreeWalker(
-  json: Json,
-  sortKeys: boolean,
+  json: Json.Root,
   search: Search
 ): TreeWalker<JsonNodeData> {
-  return search.text
-    ? filteredTreeWalker(json, sortKeys, search)
-    : fullTreeWalker(json, sortKeys);
+  return search.text ? filteredTreeWalker(json, search) : fullTreeWalker(json);
 }
 
-export function getRootNodes(json: Json, sortKeys?: boolean): JsonNode[] {
+export function getRootNodes(json: Json.Root): JsonNode[] {
   if (isLeaf(json)) {
     return [{ key: "", value: json, parent: null }];
   }
 
-  return [...J.iterator(json as JsonCollection, sortKeys)].map(
-    ([key, value]) => ({
-      key: key,
-      value: value,
-      parent: null,
-    })
-  );
+  return [...Json.iterator(json as Json.Collection)].map(([key, value]) => ({
+    key: key,
+    value: value,
+    parent: null,
+  }));
 }
 
-export function isLeaf(json: Json): boolean {
-  return J.isLiteral(json) || J.isEmpty(json);
+export function isLeaf(json: Json.Root): boolean {
+  return Json.isLiteral(json) || Json.isEmpty(json);
 }
 
-function fullTreeWalker(
-  json: Json,
-  sortKeys: boolean
-): TreeWalker<JsonNodeData> {
+function fullTreeWalker(json: Json.Root): TreeWalker<JsonNodeData> {
   return function* () {
-    for (const node of getRootNodes(json, sortKeys)) {
+    for (const node of getRootNodes(json)) {
       yield getNodeData(node);
     }
 
@@ -46,8 +38,8 @@ function fullTreeWalker(
       const parent = yield;
       const json = parent.data.value;
 
-      if (J.isCollection(json)) {
-        for (const [key, value] of J.iterator(json, sortKeys)) {
+      if (Json.isCollection(json)) {
+        for (const [key, value] of Json.iterator(json)) {
           const node = { key: key, value: value, parent: parent.data };
           yield getNodeData(node);
         }
@@ -57,15 +49,14 @@ function fullTreeWalker(
 }
 
 function filteredTreeWalker(
-  json: Json,
-  sortKeys: boolean,
+  json: Json.Root,
   search: Search
 ): TreeWalker<JsonNodeData> {
   const filter = new NodeFilter(search);
 
   return function* () {
     let existsMatch = false;
-    for (const node of getRootNodes(json, sortKeys)) {
+    for (const node of getRootNodes(json)) {
       const match = filter.match(node);
       if (match) {
         existsMatch = true;
@@ -82,8 +73,8 @@ function filteredTreeWalker(
       const parent = yield;
       const json = parent.data.value;
 
-      if (J.isCollection(json)) {
-        for (const [key, value] of J.iterator(json, sortKeys)) {
+      if (Json.isCollection(json)) {
+        for (const [key, value] of Json.iterator(json)) {
           const node = { key: key, value: value, parent: parent.data };
           const match = filter.match(node);
           if (match) {
@@ -106,7 +97,7 @@ function getNodeData(
       nesting: parent ? parent.nesting + 1 : 0,
       isLeaf: isLeaf(value),
       key: key,
-      childrenCount: J.isCollection(value) ? J.length(value) : null,
+      childrenCount: Json.isCollection(value) ? Json.length(value) : null,
       value: value,
       parent: parent,
       defaultHeight: 30,

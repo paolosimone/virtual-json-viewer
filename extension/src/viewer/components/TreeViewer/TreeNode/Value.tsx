@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import * as J from "viewer/commons/JsonUtils";
+import * as Json from "viewer/commons/Json";
 import { useHighlightedSearchResults } from "viewer/hooks";
 import { Search } from "viewer/state";
 import { JsonNodeData } from "../model/JsonNode";
@@ -19,7 +19,7 @@ export function Value({
     return <span />;
   }
 
-  if (J.isCollection(value)) {
+  if (Json.isCollection(value)) {
     return (
       <CollectionValue value={value} childrenCount={childrenCount as number} />
     );
@@ -29,7 +29,7 @@ export function Value({
 }
 
 type CollectionValueProps = Props<{
-  value: JsonCollection;
+  value: Json.Collection;
   childrenCount: number;
 }>;
 
@@ -38,7 +38,7 @@ function CollectionValue({
   childrenCount,
 }: CollectionValueProps): JSX.Element {
   const count = childrenCount ? ` ${childrenCount} ` : "";
-  const preview = J.isArray(value) ? `[${count}]` : `{${count}}`;
+  const preview = Json.isArray(value) ? `[${count}]` : `{${count}}`;
   const fade = { "opacity-50": childrenCount };
   return (
     <span
@@ -50,12 +50,12 @@ function CollectionValue({
 }
 
 type LiteralValueProps = Props<{
-  value: JsonLiteral;
+  value: Json.Literal;
   search: Nullable<Search>;
 }>;
 
 function LiteralValue({ value, search }: LiteralValueProps): JSX.Element {
-  const textColor = J.isString(value)
+  const textColor = Json.isString(value)
     ? "text-pink-600 dark:text-pink-400"
     : "text-green-600 dark:text-green-400";
   const textValue = literalToString(value);
@@ -67,8 +67,8 @@ function LiteralValue({ value, search }: LiteralValueProps): JSX.Element {
   );
 }
 
-function literalToString(value: JsonLiteral): string {
-  if (J.isString(value)) {
+function literalToString(value: Json.Literal): string {
+  if (Json.isString(value)) {
     return `"${value}"`;
   }
 
