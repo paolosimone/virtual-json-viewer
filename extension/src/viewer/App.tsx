@@ -39,7 +39,11 @@ export function App({ jsonText, jqWasmFile }: AppProps): JSX.Element {
 
   // parse json
   const jsonResult = useMemo(() => Json.tryParse(jsonText), [jsonText]);
-  const jqResult = useJQ(jqWasmFile, jsonText, jqCommandState.value);
+  const [jqEnabled, jqResult] = useJQ(
+    jqWasmFile,
+    jsonText,
+    jqCommandState.value
+  );
 
   // fatal error page
   if (jsonResult instanceof Error) {
@@ -55,10 +59,10 @@ export function App({ jsonText, jqWasmFile }: AppProps): JSX.Element {
   const [json, error] = resolveJson(jsonResult, jqResult);
 
   const toolbarProps = {
+    json: json,
     viewerModeState: viewerModeState,
     searchState: searchState,
-    jqCommandState: jqCommandState,
-    json: json,
+    jqCommandState: jqEnabled ? jqCommandState : undefined,
   };
 
   const Viewer =
