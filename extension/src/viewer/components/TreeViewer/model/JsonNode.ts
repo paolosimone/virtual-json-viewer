@@ -1,8 +1,9 @@
+import * as Json from "viewer/commons/Json";
 import { Search } from "viewer/state";
 
 export type JsonNode = {
   key: string;
-  value: Json;
+  value: Json.Root;
   parent: Nullable<JsonNodeData>;
 };
 
@@ -11,7 +12,7 @@ export type JsonNodeData = {
   isOpenByDefault: boolean;
   isLeaf: boolean;
   key: Nullable<string>;
-  value: Json;
+  value: Json.Root;
   nesting: number;
   childrenCount: Nullable<number>;
   parent: Nullable<JsonNodeData>;

@@ -1,11 +1,12 @@
 import classNames from "classnames";
 import { useCallback, useContext, useMemo, useState } from "react";
 import { EventType } from "viewer/commons/EventBus";
+import * as Json from "viewer/commons/Json";
 import { useEventBusListener, useHighlightedSearchResults } from "viewer/hooks";
 import { Search, SettingsContext } from "viewer/state";
 
 export type RawViewerProps = Props<{
-  json: Json;
+  json: Json.Root;
   search: Search;
 }>;
 
@@ -26,10 +27,7 @@ export function RawViewer({
   const space = minify ? undefined : indentation;
   console.log(space);
 
-  const raw = useMemo(
-    () => JSON.stringify(json, undefined, space),
-    [json, space]
-  );
+  const raw = useMemo(() => Json.toString(json, space), [json, space]);
 
   const highlightedText = useHighlightedSearchResults(raw, search);
 

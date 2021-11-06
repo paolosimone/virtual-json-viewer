@@ -1,5 +1,6 @@
 import classNames from "classnames";
 import { useContext } from "react";
+import * as Json from "viewer/commons/Json";
 import { Icon, IconButton } from "viewer/components";
 import { StateObject } from "viewer/hooks";
 import { TranslationContext } from "viewer/localization";
@@ -14,7 +15,7 @@ export type ToolbarProps = Props<{
   viewerModeState: StateObject<ViewerMode>;
   searchState: StateObject<Search>;
   jqCommandState: StateObject<JQCommand>;
-  json: Json;
+  json: Json.Root;
 }>;
 
 export function Toolbar({
