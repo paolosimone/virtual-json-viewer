@@ -31,7 +31,7 @@ export function RawViewer({
 
   const highlightedText = useHighlightedSearchResults(raw, search);
 
-  const wrap = minify ? "whitespace-pre-wrap" : "whitespace-pre";
+  const wrap = minify ? "break-all" : "whitespace-pre";
 
   return (
     <div className={classNames(wrap, className)} spellCheck={false}>
