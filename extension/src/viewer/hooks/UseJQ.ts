@@ -10,7 +10,7 @@ export function useJQ(
   jsonText: string,
   { filter }: JQCommand
 ): JQResult {
-  const [result, setResult] = useState<JQResult>(jsonText);
+  const [result, setResult] = useState<JQResult>(undefined);
 
   useEffectAsync(
     async (mutex: Mutex) => {
