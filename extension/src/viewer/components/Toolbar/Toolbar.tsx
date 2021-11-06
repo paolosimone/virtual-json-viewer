@@ -12,17 +12,17 @@ import { SearchBox } from "./SearchBox";
 import { ViewerModeToggle } from "./ViewerModeToggle";
 
 export type ToolbarProps = Props<{
+  json: Json.Root;
   viewerModeState: StateObject<ViewerMode>;
   searchState: StateObject<Search>;
-  jqCommandState: StateObject<JQCommand>;
-  json: Json.Root;
+  jqCommandState?: StateObject<JQCommand>;
 }>;
 
 export function Toolbar({
+  json,
   viewerModeState,
   searchState,
   jqCommandState,
-  json,
   className,
 }: ToolbarProps): JSX.Element {
   const t = useContext(TranslationContext);
@@ -35,7 +35,7 @@ export function Toolbar({
         className
       )}
     >
-      <div className="flex items-center mb-0.5">
+      <div className="flex items-center">
         <ViewerModeToggle
           className="w-14 h-7 ml-1"
           viewerMode={viewerModeState.value}
@@ -70,12 +70,14 @@ export function Toolbar({
         />
       </div>
 
-      <div>
-        <JQCommandBox
-          command={jqCommandState.value}
-          setCommand={jqCommandState.setValue}
-        />
-      </div>
+      {jqCommandState && (
+        <div className="pt-0.5">
+          <JQCommandBox
+            command={jqCommandState.value}
+            setCommand={jqCommandState.setValue}
+          />
+        </div>
+      )}
     </div>
   );
 }
