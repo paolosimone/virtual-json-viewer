@@ -38,12 +38,8 @@ export function App({ jsonText, jqWasmFile }: AppProps): JSX.Element {
   const jqCommandState = useStateObject(EmptyJQCommand);
 
   // parse json
-  const sortKeys = settings.sortKeys;
-  const jsonResult = useMemo(
-    () => Json.tryParse(jsonText, sortKeys),
-    [jsonText, sortKeys]
-  );
-  const jqResult = useJQ(jqWasmFile, jsonText, sortKeys, jqCommandState.value);
+  const jsonResult = useMemo(() => Json.tryParse(jsonText), [jsonText]);
+  const jqResult = useJQ(jqWasmFile, jsonText, jqCommandState.value);
 
   // fatal error page
   if (jsonResult instanceof Error) {

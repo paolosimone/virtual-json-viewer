@@ -1,30 +1,41 @@
+import stableStringify from "json-stable-stringify";
 /**
  * Custom Json type
- * 
+ *
  * It's basically the same as a normal Json except for the Object type,
  * which is wrapped in a custom `JObject` at deserialization time.
- * 
- * __Object length__
- * Counting the keys in a javascript object has linear complexity,
- * so it's computed one time on JSON.parse and stored as metadata.
- * 
+ *
  * __Keys order__
+ *
  * From ECMAScript 2015 specification iteration over object keys
- * is guaranteed to happen in property creation order, if all keys are string.
- * So we create a new object at load time inserting keys in ascending order.
- * 
- * Source: https://262.ecma-international.org/6.0/#sec-ordinary-object-internal-methods-and-internal-slots-ownpropertykeys
- * 
+ * is guaranteed to happen in property creation order if all keys are string.
+ * ... except that numeric string (e.g. "42") are treated as numbers :facepalm:
+ *
+ * So in order to avoid sorting keys any time we need to iterate over the object,
+ * we trade time for space complexity and store the sorted keys array as metadata.
+ *
+ * __Object length__
+ *
+ * Counting the keys in a javascript object has linear complexity.
+ * We store the key count as metadata as well, so that `Array` and `JObject`
+ * have both the `length` field.
+ *
  * __Why not Map?__
- * Javascript also offers a Map type that seems to fit our use case, why not use it? 
+ *
+ * Javascript also offers a Map type that seems to fit our use case, why not use it?
  * The drawback of building a Map on JSON.parse would be to convert it back
  * to an object on serialization, since JSON.stringify works only with objects.
  * In our use case JSON.parse is called rarely (on first load and when running JQ filtering),
  * while JSON.stringify could be called a lot of times, since it's the core routine of
  * the search functionality.
- * 
+ *
  * Anyway, the data structure used as object is an internal detail of this module
  * and could be easily swapped whithout too much impact on the rest of the codebase.
+ *
+ * __Stringify__
+ *
+ * Unfortunately it's not so easy to make JSON.stringify sort keys,
+ * so we rely on the external package `json-stable-stringify`.
  */
 
 export type Root = Literal | Collection;
@@ -33,7 +44,11 @@ export type Collection = Array | JObject;
 export type Array = Root[];
 
 // 'J' prefix to prevent collision with Object type
-export type JObject = { content: ObjectContent; length: number };
+export type JObject = {
+  content: ObjectContent;
+  keys: string[];
+  length: number;
+};
 export type ObjectContent = { [key: string]: Root };
 
 /* Type predicates */
@@ -80,41 +95,38 @@ export function isEmpty(json: Collection): boolean {
 
 /* Parsing / Serialization */
 
-export function tryParse(text: string, sortKeys?: boolean): Result<Root> {
+export function tryParse(text: string): Result<Root> {
   try {
-    return JSON.parse(text, reviver(sortKeys));
+    return JSON.parse(text, reviver);
   } catch (e) {
     return e as Error;
   }
 }
 
-export function toString(value: Root, space?: number): string {
-  return JSON.stringify(value, replacer, space);
+export type ToStringOptions = {
+  sortKeys?: boolean;
+  space?: number;
+};
+
+export function toString(value: Root, opts?: ToStringOptions): string {
+  return opts?.sortKeys
+    ? stableStringify(value, { replacer: replacer, space: opts?.space })
+    : JSON.stringify(value, replacer, opts?.space);
 }
 
 type ReviverInputValue = ObjectContent | Array | Literal;
-type Reviver = (key: string, value: ReviverInputValue) => Root;
 
-function reviver(sortKeys?: boolean): Reviver {
-  return (_key, value) => {
-    if (!isObjectContent(value)) {
-      return value;
-    }
+function reviver(_key: string, value: ReviverInputValue): Root {
+  if (!isObjectContent(value)) {
+    return value;
+  }
 
-    const keys = Object.keys(value);
+  const sortedKeys = Object.keys(value).sort();
 
-    if (sortKeys) {
-      const sortedValue: ObjectContent = {};
-      for (const key of keys.sort()) {
-        sortedValue[key] = value[key];
-      }
-      value = sortedValue;
-    }
-
-    return {
-      content: value,
-      length: keys.length,
-    };
+  return {
+    content: value,
+    keys: sortedKeys,
+    length: sortedKeys.length,
   };
 }
 
@@ -136,7 +148,7 @@ export function* iterator(json: Root): Generator<[string, Root], void, void> {
       yield [i.toString(), json[i]];
     }
   } else if (isObject(json)) {
-    for (const key of Object.getOwnPropertyNames(json.content)) {
+    for (const key of json.keys) {
       yield [key, json.content[key]];
     }
   }

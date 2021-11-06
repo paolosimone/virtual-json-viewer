@@ -72,6 +72,29 @@ Run `yarn start` to serve the extension as a web app with hot reload.
 
 Always `yarn format` before creating a commit.
 
+## Performance
+
+*Disclaimer*: this is NOT a formal benchmark, just a few tests with syntethic data to give an idea of loading performance time.
+
+**Setup**
+- Macbook Pro 16 (2019) 2,6 GHz 16 GB
+- Chrome 95.0.4638.69
+- Jsons are randomly generated using [this script](https://gist.github.com/paolosimone/437ba2e9675bafcc914b587d53fab0b3) (fixed dept: 10)
+- Files are loaded from disk
+- Load time recorded with Chrome DevTool
+    1. Open file in chrome
+    1. Click "Start profiling and reload page" 
+    1. Take the end of the last frame 
+
+**Results**
+
+| Siblings per level | File Size      | Load time       |
+|--------------------|----------------|-----------------|
+| 110                | ~100 KB        | ~250 ms         |
+| 1100               | ~1 MB          | ~350 ms         |
+| 11000              | ~10 MB         | ~1200 ms        |
+| 110000             | ~100 MB        | ~10 s           |
+
 ## References
 
 |Tool                                                                                                                       |Usage                                          |
@@ -79,6 +102,7 @@ Always `yarn format` before creating a commit.
 |[cra-template-complex-browserext-typescript](https://github.com/hindmost/cra-template-complex-browserext-typescript)       |Project scaffolding, huge help!                |
 |[customize-cra](https://github.com/arackaf/customize-cra)                                                                  |Break webpack config, then fix it              |
 |[jq-wasm](https://github.com/paolosimone/jq-wasm)                                                                          |JQ in the browser                              |
+|[json-stable-stringify](https://github.com/substack/json-stable-stringify)                                                 |Sort keys on JSON serialization apparently is rocket science|
 |[React](https://reactjs.org/)                                                                                              |Learn how to write a frontend application without jQuery and bootstrap|
 |[react-vtree](https://github.com/Lodin/react-vtree)                                                                        |Render the JSON. I'd say it's a pretty important role|
 |[TailwindCSS](https://tailwindcss.com/)                                                                                    |Prevent me from touching CSS files|

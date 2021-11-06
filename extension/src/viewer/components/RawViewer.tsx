@@ -27,7 +27,10 @@ export function RawViewer({
   const space = minify ? undefined : indentation;
   console.log(space);
 
-  const raw = useMemo(() => Json.toString(json, space), [json, space]);
+  const raw = useMemo(
+    () => Json.toString(json, { sortKeys: true, space: space }),
+    [json, space]
+  );
 
   const highlightedText = useHighlightedSearchResults(raw, search);
 

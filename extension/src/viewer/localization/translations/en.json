@@ -6,8 +6,7 @@
       "theme": "Theme",
       "textSize": "Text size",
       "indentation": "Indentation",
-      "searchDelay": "Search delay (ms)",
-      "sortKeys": "Sort keys"
+      "searchDelay": "Search delay (ms)"
     },
     "language": {
       "system": "System language"

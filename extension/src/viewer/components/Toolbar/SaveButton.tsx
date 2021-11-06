@@ -29,7 +29,7 @@ function saveJson(json: Json.Root, indent: number) {
     filename += ".json";
   }
 
-  const text = Json.toString(json, indent);
+  const text = Json.toString(json, { sortKeys: true, space: indent });
 
   const element = document.createElement("a");
   element.setAttribute(

@@ -5,7 +5,6 @@ export type Settings = {
   textSize: TextSize;
   indentation: number;
   searchDelay: number;
-  sortKeys: boolean;
 };
 
 export enum TextSize {
@@ -21,7 +20,6 @@ export const DefaultSettings: Settings = {
   textSize: TextSize.Medium,
   indentation: 4,
   searchDelay: 300,
-  sortKeys: true,
 };
 
 export const SettingsContext = createContext<Settings>(DefaultSettings);

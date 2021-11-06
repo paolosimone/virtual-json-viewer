@@ -9,7 +9,6 @@ export type JQResult = Json.Root | Error | undefined;
 export function useJQ(
   jqWasmFile: string,
   jsonText: string,
-  sortKeys: boolean,
   { filter }: JQCommand
 ): JQResult {
   const [result, setResult] = useState<JQResult>(undefined);
@@ -29,12 +28,12 @@ export function useJQ(
         const module = { locateFile: () => jqWasmFile, noExitRuntime: false };
         const jq = await newJQ(module);
         const result = await jq.invoke(jsonText, filter);
-        if (mutex.hasLock()) setResult(Json.tryParse(result, sortKeys));
+        if (mutex.hasLock()) setResult(Json.tryParse(result));
       } catch (e) {
         if (mutex.hasLock()) setResult(e as Error);
       }
     },
-    [jqWasmFile, jsonText, sortKeys, filter, setResult]
+    [jqWasmFile, jsonText, filter, setResult]
   );
 
   return result;
