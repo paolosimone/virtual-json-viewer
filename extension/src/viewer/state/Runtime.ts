@@ -6,8 +6,6 @@ export enum Runtime {
 }
 
 const runtime =
-  window.chrome && chrome.runtime && chrome.runtime.id
-    ? Runtime.Extension
-    : Runtime.Web;
+  chrome.runtime && chrome.runtime.id ? Runtime.Extension : Runtime.Web;
 
 export const RuntimeContext = createContext(runtime);
