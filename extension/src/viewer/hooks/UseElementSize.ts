@@ -1,5 +1,6 @@
 import { RefObject, useEffect, useState } from "react";
 
+// The element size, without padding
 export type Size = {
   height: number;
   width: number;
@@ -46,8 +47,13 @@ function currentSize<T extends Element>(element: RefObject<T>): Size {
   }
 
   const style = window.getComputedStyle(element.current);
+  const paddingY =
+    parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
+  const paddingX =
+    parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+
   return {
-    height: parseInt(style.height),
-    width: parseInt(style.width),
+    height: element.current.clientHeight - paddingY,
+    width: element.current.clientWidth - paddingX,
   };
 }
