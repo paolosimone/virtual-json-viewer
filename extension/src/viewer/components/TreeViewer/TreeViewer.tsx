@@ -1,12 +1,11 @@
-import React, { useCallback, useMemo, useRef } from "react";
-import { AutoSizer } from "react-virtualized";
+import React, { RefObject, useCallback, useMemo, useRef } from "react";
 import {
   VariableSizeNodePublicState as NodeState,
   VariableSizeTree as Tree,
 } from "react-vtree";
 import { EventType } from "viewer/commons/EventBus";
 import * as Json from "viewer/commons/Json";
-import { useEventBusListener, useWindowSize } from "viewer/hooks";
+import { useElementSize, useEventBusListener } from "viewer/hooks";
 import { Search } from "viewer/state";
 import { JsonNodeData } from "./model/JsonNode";
 import { getRootNodes, isLeaf, jsonTreeWalker } from "./model/JsonTreeWalker";
@@ -15,14 +14,16 @@ import { TreeNode } from "./TreeNode";
 const RESIZE_DELAY = 100;
 
 export type TreeViewerProps = {
+  parent: RefObject<HTMLDivElement>;
   json: Json.Root;
   search: Search;
 };
 
-export function TreeViewer({ json, search }: TreeViewerProps): JSX.Element {
-  // force update on window resize
-  useWindowSize(RESIZE_DELAY);
-
+export function TreeViewer({
+  parent,
+  json,
+  search,
+}: TreeViewerProps): JSX.Element {
   const tree = useRef<Tree<JsonNodeData>>(null);
 
   const expand = useCallback(() => setOpen(json, tree, true), [json, tree]);
@@ -36,14 +37,13 @@ export function TreeViewer({ json, search }: TreeViewerProps): JSX.Element {
     [json, search]
   );
 
+  // for some obscure reason AutoSizer doesn't work on Firefox when loaded as extension
+  const { height, width } = useElementSize(parent, RESIZE_DELAY);
+
   return (
-    <AutoSizer>
-      {({ height, width }) => (
-        <Tree ref={tree} treeWalker={treeWalker} height={height} width={width}>
-          {TreeNode}
-        </Tree>
-      )}
-    </AutoSizer>
+    <Tree ref={tree} treeWalker={treeWalker} height={height} width={width}>
+      {TreeNode}
+    </Tree>
   );
 }
 

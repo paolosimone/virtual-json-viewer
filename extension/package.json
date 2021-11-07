@@ -8,10 +8,8 @@
     "react-app-rewired": "^2.0",
     "react-dom": "^17.0.2",
     "react-scripts": "4.0.3",
-    "react-virtualized": "^9.22.3",
     "react-vtree": "3.0.0-beta.3",
     "react-window": "^1.8.6",
-    "typescript": "^4.4.0",
     "uid": "^2.0.0"
   },
   "scripts": {
@@ -56,6 +54,7 @@
     "@types/react": "^16.9.0",
     "@types/react-dom": "^16.9.0",
     "@types/react-virtualized": "^9.21.13",
+    "@types/react-virtualized-auto-sizer": "^1.0.1",
     "@types/react-window": "^1.8.3",
     "autoprefixer": "^9",
     "classnames": "^2.3.1",
@@ -63,6 +62,7 @@
     "postcss": "^7",
     "prettier": "^2.2.1",
     "prettier-plugin-organize-imports": "^1.1.1",
-    "tailwindcss": "npm:@tailwindcss/postcss7-compat"
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat",
+    "typescript": "^4.4.0"
   }
 }

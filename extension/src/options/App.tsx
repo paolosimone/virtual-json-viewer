@@ -1,8 +1,17 @@
 import classNames from "classnames";
 import "tailwindcss/tailwind.css";
 import { useSettings, useTheme } from "viewer/hooks";
-import { TranslationContext, useLocalization } from "viewer/localization";
-import { DefaultSettings, resolveTextSizeClass, TextSize } from "viewer/state";
+import {
+  SystemLanguage,
+  TranslationContext,
+  useLocalization,
+} from "viewer/localization";
+import {
+  DefaultSettings,
+  resolveTextSizeClass,
+  SystemTheme,
+  TextSize,
+} from "viewer/state";
 import {
   LanguageSelect,
   NumberInput,
@@ -60,7 +69,11 @@ export function App(): JSX.Element {
         <div className="flex items-center justify-center pt-6">
           <button
             className="p-1.5 border rounded-lg text-red-900 dark:text-red-300 border-red-800 bg-red-800 bg-opacity-10 hover:bg-opacity-20 "
-            onClick={() => updateSettings(DefaultSettings)}
+            onClick={() => {
+              setTheme(SystemTheme);
+              setLanguage(SystemLanguage);
+              updateSettings(DefaultSettings);
+            }}
           >
             {t.settings.reset}
           </button>
