@@ -1,7 +1,6 @@
 import ReactDOM from "react-dom";
 import { App as ViewerApp } from "./viewer/App";
 
-// TODO test in firefox
 chrome.runtime.sendMessage("checkJson", (isJson: boolean) => {
   if (!isJson) {
     return;

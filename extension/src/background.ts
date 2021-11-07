@@ -38,7 +38,7 @@ function detectJsonRequest(event: chrome.webRequest.WebResponseHeadersDetails) {
 chrome.webRequest.onHeadersReceived.addListener(
   detectJsonRequest,
   { urls: ["<all_urls>"], types: ["main_frame"] },
-  ["blocking", "responseHeaders"]
+  ["responseHeaders"]
 );
 
 chrome.runtime.onMessage.addListener(
