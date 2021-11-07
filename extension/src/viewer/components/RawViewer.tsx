@@ -25,7 +25,6 @@ export function RawViewer({
   useEventBusListener(EventType.Collapse, collapse);
 
   const space = minify ? undefined : indentation;
-  console.log(space);
 
   const raw = useMemo(
     () => Json.toString(json, { sortKeys: true, space: space }),

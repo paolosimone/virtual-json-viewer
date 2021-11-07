@@ -1,4 +1,4 @@
-import React, { RefObject, useCallback, useMemo, useRef } from "react";
+import React, { useCallback, useMemo, useRef } from "react";
 import {
   VariableSizeNodePublicState as NodeState,
   VariableSizeTree as Tree,
@@ -13,16 +13,15 @@ import { TreeNode } from "./TreeNode";
 
 const RESIZE_DELAY = 100;
 
-export type TreeViewerProps = {
-  parent: RefObject<HTMLDivElement>;
+export type TreeViewerProps = Props<{
   json: Json.Root;
   search: Search;
-};
+}>;
 
 export function TreeViewer({
-  parent,
   json,
   search,
+  className,
 }: TreeViewerProps): JSX.Element {
   const tree = useRef<Tree<JsonNodeData>>(null);
 
@@ -38,12 +37,15 @@ export function TreeViewer({
   );
 
   // for some obscure reason AutoSizer doesn't work on Firefox when loaded as extension
+  const parent = useRef<HTMLDivElement>(null);
   const { height, width } = useElementSize(parent, RESIZE_DELAY);
 
   return (
-    <Tree ref={tree} treeWalker={treeWalker} height={height} width={width}>
-      {TreeNode}
-    </Tree>
+    <div ref={parent} className={className}>
+      <Tree ref={tree} treeWalker={treeWalker} height={height} width={width}>
+        {TreeNode}
+      </Tree>
+    </div>
   );
 }
 
