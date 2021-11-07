@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
   "name": "Virtual Json Viewer",
-  "version": "0.0.1",
-  "description": "",
+  "version": "0.1.0",
+  "description": "JSON browser extension with virtual DOM, search and JQ filtering",
   "permissions": [
     "<all_urls>", 
     "webRequest", 
