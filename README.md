@@ -1,6 +1,10 @@
-# Virtual Json Viewer
+# ![logo](extension/public/logo/48.png) Virtual Json Viewer
 
-Browser plugin that uses [virtual DOM](https://github.com/Lodin/react-vtree) to render JSONs with built-in search, [JQ filtering](https://stedolan.github.io/jq) and many other [features](#features).
+Browser plugin that uses [virtual DOM](https://github.com/Lodin/react-vtree) to render JSONs with built-in search, [JQ filtering](https://stedolan.github.io/jq)\* and many other [features](#features).
+
+![preview](assets/preview.png)
+
+\* JQ availability is currently subject to website CSP. See [here](https://github.com/paolosimone/virtual-json-viewer/issues/15) for further details
 
 ## Why?
 
@@ -18,9 +22,9 @@ That's ok, if you are happy with your current plugin, no need to change.
 And if you want to come back later don't worry, we'll still be here, with blazing fast loading time, 
 built-in search, JQ filtering and many other features... but no strawberries, sorry
 
-## Installation
+## Quickstart
 
-_Note:_ This add-on has been developed and tested on Google Chrome 94
+The extension is currently not available on official stores and must be manually installed.
 
 ### Get the build
 
@@ -36,11 +40,42 @@ __From Source__
 1. `yarn install`
 1. `yarn build`
 
-### Install the plugin
+### Install the extension
+
+__Chrome__
 
 1. Open the Extension Management page by navigating to `chrome://extensions`
 1. Enable Developer Mode by clicking the toggle switch next to Developer mode
 1. Click the load unpacked button and select the `build` directory
+
+__Firefox__
+
+Open the `manifest.json` inside the `build` directory and add a custom extension id ([but why?](https://extensionworkshop.com/documentation/develop/extensions-and-the-add-on-id/#when_do_you_need_an_add-on_id))
+```json
+"browser_specific_settings": {
+  "gecko": {
+    "id": "id@virtualjsonviewer.com"
+  }
+}
+```
+
+Disable native json viewer
+
+1. Go to `about:config`
+1. Search for `devtools.jsonview.enabled`
+1. Set to false
+
+Load extension
+
+1. Go to `about:debugging`
+1. Click "This Firefox"
+1. Click "Load Temporary Add-on" and select the `build` directory
+
+*Note:* The extension is automatically removed when Firefox is closed and must be manually loaded on next start.
+
+__Others__
+
+The extension has not been tested on other browsers, but should work on any chromium browser.
 
 ## Features
 
@@ -63,10 +98,27 @@ __From Source__
 
 ## Contributing
 
-Sorry, I am not accepting contributions at the moment...
-But feel free to open an issue in case of bug, feature request or suggestion!
+__Bug fix__
 
-### Local development
+In the rare event (🤥) of a bug, please [open an issue](https://github.com/paolosimone/virtual-json-viewer/issues/new) with detailed description of what happened and how to reproduce it... Or just open a PR with the patch if you are brave enough!
+
+__Feature request__
+
+In general I'd rather keep the feature set of Virtual Json Viewer small and well defined, but if you have a proposal feel free to [open an issue](https://github.com/paolosimone/virtual-json-viewer/issues/new) and we will discuss it.
+
+__Translation__
+
+New languages are welcome, open a PR and follow these steps.
+
+Translation files are in json format (yo dawg!) and are located in the tranlation folder `extension/src/viewer/localization/translations`.
+
+To add a new language:
+
+1. Make a copy of the `en.json` translation file and rename it with the [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) two-letter code of the new language (e.g. `es.json` for Spanish)
+1. Translate all the values in the new translation file
+1. Register the new language by adding it to the enum (and other structures) inside `extension/src/viewer/localization/Localization.ts`
+
+## Local development
 
 Run `yarn start` to serve the extension as a web app with hot reload.
 
