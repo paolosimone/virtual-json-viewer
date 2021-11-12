@@ -22,9 +22,13 @@ That's ok, if you are happy with your current plugin, no need to change.
 And if you want to come back later don't worry, we'll still be here, with blazing fast loading time, 
 built-in search, JQ filtering and many other features... but no strawberries, sorry
 
-## Quickstart
+## Browser Store
 
-The extension is currently not available on official stores and must be manually installed.
+[![chrome](assets/chrome-store.png)](https://chrome.google.com/webstore/detail/virtual-json-viewer/cipnpfcceoapeahdgomheoecidglopld)
+
+Note: the extension is currently not available on Firefox Add-ons Store, but it can be [manually installed](#manual-installation).
+
+## Manual Installation
 
 ### Get the build
 
@@ -33,12 +37,13 @@ __From Release__
 1. Download the latest build from the [release page](https://github.com/paolosimone/virtual-json-viewer/releases)
 1. Extract the content
 
-__From Source__
+__From source__
 
-1. Clone or download this repository
-1. `cd virtual-json-viewer/extension`
-1. `yarn install`
-1. `yarn build`
+```bash
+cd extension
+yarn install
+yarn build
+```
 
 ### Install the extension
 
@@ -110,7 +115,7 @@ __Translation__
 
 New languages are welcome, open a PR and follow these steps.
 
-Translation files are in json format (yo dawg!) and are located in the tranlation folder `extension/src/viewer/localization/translations`.
+Translation files are in json format (yo dawg!) and are located in the translation folder `extension/src/viewer/localization/translations`.
 
 To add a new language:
 
