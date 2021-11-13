@@ -24,9 +24,7 @@ built-in search, JQ filtering and many other features... but no strawberries, so
 
 ## Browser Store
 
-[![chrome](assets/chrome-store.png)](https://chrome.google.com/webstore/detail/virtual-json-viewer/cipnpfcceoapeahdgomheoecidglopld)
-
-Note: the extension is currently not available on Firefox Add-ons Store, but it can be [manually installed](#manual-installation).
+[![chrome](assets/badge-chrome.png)](https://chrome.google.com/webstore/detail/virtual-json-viewer/cipnpfcceoapeahdgomheoecidglopld) [![firefox](assets/badge-firefox.png)](https://addons.mozilla.org/en-GB/firefox/addon/virtual-json-viewer/)
 
 ## Manual Installation
 
