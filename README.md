@@ -1,3 +1,5 @@
+[![Mentioned in Awesome jq](https://awesome.re/mentioned-badge.svg)](https://github.com/fiatjaf/awesome-jq)
+
 # ![logo](extension/public/logo/48.png) Virtual Json Viewer
 
 Browser plugin that uses [virtual DOM](https://github.com/Lodin/react-vtree) to render JSONs with built-in search, [JQ filtering](https://stedolan.github.io/jq)\* and many other [features](#features).
@@ -168,4 +170,4 @@ Always `yarn format` before creating a commit.
 
 ## License
 
-MIT License
+MIT License. See also [LICENSE](LICENSE) file.
