@@ -85,7 +85,7 @@ export function App({ jsonText, jqWasmFile }: AppProps): JSX.Element {
           json={json}
           search={searchState.value}
           className={classNames(
-            "flex-auto pt-1.5 pl-1.5 overflow-auto dark:bg-gray-700 dark:text-gray-200",
+            "flex-auto pt-1.5 pl-1.5 dark:bg-gray-700 dark:text-gray-200",
             resolveTextSizeClass(settings.textSize)
           )}
         />
