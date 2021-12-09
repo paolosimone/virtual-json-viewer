@@ -17,24 +17,46 @@ export class NodeFilter {
     this.keepStrategy = buildKeepStrategy(search);
   }
 
-  public match({ key, value, parent }: JsonNode): Nullable<SearchMatch> {
-    const isArrayElement = parent !== null && Json.isArray(parent.value);
-    const matchKey = !isArrayElement && this.searchStrategy.isMatch(key);
-
-    const matchValue =
-      value !== null && this.searchStrategy.isMatch(Json.toString(value));
-
-    const matchAncestor =
-      parent?.searchMatch?.inKey || parent?.searchMatch?.inAncestor || false;
-
+  public match(node: JsonNode): Nullable<SearchMatch> {
     const searchMatch = {
       search: this.search,
-      inKey: matchKey,
-      inValue: matchValue,
-      inAncestor: matchAncestor,
+      inKey: this.matchKey(node),
+      inValue: this.matchValue(node),
+      inAncestor: this.matchAncestor(node),
     };
 
     return this.keepStrategy.keep(searchMatch) ? searchMatch : null;
+  }
+
+  private matchKey({ key, parent }: JsonNode): boolean {
+    if (key === null) {
+      return false;
+    }
+
+    if (parent && !parent.searchMatch?.inValue) {
+      return false;
+    }
+
+    const isArrayElement = typeof key === "number";
+    return !isArrayElement && this.searchStrategy.isMatch(key);
+  }
+
+  private matchValue({ value, parent }: JsonNode): boolean {
+    if (value === null) {
+      return false;
+    }
+
+    if (parent && !parent.searchMatch?.inValue) {
+      return false;
+    }
+
+    return this.searchStrategy.isMatch(Json.toString(value));
+  }
+
+  private matchAncestor({ parent }: JsonNode): boolean {
+    return (
+      parent?.searchMatch?.inAncestor || parent?.searchMatch?.inKey || false
+    );
   }
 }
 

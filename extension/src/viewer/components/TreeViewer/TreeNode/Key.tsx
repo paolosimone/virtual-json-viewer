@@ -1,26 +1,37 @@
+import * as Json from "viewer/commons/Json";
 import { useHighlightedSearchResults } from "viewer/hooks";
 import { Search } from "viewer/state";
 import { JsonNodeData } from "../model/JsonNode";
 
-export type KeyProps = {
+export type KeyProps = Props<{
   data: JsonNodeData;
   search: Nullable<Search>;
-};
+}>;
 
-export function Key({ data, search }: KeyProps): JSX.Element {
-  const highlightedText = useHighlightedSearchResults(data.key, search);
-
-  if (isRootLiteral(data)) {
+export function Key(props: KeyProps): JSX.Element {
+  if (props.data.key === null) {
     return <span />;
   }
 
+  const KeyElement = Json.isNumber(props.data.key) ? ArrayKey : ObjectKey;
+
   return (
-    <span className="mr-4 whitespace-pre-wrap text-blue-700 dark:text-blue-400">
-      {highlightedText}:
-    </span>
+    <KeyElement
+      className="mr-4 whitespace-pre-wrap text-blue-700 dark:text-blue-400"
+      {...props}
+    />
   );
 }
 
-function isRootLiteral({ key, parent }: JsonNodeData): boolean {
-  return !key && !parent;
+function ArrayKey({ data, className }: KeyProps): JSX.Element {
+  return <span className={className}>{data.key}:</span>;
+}
+
+function ObjectKey({ data, search, className }: KeyProps): JSX.Element {
+  const highlightedKey = useHighlightedSearchResults(
+    data.key as string,
+    search
+  );
+
+  return <span className={className}>{highlightedKey}:</span>;
 }

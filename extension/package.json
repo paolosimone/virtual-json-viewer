@@ -1,6 +1,6 @@
 {
   "name": "virtual-json-viewer",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "dependencies": {
     "json-stable-stringify": "^1.0.1",
@@ -18,7 +18,9 @@
     "test": "react-app-rewired test",
     "eject": "react-scripts eject",
     "format": "yarn prettier --write .",
-    "check": "yarn prettier --check ."
+    "check": "yarn prettier --check .",
+    "package": "cd build && zip ../virtual-json-viewer-v$npm_package_version.zip -r .",
+    "package-src": "cd .. && git archive -o extension/virtual-json-viewer-v$npm_package_version-src.zip HEAD README.md extension"
   },
   "eslintConfig": {
     "extends": "react-app",

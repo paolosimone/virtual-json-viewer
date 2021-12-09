@@ -36,7 +36,10 @@ export function RawViewer({
   const wrap = minify ? "break-all" : "whitespace-pre";
 
   return (
-    <div className={classNames("overflow-auto", wrap, className)} spellCheck={false}>
+    <div
+      className={classNames("overflow-auto", wrap, className)}
+      spellCheck={false}
+    >
       {highlightedText}
     </div>
   );

@@ -142,10 +142,12 @@ function replacer(_key: string, value: Root): Json {
 
 /* Iteration */
 
-export function* iterator(json: Root): Generator<[string, Root], void, void> {
+export type Key = number | string;
+
+export function* iterator(json: Root): Generator<[Key, Root], void, void> {
   if (isArray(json)) {
     for (let i = 0; i < json.length; i++) {
-      yield [i.toString(), json[i]];
+      yield [i, json[i]];
     }
   } else if (isObject(json)) {
     for (const key of json.keys) {

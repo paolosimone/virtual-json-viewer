@@ -13,7 +13,7 @@ export function jsonTreeWalker(
 
 export function getRootNodes(json: Json.Root): JsonNode[] {
   if (isLeaf(json)) {
-    return [{ key: "", value: json, parent: null }];
+    return [{ key: null, value: json, parent: null }];
   }
 
   return [...Json.iterator(json as Json.Collection)].map(([key, value]) => ({
@@ -86,13 +86,20 @@ function filteredTreeWalker(
   };
 }
 
+export function buildId(
+  key: Nullable<Json.Key>,
+  parent: Nullable<JsonNodeData>
+): string {
+  return `${parent?.id ?? ""}.${key ?? ""}`;
+}
+
 function getNodeData(
   { key, value, parent }: JsonNode,
   searchMatch: Nullable<SearchMatch> = null
 ): TreeWalkerValue<JsonNodeData> {
   return {
     data: {
-      id: parent ? `${parent.id}.${key}` : key,
+      id: buildId(key, parent),
       isOpenByDefault: (searchMatch?.inValue || false) && !isLeaf(value),
       nesting: parent ? parent.nesting + 1 : 0,
       isLeaf: isLeaf(value),
@@ -107,7 +114,7 @@ function getNodeData(
 }
 
 const NOT_FOUND_PLACEHOLDER: JsonNode = {
-  key: "",
+  key: null,
   value: null,
   parent: null,
 };

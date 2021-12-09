@@ -8,7 +8,12 @@ import * as Json from "viewer/commons/Json";
 import { useElementSize, useEventBusListener } from "viewer/hooks";
 import { Search } from "viewer/state";
 import { JsonNodeData } from "./model/JsonNode";
-import { getRootNodes, isLeaf, jsonTreeWalker } from "./model/JsonTreeWalker";
+import {
+  buildId,
+  getRootNodes,
+  isLeaf,
+  jsonTreeWalker,
+} from "./model/JsonTreeWalker";
 import { TreeNode } from "./TreeNode";
 
 const RESIZE_DELAY = 100;
@@ -65,7 +70,7 @@ function setOpen(
 
   const newState = Object.fromEntries(
     getRootNodes(json).map(({ key, value }) => [
-      key,
+      buildId(key, null),
       { open: !isLeaf(value) && isOpen, subtreeCallback },
     ])
   );
