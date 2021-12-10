@@ -130,13 +130,27 @@ function SearchInput({
     timeoutId = setTimeout(() => setText(text), searchDelay);
   };
 
-  // restore the input element internal state on rerender
   const ref = useRef<HTMLInputElement>(null);
+
+  // restore the input element internal state on rerender
   useEffect(() => {
     if (ref.current) {
       ref.current.value = text;
     }
   }, [ref, text]);
+
+  // override search shortcut
+  useEffect(() => {
+    function focusSearch(e: KeyboardEvent) {
+      if ((e.ctrlKey || e.metaKey) && e.key == "f") {
+        e.preventDefault();
+        ref.current?.focus();
+      }
+    }
+
+    document.addEventListener("keydown", focusSearch);
+    return () => document.removeEventListener("keydown", focusSearch);
+  }, [ref]);
 
   return (
     <input
