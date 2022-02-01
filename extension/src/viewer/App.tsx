@@ -7,8 +7,9 @@ import { MultiContextProvider } from "./components/MultiContextProvider";
 import {
   JQResult,
   useJQ,
+  useSessionStorage,
   useSettings,
-  useStateObject,
+  useStateObjectAdapter,
   useTheme,
 } from "./hooks";
 import { TranslationContext, useLocalization } from "./localization";
@@ -33,9 +34,15 @@ export function App({ jsonText, jqWasmFile }: AppProps): JSX.Element {
   const [settings] = useSettings();
 
   // application state
-  const viewerModeState = useStateObject(ViewerMode.Tree);
-  const searchState = useStateObject(EmptySearch);
-  const jqCommandState = useStateObject(EmptyJQCommand);
+  const viewerModeState = useStateObjectAdapter(
+    useSessionStorage("viewer", ViewerMode.Tree)
+  );
+  const searchState = useStateObjectAdapter(
+    useSessionStorage("search", EmptySearch)
+  );
+  const jqCommandState = useStateObjectAdapter(
+    useSessionStorage("jq", EmptyJQCommand)
+  );
 
   // parse json
   const jsonResult = useMemo(() => Json.tryParse(jsonText), [jsonText]);
