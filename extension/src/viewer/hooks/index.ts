@@ -3,6 +3,7 @@ export * from "./UseElementSize";
 export * from "./UseEventBusListener";
 export * from "./UseHighlightedSearchResults";
 export * from "./UseJQ";
+export * from "./UseSessionStorage";
 export * from "./UseSettings";
 export * from "./UseStateObject";
 export * from "./UseStorage";
