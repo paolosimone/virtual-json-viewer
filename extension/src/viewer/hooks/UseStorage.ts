@@ -11,7 +11,7 @@ export function useStorage<T>(key: string, defaultValue: T): [T, Dispatch<T>] {
   // initialize value on first render
   useEffectAsync(
     async (mutex: Mutex) => {
-      let value = await storage.get<T>(key);
+      let value: Nullable<T> = await storage.get<T>(key);
       if (!mutex.hasLock()) {
         return;
       }
