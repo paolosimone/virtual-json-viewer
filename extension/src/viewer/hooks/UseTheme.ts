@@ -1,6 +1,6 @@
-import { Dispatch, useLayoutEffect, useMemo } from "react";
+import { Dispatch, useLayoutEffect } from "react";
 import { SystemTheme, Theme, ThemeSetting } from "viewer/state";
-import { useStorage } from ".";
+import { useMediaQuery, useStorage } from ".";
 
 const KEY = "theme";
 
@@ -9,7 +9,8 @@ export function useTheme(): [Theme, ThemeSetting, Dispatch<ThemeSetting>] {
     KEY,
     SystemTheme
   );
-  const theme = useMemo(() => resolveTheme(themeSetting), [themeSetting]);
+
+  const theme = useResolvedTheme(themeSetting);
 
   // apply theme on first render and every time it's updated
   useLayoutEffect(() => applyTheme(theme), [theme]);
@@ -17,11 +18,11 @@ export function useTheme(): [Theme, ThemeSetting, Dispatch<ThemeSetting>] {
   return [theme, themeSetting, setThemeSetting];
 }
 
-function resolveTheme(theme: ThemeSetting): Theme {
+function useResolvedTheme(theme: ThemeSetting): Theme {
+  const isSystemThemeDark = useMediaQuery("(prefers-color-scheme: dark)");
+
   const darkThemeEnabled =
-    theme === Theme.Dark ||
-    (theme === SystemTheme &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches);
+    theme === Theme.Dark || (theme === SystemTheme && isSystemThemeDark);
 
   return darkThemeEnabled ? Theme.Dark : Theme.Light;
 }
