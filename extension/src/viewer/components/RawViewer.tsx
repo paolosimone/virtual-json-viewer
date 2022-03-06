@@ -49,6 +49,7 @@ export function RawViewer({
   return (
     <div
       ref={ref}
+      tabIndex={0}
       className={classNames("overflow-auto", wrap, className)}
       spellCheck={false}
     >
@@ -57,27 +58,30 @@ export function RawViewer({
   );
 }
 
+// html element must be focusable
 function useSelectAllText(ref: RefObject<HTMLElement>) {
   useEffect(() => {
-    function selectAll(e: KeyboardEvent) {
-      if (!ref.current) {
-        return;
-      }
+    if (!ref.current) {
+      return;
+    }
 
+    const elem = ref.current;
+
+    function selectAll(e: KeyboardEvent) {
       if ((e.ctrlKey || e.metaKey) && e.key == "a") {
         e.preventDefault();
-        selectAllText(ref.current);
+        selectAllText(elem);
       }
     }
 
-    document.addEventListener("keydown", selectAll);
-    return () => document.removeEventListener("keydown", selectAll);
-  }, [ref]);
+    elem.addEventListener("keydown", selectAll);
+    return () => elem.removeEventListener("keydown", selectAll);
+  }, [ref.current]);
 }
 
-function selectAllText(node: HTMLElement) {
+function selectAllText(elem: HTMLElement) {
   const range = document.createRange();
-  range.selectNode(node);
+  range.selectNode(elem);
 
   const selection = window.getSelection();
   selection?.removeAllRanges();
