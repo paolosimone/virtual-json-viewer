@@ -1,5 +1,13 @@
 import classNames from "classnames";
-import { useCallback, useContext, useMemo, useState } from "react";
+import {
+  RefObject,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { EventType } from "viewer/commons/EventBus";
 import * as Json from "viewer/commons/Json";
 import { useEventBusListener, useHighlightedSearchResults } from "viewer/hooks";
@@ -33,14 +41,49 @@ export function RawViewer({
 
   const highlightedText = useHighlightedSearchResults(raw, search);
 
+  const ref = useRef<HTMLDivElement>(null);
+  useSelectAllText(ref);
+
   const wrap = minify ? "break-all" : "whitespace-pre";
 
   return (
     <div
+      ref={ref}
+      tabIndex={0}
       className={classNames("overflow-auto", wrap, className)}
       spellCheck={false}
     >
       {highlightedText}
     </div>
   );
+}
+
+// html element must be focusable
+function useSelectAllText(ref: RefObject<HTMLElement>) {
+  useEffect(() => {
+    if (!ref.current) {
+      return;
+    }
+
+    const elem = ref.current;
+
+    function selectAll(e: KeyboardEvent) {
+      if ((e.ctrlKey || e.metaKey) && e.key == "a") {
+        e.preventDefault();
+        selectAllText(elem);
+      }
+    }
+
+    elem.addEventListener("keydown", selectAll);
+    return () => elem.removeEventListener("keydown", selectAll);
+  }, [ref.current]);
+}
+
+function selectAllText(elem: HTMLElement) {
+  const range = document.createRange();
+  range.selectNode(elem);
+
+  const selection = window.getSelection();
+  selection?.removeAllRanges();
+  selection?.addRange(range);
 }
