@@ -14,13 +14,17 @@ import {
   matchLinks,
 } from "./LinkifiedText";
 
-// TODO add link config
 export type RenderedTextProps = Props<{
   text: string;
   search: Nullable<Search>;
+  linkifyUrls: boolean;
 }>;
 
-export function RenderedText({ text, search }: RenderedTextProps): ReactNode {
+export function RenderedText({
+  text,
+  search,
+  linkifyUrls,
+}: RenderedTextProps): ReactNode {
   const searchMatches = search?.text
     ? matchSearch(text, {
         searchText: search.text,
@@ -28,13 +32,14 @@ export function RenderedText({ text, search }: RenderedTextProps): ReactNode {
       })
     : [];
 
-  const linkMatches = matchLinks(text);
+  const linkMatches = linkifyUrls ? matchLinks(text) : [];
 
   return renderMatches(text, [...searchMatches, ...linkMatches]);
 }
 
 type AnyMatch = SearchMatch | LinkMatch;
 
+// numerical value is used for comparison
 const START = 0;
 const END = 1;
 
@@ -50,7 +55,7 @@ function renderMatches(text: string, matches: AnyMatch[]): ReactNode {
     return text;
   }
 
-  // split matches in edges
+  // split matches in starting/ending edges
   const edges: Edge[] = matches.flatMap((match) => [
     { id: match.id, index: match.start, direction: START, match: match },
     { id: match.id, index: match.end, direction: END, match: match },
@@ -71,7 +76,7 @@ function renderMatches(text: string, matches: AnyMatch[]): ReactNode {
 
   let lastIndex = 0;
   for (const { index, direction, match } of edges) {
-    // current nodes level
+    // current level nodes
     let nodes = nodesStack[nodesStack.length - 1];
 
     // add elapsed text to current level
@@ -118,10 +123,7 @@ function renderMatches(text: string, matches: AnyMatch[]): ReactNode {
 
     // restart unrelated edges
     while (toRestarts.length) {
-      started.push({
-        ...toRestarts.pop()!,
-        start: index,
-      });
+      started.push(toRestarts.pop()!);
       nodesStack.push([]);
     }
   }
@@ -147,13 +149,12 @@ function compareEdges(a: Edge, b: Edge): number {
     return a.index - b.index;
   }
 
-  // end before start
-  // Note: we want to close all opened tags before opening a new one
+  // end before start: close all opened tags before opening a new one
   if (a.direction !== b.direction) {
     return b.direction - a.direction;
   }
 
-  // Note: we want to close tags in the opposite order they have been opened
+  // close tags in the opposite order they have been opened
   const order = a.direction === START ? 1 : -1;
 
   // outermost to inmost
