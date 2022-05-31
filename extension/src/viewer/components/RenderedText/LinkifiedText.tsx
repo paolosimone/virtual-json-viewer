@@ -1,4 +1,5 @@
 import anchorme from "anchorme";
+import type { ListingProps } from "anchorme/dist/node/types";
 import { ReactElement } from "react";
 import { uid } from "uid";
 import { Match } from "./Match";
@@ -36,24 +37,32 @@ export function LinkifiedText({
 // Matching
 
 export function matchLinks(text: string): LinkMatch[] {
-  return anchorme.list(text).map((match) => {
-    let href = match.string;
-
-    // set default protocol if missing
-    if (!match.protocol) {
-      const protocol = match.isEmail ? "mailto:" : "http://";
-      href = protocol + match.string;
-    }
-
-    return {
+  return anchorme
+    .list(text)
+    .filter((match) => getHref(match) !== null)
+    .map((match) => ({
       id: uid(),
       start: match.start,
       end: match.end,
       type: LINK_TYPE,
       metadata: {
         linkType: match.isEmail ? "email" : "url",
-        href: href,
+        href: getHref(match)!,
       },
-    };
-  });
+    }));
+}
+
+function getHref(match: ListingProps): Nullable<string> {
+  // already has the protocol
+  if (match.protocol) {
+    return match.string;
+  }
+
+  // set default protocol for emails
+  if (match.isEmail) {
+    return "mailto:" + match.string;
+  }
+
+  // ignore url matches without protocol to avoid false positives
+  return null;
 }
