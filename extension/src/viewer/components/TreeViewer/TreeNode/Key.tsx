@@ -1,5 +1,5 @@
 import * as Json from "viewer/commons/Json";
-import { useHighlightedSearchResults } from "viewer/hooks";
+import { useRenderedText } from "viewer/hooks";
 import { Search } from "viewer/state";
 import { JsonNodeData } from "../model/JsonNode";
 
@@ -28,10 +28,7 @@ function ArrayKey({ data, className }: KeyProps): JSX.Element {
 }
 
 function ObjectKey({ data, search, className }: KeyProps): JSX.Element {
-  const highlightedKey = useHighlightedSearchResults(
-    data.key as string,
-    search
-  );
+  const highlightedKey = useRenderedText(data.key as string, search);
 
   return <span className={className}>{highlightedKey}:</span>;
 }

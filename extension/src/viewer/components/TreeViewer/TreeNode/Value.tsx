@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import * as Json from "viewer/commons/Json";
-import { useHighlightedSearchResults } from "viewer/hooks";
+import { useRenderedText } from "viewer/hooks";
 import { Search } from "viewer/state";
 import { JsonNodeData } from "../model/JsonNode";
 
@@ -59,7 +59,7 @@ function LiteralValue({ value, search }: LiteralValueProps): JSX.Element {
     ? "text-pink-600 dark:text-pink-400"
     : "text-green-600 dark:text-green-400";
   const textValue = literalToString(value);
-  const highlightedText = useHighlightedSearchResults(textValue, search);
+  const highlightedText = useRenderedText(textValue, search);
   return (
     <span className={classNames("whitespace-pre-wrap", textColor)}>
       {highlightedText}

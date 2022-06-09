@@ -6,7 +6,8 @@
       "theme": "Tema",
       "textSize": "Dimensioni caratteri",
       "indentation": "Indentazione",
-      "searchDelay": "Ritardo nella ricerca (ms)"
+      "searchDelay": "Ritardo nella ricerca (ms)",
+      "linkifyUrls": "Trasforma URLs in links"
     },
     "language": {
       "system": "Lingua di sistema"

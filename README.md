@@ -87,6 +87,7 @@ The extension has not been tested on other browsers, but should work on any chro
     - [X] Preview nested item count for closed nodes
     - [X] Color-encoded value types
     - [X] Collapse/expand all nodes
+    - [X] Clickable URLs
 - [X] Full text search
     - [X] Highlight search results
     - [X] Option to completely hide subtrees without any search match
@@ -202,6 +203,7 @@ Always `yarn format` before creating a commit.
 
 |Tool                                                                                                                       |Usage                                          |
 |---------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------|
+|[anchorme](https://github.com/alexcorvi/anchorme.js)                                                                       |Convert URLs to clickable HTML links           |
 |[cra-template-complex-browserext-typescript](https://github.com/hindmost/cra-template-complex-browserext-typescript)       |Project scaffolding, huge help!                |
 |[customize-cra](https://github.com/arackaf/customize-cra)                                                                  |Break webpack config, then fix it              |
 |[jq-wasm](https://github.com/paolosimone/jq-wasm)                                                                          |JQ in the browser                              |

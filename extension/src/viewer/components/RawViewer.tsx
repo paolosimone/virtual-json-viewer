@@ -10,7 +10,7 @@ import {
 } from "react";
 import { EventType } from "viewer/commons/EventBus";
 import * as Json from "viewer/commons/Json";
-import { useEventBusListener, useHighlightedSearchResults } from "viewer/hooks";
+import { useEventBusListener, useRenderedText } from "viewer/hooks";
 import { Search, SettingsContext } from "viewer/state";
 
 export type RawViewerProps = Props<{
@@ -39,7 +39,7 @@ export function RawViewer({
     [json, space]
   );
 
-  const highlightedText = useHighlightedSearchResults(raw, search);
+  const highlightedText = useRenderedText(raw, search);
 
   const ref = useRef<HTMLDivElement>(null);
   useSelectAllText(ref);

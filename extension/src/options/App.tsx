@@ -13,6 +13,7 @@ import {
   TextSize,
 } from "viewer/state";
 import {
+  Checkbox,
   LanguageSelect,
   NumberInput,
   TextSizeSelect,
@@ -32,7 +33,7 @@ export function App(): JSX.Element {
           resolveTextSizeClass(settings.textSize)
         )}
       >
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-3 items-center">
           <label>{t.settings.labels.theme}</label>
           <ThemeSelect theme={theme} setTheme={setTheme} />
 
@@ -62,6 +63,14 @@ export function App(): JSX.Element {
             value={settings.searchDelay}
             setValue={(newValue: number) =>
               updateSettings({ searchDelay: newValue })
+            }
+          />
+
+          <label>{t.settings.labels.linkifyUrls}</label>
+          <Checkbox
+            checked={settings.linkifyUrls}
+            setChecked={(checked: boolean) =>
+              updateSettings({ linkifyUrls: checked })
             }
           />
         </div>
