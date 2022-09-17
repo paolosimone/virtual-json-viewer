@@ -5,7 +5,6 @@
   "description": "JSON browser extension with virtual DOM, search and JQ filtering",
   "permissions": [
     "<all_urls>", 
-    "webRequest", 
     "storage"
   ],
   "background": {
