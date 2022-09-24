@@ -1,6 +1,6 @@
 {
   "name": "virtual-json-viewer",
-  "version": "0.1.5",
+  "version": "0.2.0",
   "private": true,
   "dependencies": {
     "anchorme": "^2.1.2",
@@ -16,12 +16,14 @@
   "scripts": {
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
+    "build-mv2": "MANIFEST_VERSION=2 react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject",
     "format": "yarn prettier --write .",
     "check": "yarn prettier --check .",
-    "package": "cd build && zip ../virtual-json-viewer-v$npm_package_version.zip -r .",
-    "package-src": "cd .. && git archive -o extension/virtual-json-viewer-v$npm_package_version-src.zip HEAD README.md extension"
+    "package": "yarn build && cd build && zip ../virtual-json-viewer-v$npm_package_version.zip -r .",
+    "package-mv2": "yarn build-mv2 && cd build && zip ../virtual-json-viewer-v$npm_package_version-mv2.zip -r .",
+    "package-src": "cd .. && git archive -o extension/virtual-json-viewer-v$npm_package_version-src.zip HEAD README.md extension public manifest-*"
   },
   "eslintConfig": {
     "extends": "react-app",
@@ -59,6 +61,7 @@
     "@types/react-window": "^1.8.3",
     "autoprefixer": "^9",
     "classnames": "^2.3.1",
+    "copy-webpack-plugin": "6",
     "customize-cra": "^1.0.0",
     "postcss": "^7",
     "prettier": "^2.2.1",

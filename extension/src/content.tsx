@@ -1,23 +1,47 @@
 import ReactDOM from "react-dom";
 import { App as ViewerApp } from "./viewer/App";
 
-chrome.runtime.sendMessage("checkJson", (isJson: boolean) => {
-  if (!isJson) {
+if (isJson()) {
+  afterHeadAvailable(() => {
+    if (document.readyState === "loading") {
+      // workaround: improve loading time on large json
+      setTextVisibility(false);
+    }
+
+    addFavicon(chrome.runtime.getURL("logo/16.png"));
+    updateTitle();
+  });
+
+  afterDocumentLoaded(loadJsonViewer);
+}
+
+function isJson(): boolean {
+  return document.contentType === "application/json";
+}
+
+function afterHeadAvailable(callback: () => void) {
+  if (document.head) {
+    callback();
     return;
   }
 
-  // workaround: improve loading time on large json
-  setTextVisibility(false);
+  const observer = new MutationObserver((_mutations, observer) => {
+    if (document.head) {
+      observer.disconnect();
+      callback();
+    }
+  });
+  observer.observe(document, { childList: true, subtree: true });
+}
 
-  addFavicon(chrome.runtime.getURL("logo/16.png"));
-  updateTitle();
-
+function afterDocumentLoaded(callback: () => void) {
   if (document.readyState === "complete") {
-    loadJsonViewer();
-  } else {
-    window.addEventListener("load", loadJsonViewer);
+    callback();
+    return;
   }
-});
+
+  window.addEventListener("load", callback);
+}
 
 function loadJsonViewer() {
   const jsonElement = document.getElementsByTagName("pre")[0];

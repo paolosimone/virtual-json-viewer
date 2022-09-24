@@ -3,10 +3,13 @@ const paths = require("react-scripts/config/paths");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ManifestPlugin = require("webpack-manifest-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 
 // Make the build output compatible with chrome extension structure
 function convertToChromeExtension(config) {
   const isEnvProduction = process.env.NODE_ENV === "production";
+  const manifestVersion = process.env.MANIFEST_VERSION ?? "3";
+  const appVersion = process.env.npm_package_version;
 
   // Replace single entry point in the config with multiple ones
   // Note: you may remove any property below except "popup" to exclude respective entry point from compilation
@@ -89,6 +92,19 @@ function convertToChromeExtension(config) {
   config.plugins = replacePlugin(config.plugins, (name) =>
     /GenerateSW/i.test(name)
   );
+
+  // Include correct manifest version
+  const copyManifest = new CopyPlugin({
+    patterns: [
+      {
+        from: paths.appPath + `/manifest-v${manifestVersion}.json`,
+        to: "manifest.json",
+        transform: (content) =>
+          content.toString().replace("${version}", appVersion),
+      },
+    ],
+  });
+  config.plugins.push(copyManifest);
 
   return config;
 }
