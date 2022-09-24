@@ -1,4 +1,4 @@
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { App as ViewerApp } from "./viewer/App";
 
 if (isJson()) {
@@ -54,12 +54,11 @@ function loadJsonViewer() {
   setTextVisibility(true);
   addCSSRef(chrome.runtime.getURL("static/css/content.css"));
 
-  ReactDOM.render(
+  createRoot(div).render(
     <ViewerApp
       jsonText={jsonText}
       jqWasmFile={chrome.runtime.getURL("jq.wasm")}
-    />,
-    div
+    />
   );
 }
 
