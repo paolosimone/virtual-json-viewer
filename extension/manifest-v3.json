@@ -1,14 +1,12 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "Virtual Json Viewer",
-  "version": "0.1.5",
+  "version": "${version}",
   "description": "JSON browser extension with virtual DOM, search and JQ filtering",
-  "permissions": [
-    "<all_urls>", 
-    "storage"
-  ],
+  "permissions": ["storage"],
+  "host_permissions": ["<all_urls>"],
   "background": {
-    "scripts": ["static/js/background.js"]
+    "service_worker": "static/js/background.js"
   },
   "content_scripts": [
     {
@@ -23,11 +21,12 @@
     "192": "logo/192.png"
   },
   "web_accessible_resources": [
-    "jq.wasm", 
-    "logo/16.png",
-    "static/css/content.css"
+    {
+      "resources": ["jq.wasm", "logo/16.png", "static/css/content.css"],
+      "matches": ["<all_urls>"]
+    }
   ],
-  "browser_action": {
+  "action": {
     "default_icon": {
       "192": "logo/192.png"
     },
