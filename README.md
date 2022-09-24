@@ -1,4 +1,4 @@
-[![Mentioned in Awesome jq](https://awesome.re/mentioned-badge.svg)](https://github.com/fiatjaf/awesome-jq)
+[![mentioned in awesome jq](https://awesome.re/mentioned-badge.svg)](https://github.com/fiatjaf/awesome-jq) [![donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://www.paypal.com/donate/?hosted_button_id=LFXFUKNZ9GBQU)
 
 # ![logo](extension/public/logo/48.png) Virtual Json Viewer
 
@@ -188,6 +188,14 @@ To add a new language:
 1. Make a copy of the `en.json` translation file and rename it with the [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) two-letter code of the new language (e.g. `es.json` for Spanish)
 1. Translate all the values in the new translation file
 1. Register the new language by adding it to the enum (and other structures) inside `extension/src/viewer/localization/Localization.ts`
+
+### Donation
+
+❌ *I won't accept money in exchange for change/feature requests.* 
+
+🍺 If you still want to share a beer as appreciation for my work, go ahead and smash the donate button! 
+
+[![donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.com/donate/?hosted_button_id=LFXFUKNZ9GBQU)
 
 ## Local development
 
