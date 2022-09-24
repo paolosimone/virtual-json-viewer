@@ -10,6 +10,12 @@ Browser plugin that uses [virtual DOM](https://github.com/Lodin/react-vtree) to 
 
 [![chrome](assets/badge-chrome.png)](https://chrome.google.com/webstore/detail/virtual-json-viewer/cipnpfcceoapeahdgomheoecidglopld) [![firefox](assets/badge-firefox.png)](https://addons.mozilla.org/en-GB/firefox/addon/virtual-json-viewer/)
 
+### Manifest Version
+
+Starting from Virtual Json Viewer 0.2.0 the build for Chrome will rely on the new [Manifest V3](https://developer.chrome.com/docs/extensions/mv3/intro/) and will require Chromium version 106 or higher.  
+If you are running an older version of Chromium because reasons... I got your back!
+Simpy follow the instructions on how to perform a [manual installation](#manual-installation) using a MV2 release.
+
 ## Why?
 
 > "Oh my! There are plenty of json viewers, why making a new one?"
@@ -30,28 +36,42 @@ built-in search, JQ filtering and many other features... but no strawberries, so
 
 ### Get the build
 
-__From Release__
+> I'm confused, which manifest version should I get?
+
+| Browser        | Manifest |
+|----------------|:--------:|
+| Chrome 106+    |   V3     |
+| Chrome (older) |   V2     |
+| Firefox        |   V2     |
+
+*Note:* the underlying extension code is the same for both manifest version
+
+#### From Release
 
 1. Download the latest build from the [release page](https://github.com/paolosimone/virtual-json-viewer/releases)
+    - from version 0.2.0 the default build will use Manifest V3
+    - Manifest V2 builds (suffix `mv2`) will still be available until discontinued by Firefox
 1. Extract the content
 
-__From source__
+#### From source
 
 ```bash
 cd extension
 yarn install
-yarn build
+
+yarn build      # Manifest V3
+yarn build-mv2  # Manifest V2
 ```
 
 ### Install the extension
 
-__Chrome__
+#### Chrome
 
 1. Open the Extension Management page by navigating to `chrome://extensions`
 1. Enable Developer Mode by clicking the toggle switch next to Developer mode
 1. Click the load unpacked button and select the `build` directory
 
-__Firefox__
+#### Firefox
 
 Open the `manifest.json` inside the `build` directory and add a custom extension id ([but why?](https://extensionworkshop.com/documentation/develop/extensions-and-the-add-on-id/#when_do_you_need_an_add-on_id))
 ```json
@@ -76,7 +96,7 @@ Load extension
 
 *Note:* The extension is automatically removed when Firefox is closed and must be manually loaded on next start.
 
-__Others__
+#### Others
 
 The extension has not been tested on other browsers, but should work on any chromium browser.
 
@@ -102,7 +122,7 @@ The extension has not been tested on other browsers, but should work on any chro
 
 ## Notes on JQ
 
-__JQ is not available on all websites__
+### JQ is not available on all websites
 
 [JQ](https://stedolan.github.io/jq) has been [compiled to WebAssembly](https://github.com/paolosimone/jq-wasm) and included in this plugin, but some website's Content Security Policy doesn't allow WASM execution. In those cases the JQ command bar is not shown.
 
@@ -111,7 +131,7 @@ _Example:_ https://api.github.com/users/paolosimone/repos
 See also [Issue #15](https://github.com/paolosimone/virtual-json-viewer/issues/15)
 
 
-__JQ command must return a valid json__
+### JQ command must return a valid json
 
 [JQ](https://stedolan.github.io/jq) commands in Virtual Json Viewer must return valid json, otherwise the parsing of the result will fail with an error e.g.
 
@@ -149,15 +169,15 @@ okok, the scream emoji was added by me
 
 ## Contributing
 
-__Bug fix__
+### Bug fix
 
-Ooops! Just [open an issue](https://github.com/paolosimone/virtual-json-viewer/issues/new) with detailed description of what happened and how to reproduce it... Or just open a PR with the patch if you are brave enough!
+Ooops! Just [open an issue](https://github.com/paolosimone/virtual-json-viewer/issues/new) with detailed description of what happened and how to reproduce it... Or go for it and open a PR with the patch if you are brave enough!
 
-__Feature request__
+### Feature request
 
 In general I'd rather keep the feature set of Virtual Json Viewer small and well defined, but if you have a proposal feel free to [open an issue](https://github.com/paolosimone/virtual-json-viewer/issues/new) and we will discuss it.
 
-__Translation__
+### Translation
 
 New languages are welcome, open a PR and follow these steps.
 
