@@ -1,24 +1,24 @@
 import { Icon, IconButton } from "viewer/components";
 import { JsonNodeData } from "../model/JsonNode";
+import { TreeNavigator } from "../TreeNavigator";
 
-export type OpenProps = {
+export type OpenProps = Props<{
   data: JsonNodeData;
-  isOpen: boolean;
-  setOpen: (state: boolean) => Promise<void>;
-};
+  treeNavigator: TreeNavigator;
+}>;
 
 export function OpenButton({
-  data: { isLeaf },
-  isOpen,
-  setOpen,
+  data: { id },
+  treeNavigator,
 }: OpenProps): JSX.Element {
   return (
     <span className="w-5 mr-0.5">
-      {!isLeaf && (
+      {treeNavigator.canOpen(id) && (
         <IconButton
-          icon={isOpen ? Icon.ChevronDown : Icon.ChevronRight}
-          onClick={() => setOpen(!isOpen)}
+          icon={treeNavigator.isOpen(id) ? Icon.ChevronDown : Icon.ChevronRight}
+          onClick={() => treeNavigator.toogleOpen(id)}
           className="w-4 h-4 align-middle"
+          tabIndex={-1}
         />
       )}
     </span>

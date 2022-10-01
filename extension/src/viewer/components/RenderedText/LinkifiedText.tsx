@@ -28,6 +28,7 @@ export function LinkifiedText({
       target={linkType === "email" ? undefined : "_blank"}
       rel="noreferrer"
       className="underline"
+      tabIndex={-1}
     >
       {children}
     </a>

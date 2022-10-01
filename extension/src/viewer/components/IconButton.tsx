@@ -1,16 +1,14 @@
 import classNames from "classnames";
-import { useContext } from "react";
+import { ButtonHTMLAttributes, useContext } from "react";
 import { Theme, ThemeContext } from "viewer/state";
 import { DARK_FILL, Icon, LIGHT_FILL } from "./Icon";
 
 export type IconButtonProps = Props<{
   icon: Icon;
-  onClick: () => void;
-  title?: string;
   isActive?: boolean;
-  disabled?: boolean;
   dark?: boolean;
-}>;
+}> &
+  ButtonHTMLAttributes<HTMLButtonElement>;
 
 export function IconButton({
   icon: CustomIcon,
@@ -21,6 +19,7 @@ export function IconButton({
   className,
   dark,
   style,
+  tabIndex,
 }: IconButtonProps): JSX.Element {
   const darkTheme = useContext(ThemeContext) === Theme.Dark;
   const useDark = dark !== undefined ? dark : darkTheme;
@@ -49,6 +48,7 @@ export function IconButton({
       title={title}
       onClick={onClick}
       disabled={disabled}
+      tabIndex={tabIndex}
     >
       <CustomIcon fill={fill} />
     </button>

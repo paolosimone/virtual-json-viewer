@@ -1,11 +1,15 @@
-import React, { useCallback, useMemo, useRef } from "react";
+import { RefObject, useCallback, useMemo, useRef } from "react";
 import {
   VariableSizeNodePublicState as NodeState,
   VariableSizeTree as Tree,
 } from "react-vtree";
 import { EventType } from "viewer/commons/EventBus";
 import * as Json from "viewer/commons/Json";
-import { useElementSize, useEventBusListener } from "viewer/hooks";
+import {
+  useElementSize,
+  useEventBusListener,
+  useKeydownEvent,
+} from "viewer/hooks";
 import { Search } from "viewer/state";
 import { JsonNodeData } from "./model/JsonNode";
 import {
@@ -14,6 +18,7 @@ import {
   isLeaf,
   jsonTreeWalker,
 } from "./model/JsonTreeWalker";
+import { TreeNavigator } from "./TreeNavigator";
 import { TreeNode } from "./TreeNode";
 
 const RESIZE_DELAY = 100;
@@ -30,24 +35,45 @@ export function TreeViewer({
 }: TreeViewerProps): JSX.Element {
   const tree = useRef<Tree<JsonNodeData>>(null);
 
+  // for some obscure reason AutoSizer doesn't work on Firefox when loaded as extension
+  const parent = useRef<HTMLDivElement>(null);
+  const { height, width } = useElementSize(parent, RESIZE_DELAY);
+
+  // tree walker for building the tree
+  const treeWalker = useMemo(
+    () => jsonTreeWalker(json, search),
+    [json, search]
+  );
+
+  // global events
   const expand = useCallback(() => setOpen(json, tree, true), [json, tree]);
   useEventBusListener(EventType.Expand, expand);
 
   const collapse = useCallback(() => setOpen(json, tree, false), [json, tree]);
   useEventBusListener(EventType.Collapse, collapse);
 
-  const treeWalker = useMemo(
-    () => jsonTreeWalker(json, search),
-    [json, search]
+  // keyboard navigation and shortcuts
+  const treeNavigator = useMemo(() => new TreeNavigator(tree), [tree]);
+  const startNavigation = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        treeNavigator.gotoLastFocused();
+      }
+    },
+    [treeNavigator]
   );
-
-  // for some obscure reason AutoSizer doesn't work on Firefox when loaded as extension
-  const parent = useRef<HTMLDivElement>(null);
-  const { height, width } = useElementSize(parent, RESIZE_DELAY);
+  useKeydownEvent(startNavigation, parent);
 
   return (
-    <div ref={parent} className={className}>
-      <Tree ref={tree} treeWalker={treeWalker} height={height} width={width}>
+    <div ref={parent} className={className} tabIndex={0}>
+      <Tree
+        ref={tree}
+        treeWalker={treeWalker}
+        height={height}
+        width={width}
+        itemData={{ navigator: treeNavigator }}
+      >
         {TreeNode}
       </Tree>
     </div>
@@ -56,7 +82,7 @@ export function TreeViewer({
 
 function setOpen(
   json: Json.Root,
-  tree: React.RefObject<Tree<JsonNodeData>>,
+  tree: RefObject<Tree<JsonNodeData>>,
   isOpen: boolean
 ) {
   function subtreeCallback(
