@@ -2,6 +2,7 @@ export * from "./UseEffectAsync";
 export * from "./UseElementSize";
 export * from "./UseEventBusListener";
 export * from "./UseJQ";
+export * from "./UseKeydownEvent";
 export * from "./UseMediaQuery";
 export * from "./UseRenderedText";
 export * from "./UseSessionStorage";

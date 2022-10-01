@@ -3,11 +3,13 @@ import {
   Dispatch,
   FormEvent,
   SetStateAction,
+  useCallback,
   useContext,
   useEffect,
   useRef,
 } from "react";
 import { Icon, IconButton, IconLabel } from "viewer/components";
+import { CHORD_KEY, useKeydownEvent } from "viewer/hooks";
 import { TranslationContext } from "viewer/localization";
 import { Search, SettingsContext } from "viewer/state";
 
@@ -140,17 +142,16 @@ function SearchInput({
   }, [ref, text]);
 
   // override search shortcut
-  useEffect(() => {
-    function focusSearch(e: KeyboardEvent) {
-      if ((e.ctrlKey || e.metaKey) && e.key == "f") {
+  const focusSearch = useCallback(
+    (e: KeyboardEvent) => {
+      if (e[CHORD_KEY] && e.key == "f") {
         e.preventDefault();
         ref.current?.focus();
       }
-    }
-
-    document.addEventListener("keydown", focusSearch);
-    return () => document.removeEventListener("keydown", focusSearch);
-  }, [ref]);
+    },
+    [ref.current]
+  );
+  useKeydownEvent(focusSearch);
 
   return (
     <input
