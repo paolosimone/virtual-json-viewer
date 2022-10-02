@@ -120,6 +120,29 @@ The extension has not been tested on other browsers, but should work on any chro
 - [X] Internationalization
 - [X] Customizable settings
 
+TODO
+
+navigate UI -> Tab
+
+ctrl + I -> toggle tree/raw view
+
+ctrl + e -> Expand
+ctrl + shift + e -> Collapse
+
+ctrl + f or / -> search
+ctrl + shift + f -> jq
+
+ctrl + s -> save
+
+ctrl + 0 -> focus content
+
+enter tree elements -> enter
+exit tree elements navigation -> escape
+goto first/last -> Home/End
+
+navigate tree elements -> up/down arrow keys OR k/j
+close/open tree elements -> left/right arrow keys OR h/j OR spacebar (toggle)
+
 ## Notes on JQ
 
 ### JQ is not available on all websites
