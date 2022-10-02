@@ -1,6 +1,7 @@
 import { useCallback, useContext } from "react";
 import * as Json from "viewer/commons/Json";
 import { Icon, IconButton } from "viewer/components";
+import { CHORD_KEY, useGlobalKeydownEvent } from "viewer/hooks";
 import { TranslationContext } from "viewer/localization";
 import { SettingsContext } from "viewer/state";
 
@@ -12,6 +13,18 @@ export function SaveButton({ json, className }: SaveButtonProps): JSX.Element {
   const t = useContext(TranslationContext);
   const { indentation } = useContext(SettingsContext);
   const save = useCallback(() => saveJson(json, indentation), [json]);
+
+  // register global shortcut
+  const handleShortcut = useCallback(
+    (e: KeyboardEvent) => {
+      if (e[CHORD_KEY] && e.key == "s") {
+        e.preventDefault();
+        save();
+      }
+    },
+    [save]
+  );
+  useGlobalKeydownEvent(handleShortcut);
 
   return (
     <IconButton

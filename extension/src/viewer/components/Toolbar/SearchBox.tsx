@@ -9,7 +9,7 @@ import {
   useRef,
 } from "react";
 import { Icon, IconButton, IconLabel } from "viewer/components";
-import { CHORD_KEY, useKeydownEvent } from "viewer/hooks";
+import { CHORD_KEY, useGlobalKeydownEvent } from "viewer/hooks";
 import { TranslationContext } from "viewer/localization";
 import { Search, SettingsContext } from "viewer/state";
 
@@ -141,17 +141,17 @@ function SearchInput({
     }
   }, [ref, text]);
 
-  // override search shortcut
-  const focusSearch = useCallback(
+  // override browser search shortcut
+  const handleShortcut = useCallback(
     (e: KeyboardEvent) => {
-      if (e[CHORD_KEY] && e.key == "f") {
+      if ((e[CHORD_KEY] && e.key == "f") || e.key == "/") {
         e.preventDefault();
         ref.current?.focus();
       }
     },
-    [ref.current]
+    [ref]
   );
-  useKeydownEvent(focusSearch);
+  useGlobalKeydownEvent(handleShortcut);
 
   return (
     <input

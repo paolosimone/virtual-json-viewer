@@ -4,8 +4,9 @@ import { EventType } from "viewer/commons/EventBus";
 import * as Json from "viewer/commons/Json";
 import {
   CHORD_KEY,
+  RefCurrent,
   useEventBusListener,
-  useKeydownEvent,
+  useGlobalKeydownEvent,
   useRenderedText,
 } from "viewer/hooks";
 import { Search, SettingsContext } from "viewer/state";
@@ -38,18 +39,26 @@ export function RawViewer({
 
   const highlightedText = useRenderedText(raw, search);
 
-  // add select all text shortcut
   const ref = useRef<HTMLDivElement>(null);
-  const onSelectAll = useCallback(
+
+  // register shortcuts
+  const hanldeNavigation = useCallback(
     (e: KeyboardEvent) => {
-      if (e[CHORD_KEY] && e.key == "a") {
+      if (e[CHORD_KEY] && e.key === "0") {
         e.preventDefault();
-        if (ref.current) selectAllText(ref.current);
+        ref.current?.focus();
       }
     },
-    [ref.current]
+    [ref]
   );
-  useKeydownEvent(onSelectAll, ref);
+  useGlobalKeydownEvent(hanldeNavigation);
+
+  const handleSelectAll = (e: React.KeyboardEvent) => {
+    if (e[CHORD_KEY] && e.key == "a") {
+      e.preventDefault();
+      selectAllText(ref.current);
+    }
+  };
 
   const wrap = minify ? "break-all" : "whitespace-pre";
 
@@ -59,6 +68,7 @@ export function RawViewer({
       tabIndex={0}
       className={classNames("overflow-auto", wrap, className)}
       spellCheck={false}
+      onKeyDown={handleSelectAll}
     >
       {highlightedText}
     </div>
@@ -66,7 +76,8 @@ export function RawViewer({
 }
 
 // html element must be focusable
-function selectAllText(elem: HTMLElement) {
+function selectAllText(elem: RefCurrent<HTMLElement>) {
+  if (!elem) return;
   const range = document.createRange();
   range.selectNode(elem);
 

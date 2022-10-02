@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import { Dispatch, SetStateAction, useCallback, useContext } from "react";
 import { Icon, IconButton } from "viewer/components";
+import { CHORD_KEY, useGlobalKeydownEvent } from "viewer/hooks";
 import { TranslationContext } from "viewer/localization";
 import { ViewerMode } from "viewer/state";
 
@@ -23,6 +24,18 @@ export function ViewerModeToggle({
       ),
     [setViewerMode]
   );
+
+  // register global shortcut
+  const handleShortcut = useCallback(
+    (e: KeyboardEvent) => {
+      if (e[CHORD_KEY] && e.key == "i") {
+        e.preventDefault();
+        toggleView();
+      }
+    },
+    [toggleView]
+  );
+  useGlobalKeydownEvent(handleShortcut);
 
   return (
     <span className={classNames("flex items-center rounded-sm", className)}>

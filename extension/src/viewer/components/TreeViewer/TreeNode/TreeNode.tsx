@@ -1,8 +1,8 @@
 import classNames from "classnames";
-import { useCallback, useEffect, useRef } from "react";
+import { useEffect, useLayoutEffect } from "react";
 import { VariableSizeNodePublicState as NodeState } from "react-vtree";
 import { NodeComponentProps } from "react-vtree/dist/es/Tree";
-import { useKeydownEvent } from "viewer/hooks";
+import { RefCurrent, useReactiveRef } from "viewer/hooks";
 import { Search } from "viewer/state";
 import { JsonNodeData } from "../model/JsonNode";
 import { TreeNavigator } from "../TreeNavigator";
@@ -21,34 +21,32 @@ export function TreeNode({
   resize,
   treeData,
 }: JsonTreeNode): JSX.Element {
-  const [parent, content] = useFitContent(resize);
+  const [parent, parentRef] = useReactiveRef<HTMLDivElement>();
+  const [content, contentRef] = useReactiveRef<HTMLDivElement>();
+
+  useFitContent(parent, content, resize);
 
   const treeNavigator: TreeNavigator = treeData.navigator;
 
-  const navigate = useCallback(
-    (e: KeyboardEvent) => handleNavigation(data.id, treeNavigator, e),
-    [data.id, treeNavigator]
-  );
-  useKeydownEvent(navigate, parent);
-
-  useEffect(() => {
-    if (!parent.current) return;
-    treeNavigator.onElemShown(data.id, parent.current);
+  useLayoutEffect(() => {
+    if (!parent) return;
+    treeNavigator.onElemShown(data.id, parent);
     return () => treeNavigator.onElemHidden(data.id);
-  }, [data.id, parent.current, treeNavigator]);
+  }, [data.id, parent, treeNavigator]);
 
   const searchAnalysis = analyzeSearchMatch(data);
   const fade = { "opacity-60": !searchAnalysis.inMatchingPath };
 
   return (
     <div
-      ref={parent}
-      className="focus:ring"
+      ref={parentRef}
+      className="focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-600"
       style={{ ...style, paddingLeft: `${data.nesting}em` }}
       tabIndex={-1}
-      onClick={() => parent.current?.focus()}
+      onClick={() => parent?.focus()}
+      onKeyDown={(e) => handleNavigation(data.id, treeNavigator, e)}
     >
-      <div ref={content} className={classNames("flex items-start", fade)}>
+      <div ref={contentRef} className={classNames("flex items-start", fade)}>
         <OpenButton data={data} treeNavigator={treeNavigator} />
         <Key data={data} search={searchAnalysis.keySearch} />
         <Value
@@ -62,29 +60,27 @@ export function TreeNode({
 }
 
 type Resize = (height: number, shouldForceUpdate?: boolean) => void;
-type Ref = React.RefObject<HTMLDivElement>;
-type ParentContentRefs = [Ref, Ref];
 
-function useFitContent(resize: Resize): ParentContentRefs {
+function useFitContent(
+  parent: RefCurrent<HTMLElement>,
+  content: RefCurrent<HTMLElement>,
+  resize: Resize
+) {
   const PADDING_HEIGHT = 4;
   const TOLERANCE = 2;
 
-  const parent = useRef<HTMLDivElement>(null);
-  const content = useRef<HTMLDivElement>(null);
-
   const fitContent = () => {
-    const parentHeight = parent.current?.clientHeight ?? 0;
-    const contentHeight = (content.current?.clientHeight ?? 0) + PADDING_HEIGHT;
+    if (!parent || !content) return;
+    const parentHeight = parent.clientHeight;
+    const contentHeight = content.clientHeight + PADDING_HEIGHT;
     const delta = Math.abs(contentHeight - parentHeight);
     if (delta > TOLERANCE) {
       resize(contentHeight, true);
     }
   };
 
-  // fit content on every component update
+  // fit content on *every* component update
   useEffect(fitContent);
-
-  return [parent, content];
 }
 
 type SearchMatchAnalysis = {
@@ -111,7 +107,7 @@ function analyzeSearchMatch({
 function handleNavigation(
   id: string,
   treeNavigator: TreeNavigator,
-  e: KeyboardEvent
+  e: React.KeyboardEvent
 ) {
   if (e.shiftKey || e.ctrlKey || e.metaKey) {
     return;
@@ -133,13 +129,13 @@ function handleNavigation(
     case "ArrowRight":
     case "l":
       e.preventDefault();
-      treeNavigator.setOpen(id, true);
+      treeNavigator.open(id);
       return;
 
     case "ArrowLeft":
     case "h":
       e.preventDefault();
-      treeNavigator.setOpen(id, false);
+      treeNavigator.close(id);
       return;
 
     case " ":

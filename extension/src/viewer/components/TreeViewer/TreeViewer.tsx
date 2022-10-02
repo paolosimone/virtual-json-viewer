@@ -1,4 +1,4 @@
-import { RefObject, useCallback, useMemo, useRef } from "react";
+import React, { RefObject, useCallback, useMemo, useRef } from "react";
 import {
   VariableSizeNodePublicState as NodeState,
   VariableSizeTree as Tree,
@@ -6,9 +6,11 @@ import {
 import { EventType } from "viewer/commons/EventBus";
 import * as Json from "viewer/commons/Json";
 import {
+  CHORD_KEY,
   useElementSize,
   useEventBusListener,
-  useKeydownEvent,
+  useGlobalKeydownEvent,
+  useReactiveRef,
 } from "viewer/hooks";
 import { Search } from "viewer/state";
 import { JsonNodeData } from "./model/JsonNode";
@@ -36,7 +38,7 @@ export function TreeViewer({
   const tree = useRef<Tree<JsonNodeData>>(null);
 
   // for some obscure reason AutoSizer doesn't work on Firefox when loaded as extension
-  const parent = useRef<HTMLDivElement>(null);
+  const [parent, parentRef] = useReactiveRef<HTMLDivElement>();
   const { height, width } = useElementSize(parent, RESIZE_DELAY);
 
   // tree walker for building the tree
@@ -52,21 +54,31 @@ export function TreeViewer({
   const collapse = useCallback(() => setOpen(json, tree, false), [json, tree]);
   useEventBusListener(EventType.Collapse, collapse);
 
-  // keyboard navigation and shortcuts
-  const treeNavigator = useMemo(() => new TreeNavigator(tree), [tree]);
-  const startNavigation = useCallback(
+  // register global shortcut
+  const handleShortcut = useCallback(
     (e: KeyboardEvent) => {
-      if (e.key === "Enter") {
+      if (e[CHORD_KEY] && e.key === "0") {
         e.preventDefault();
-        treeNavigator.gotoLastFocused();
+        parent?.focus();
       }
     },
-    [treeNavigator]
+    [parent]
   );
-  useKeydownEvent(startNavigation, parent);
+  useGlobalKeydownEvent(handleShortcut);
+
+  // keyboard navigation
+  const treeNavigator = useMemo(
+    () => new TreeNavigator(tree, parent),
+    [tree, parent]
+  );
 
   return (
-    <div ref={parent} className={className} tabIndex={0}>
+    <div
+      ref={parentRef}
+      className={className}
+      tabIndex={0}
+      onKeyDown={(e) => handleNavigation(parent, treeNavigator, e)}
+    >
       <Tree
         ref={tree}
         treeWalker={treeWalker}
@@ -102,4 +114,32 @@ function setOpen(
   );
 
   tree.current?.recomputeTree(newState);
+}
+
+function handleNavigation(
+  treeElem: Nullable<HTMLElement>,
+  treeNavigator: TreeNavigator,
+  e: React.KeyboardEvent
+) {
+  switch (e.key) {
+    case "Enter":
+      e.preventDefault();
+      treeNavigator.gotoLastFocused();
+      return;
+
+    case "Escape":
+      e.preventDefault();
+      treeElem?.focus();
+      return;
+
+    case "Home":
+      e.preventDefault();
+      treeNavigator.gotoFirst();
+      return;
+
+    case "End":
+      e.preventDefault();
+      treeNavigator.gotoLast();
+      return;
+  }
 }

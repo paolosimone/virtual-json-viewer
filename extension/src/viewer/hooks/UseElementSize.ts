@@ -1,4 +1,5 @@
-import { RefObject, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { RefCurrent } from "./UseReactiveRef";
 
 // The element size, without padding
 export type Size = {
@@ -7,15 +8,13 @@ export type Size = {
 };
 
 export function useElementSize<T extends Element>(
-  element: RefObject<T>,
+  element: RefCurrent<T>,
   delay?: number
 ): Size {
   const [size, updateSize] = useState<Size>(currentSize(element));
 
   useEffect(() => {
-    if (!element.current) {
-      return;
-    }
+    if (!element) return;
 
     // update size on first render
     updateSize(currentSize(element));
@@ -29,31 +28,31 @@ export function useElementSize<T extends Element>(
 
     // subscribe to resize events
     const observer = new ResizeObserver(onResize);
-    observer.observe(element.current);
+    observer.observe(element);
 
     // unsubscribe on exit
     return () => {
       if (timeoutId) clearTimeout(timeoutId);
       observer.disconnect();
     };
-  }, [element.current, delay, updateSize]);
+  }, [element, delay, updateSize]);
 
   return size;
 }
 
-function currentSize<T extends Element>(element: RefObject<T>): Size {
-  if (!element.current) {
+function currentSize<T extends Element>(element: RefCurrent<T>): Size {
+  if (!element) {
     return { height: 0, width: 0 };
   }
 
-  const style = window.getComputedStyle(element.current);
+  const style = window.getComputedStyle(element);
   const paddingY =
     parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
   const paddingX =
     parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
 
   return {
-    height: element.current.clientHeight - paddingY,
-    width: element.current.clientWidth - paddingX,
+    height: element.clientHeight - paddingY,
+    width: element.clientWidth - paddingX,
   };
 }

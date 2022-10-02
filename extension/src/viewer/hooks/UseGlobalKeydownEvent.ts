@@ -1,17 +1,12 @@
-import { RefObject, useEffect } from "react";
+import { useEffect } from "react";
 
 export type OnKeydown = (e: KeyboardEvent) => void;
 
-export function useKeydownEvent(
-  onKeydown: OnKeydown,
-  ref: Nullable<RefObject<HTMLElement>> = null
-): void {
-  const elem: Nullable<GlobalEventHandlers> = ref ? ref.current : document;
-
+export function useGlobalKeydownEvent(onKeydown: OnKeydown): void {
   useEffect(() => {
-    elem?.addEventListener("keydown", onKeydown);
-    return () => elem?.removeEventListener("keydown", onKeydown);
-  }, [elem]);
+    document.addEventListener("keydown", onKeydown);
+    return () => document.removeEventListener("keydown", onKeydown);
+  }, [onKeydown]);
 }
 
 export const CHORD_KEY = isMacOs() ? "metaKey" : "ctrlKey";
