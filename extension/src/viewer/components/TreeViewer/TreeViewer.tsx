@@ -84,6 +84,11 @@ export function TreeViewer({
     keypressDelay: 500,
   });
 
+  // fix tab navigation on firefox
+  // Ref: https://github.com/bvaughn/react-window/issues/130
+  const [treeDiv, treeDivRef] = useReactiveRef<HTMLDivElement>();
+  if (treeDiv) treeDiv.tabIndex = -1;
+
   return (
     <div
       ref={parentRef}
@@ -94,6 +99,7 @@ export function TreeViewer({
       <Tree
         ref={tree}
         treeWalker={treeWalker}
+        outerRef={treeDivRef}
         height={height}
         width={width}
         itemData={{ navigator: treeNavigator }}
