@@ -1,4 +1,4 @@
-import React, { RefObject, useCallback, useMemo, useRef } from "react";
+import { RefObject, useCallback, useMemo, useRef } from "react";
 import {
   VariableSizeNodePublicState as NodeState,
   VariableSizeTree as Tree,
@@ -7,9 +7,12 @@ import { EventType } from "viewer/commons/EventBus";
 import * as Json from "viewer/commons/Json";
 import {
   CHORD_KEY,
+  KeydownBufferEvent,
+  KeydownEvent,
   useElementSize,
   useEventBusListener,
   useGlobalKeydownEvent,
+  useKeydownBuffer,
   useReactiveRef,
 } from "viewer/hooks";
 import { Search } from "viewer/state";
@@ -56,7 +59,7 @@ export function TreeViewer({
 
   // register global shortcut
   const handleShortcut = useCallback(
-    (e: KeyboardEvent) => {
+    (e: KeydownEvent) => {
       if (e[CHORD_KEY] && e.key === "0") {
         e.preventDefault();
         parent?.focus();
@@ -72,12 +75,21 @@ export function TreeViewer({
     [tree, parent]
   );
 
+  const navigate = useCallback(
+    (e: KeydownBufferEvent) => handleNavigation(parent, treeNavigator, e),
+    [parent, treeNavigator]
+  );
+  const onKeydown = useKeydownBuffer(navigate, {
+    bufferSize: 2,
+    keypressDelay: 500,
+  });
+
   return (
     <div
       ref={parentRef}
       className={className}
       tabIndex={0}
-      onKeyDown={(e) => handleNavigation(parent, treeNavigator, e)}
+      onKeyDown={onKeydown}
     >
       <Tree
         ref={tree}
@@ -119,7 +131,7 @@ function setOpen(
 function handleNavigation(
   treeElem: Nullable<HTMLElement>,
   treeNavigator: TreeNavigator,
-  e: React.KeyboardEvent
+  { last: e, text }: KeydownBufferEvent
 ) {
   const id = treeNavigator.getCurrentId();
 
@@ -165,13 +177,13 @@ function handleNavigation(
     return;
   }
 
-  if (e.key == "Home") {
+  if (e.key == "Home" || text.slice(-2) == "gg") {
     e.preventDefault();
     treeNavigator.gotoFirst();
     return;
   }
 
-  if (e.key == "End") {
+  if (e.key == "End" || e.key == "G") {
     e.preventDefault();
     treeNavigator.gotoLast();
     return;

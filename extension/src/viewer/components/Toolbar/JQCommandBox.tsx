@@ -10,7 +10,7 @@ import {
   useState,
 } from "react";
 import { Icon, IconButton } from "viewer/components";
-import { CHORD_KEY, useGlobalKeydownEvent } from "viewer/hooks";
+import { CHORD_KEY, KeydownEvent, useGlobalKeydownEvent } from "viewer/hooks";
 import { TranslationContext } from "viewer/localization";
 import { JQCommand } from "viewer/state";
 
@@ -100,7 +100,7 @@ function FilterInput({
   }, [ref, filter]);
 
   // register global shortcut
-  const handleShortcut = useCallback((e: KeyboardEvent) => {
+  const handleShortcut = useCallback((e: KeydownEvent) => {
     if (e[CHORD_KEY] && e.shiftKey && e.key == "f") {
       e.preventDefault();
       ref.current?.focus();

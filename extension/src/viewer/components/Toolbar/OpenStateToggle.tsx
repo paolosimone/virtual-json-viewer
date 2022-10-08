@@ -1,7 +1,7 @@
 import { useCallback, useContext } from "react";
 import { dispatch, EventType } from "viewer/commons/EventBus";
 import { Icon, IconButton } from "viewer/components";
-import { CHORD_KEY, useGlobalKeydownEvent } from "viewer/hooks";
+import { CHORD_KEY, KeydownEvent, useGlobalKeydownEvent } from "viewer/hooks";
 import { TranslationContext } from "viewer/localization";
 
 export type OpenStateToggleProps = BaseProps;
@@ -12,7 +12,7 @@ export function OpenStateToggle({
   const t = useContext(TranslationContext);
 
   // register global shortcut
-  const handleShortcut = useCallback((e: KeyboardEvent) => {
+  const handleShortcut = useCallback((e: KeydownEvent) => {
     if (e[CHORD_KEY] && e.key == "e") {
       e.preventDefault();
       expand();

@@ -4,6 +4,7 @@ import { EventType } from "viewer/commons/EventBus";
 import * as Json from "viewer/commons/Json";
 import {
   CHORD_KEY,
+  KeydownEvent,
   RefCurrent,
   useEventBusListener,
   useGlobalKeydownEvent,
@@ -43,7 +44,7 @@ export function RawViewer({
 
   // register shortcuts
   const hanldeNavigation = useCallback(
-    (e: KeyboardEvent) => {
+    (e: KeydownEvent) => {
       if (e[CHORD_KEY] && e.key === "0") {
         e.preventDefault();
         ref.current?.focus();

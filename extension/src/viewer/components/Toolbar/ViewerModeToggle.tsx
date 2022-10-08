@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { Dispatch, SetStateAction, useCallback, useContext } from "react";
 import { Icon, IconButton } from "viewer/components";
-import { CHORD_KEY, useGlobalKeydownEvent } from "viewer/hooks";
+import { CHORD_KEY, KeydownEvent, useGlobalKeydownEvent } from "viewer/hooks";
 import { TranslationContext } from "viewer/localization";
 import { ViewerMode } from "viewer/state";
 
@@ -27,7 +27,7 @@ export function ViewerModeToggle({
 
   // register global shortcut
   const handleShortcut = useCallback(
-    (e: KeyboardEvent) => {
+    (e: KeydownEvent) => {
       if (e[CHORD_KEY] && e.key == "i") {
         e.preventDefault();
         toggleView();

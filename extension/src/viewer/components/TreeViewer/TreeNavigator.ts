@@ -41,7 +41,7 @@ export class TreeNavigator {
   onElemHidden(id: string) {
     this.elemById.delete(id);
 
-    // return focus to parent frame to avoid inconsistencies
+    // return focus to parent to avoid inconsistencies
     if (id === this.lastFocused) {
       this.lastFocused = undefined;
       this.treeElem?.focus();
@@ -103,7 +103,7 @@ export class TreeNavigator {
   // O(N)
   goto(id: string) {
     // manually mark the node as focused, because
-    // the html element could be outside the virtual list
+    // the target html element could be outside the virtual list
     this.lastFocused = id;
 
     this.tree.current?.scrollToItem(id);

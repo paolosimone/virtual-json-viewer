@@ -1,7 +1,7 @@
 import { useCallback, useContext } from "react";
 import * as Json from "viewer/commons/Json";
 import { Icon, IconButton } from "viewer/components";
-import { CHORD_KEY, useGlobalKeydownEvent } from "viewer/hooks";
+import { CHORD_KEY, KeydownEvent, useGlobalKeydownEvent } from "viewer/hooks";
 import { TranslationContext } from "viewer/localization";
 import { SettingsContext } from "viewer/state";
 
@@ -16,7 +16,7 @@ export function SaveButton({ json, className }: SaveButtonProps): JSX.Element {
 
   // register global shortcut
   const handleShortcut = useCallback(
-    (e: KeyboardEvent) => {
+    (e: KeydownEvent) => {
       if (e[CHORD_KEY] && e.key == "s") {
         e.preventDefault();
         save();
