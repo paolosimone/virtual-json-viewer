@@ -7,12 +7,16 @@ import { JsonNodeData } from "./model/JsonNode";
 export type JsonTree = Tree<JsonNodeData>;
 export type JsonNodeRecord = NodeRecord<NodePublicState<JsonNodeData>>;
 
+export type NavigationOffset = {
+  rows?: number;
+  pages?: number;
+};
+
 export class TreeNavigator {
   private tree: RefObject<JsonTree>;
   private treeElem: RefCurrent<HTMLElement>;
   private elemById: Map<string, HTMLElement> = new Map();
   private lastFocused?: string;
-  private pendingFocus?: string;
 
   constructor(
     tree: RefObject<Tree<JsonNodeData>>,
@@ -25,32 +29,35 @@ export class TreeNavigator {
   onElemShown(id: string, elem: HTMLElement) {
     this.elemById.set(id, elem);
 
+    // register to external focus event (e.g. by mouse click)
     elem.onfocus = () => (this.lastFocused = id);
 
-    if (id === this.pendingFocus) {
-      this.focusElem(id);
+    // handle pending navigation
+    if (id === this.lastFocused) {
+      elem.focus();
     }
   }
 
   onElemHidden(id: string) {
     this.elemById.delete(id);
 
+    // return focus to parent frame to avoid inconsistencies
     if (id === this.lastFocused) {
       this.lastFocused = undefined;
       this.treeElem?.focus();
     }
   }
 
-  get(id: string): JsonNodeRecord | undefined {
-    return this.tree.current?.state.records.get(id);
-  }
-
   canOpen(id: string): boolean {
-    return !this.get(id)?.public?.data?.isLeaf;
+    return !this.getNode(id)?.public?.data?.isLeaf;
   }
 
   isOpen(id: string): boolean {
-    return this.get(id)?.public?.isOpen ?? false;
+    return this.getNode(id)?.public?.isOpen ?? false;
+  }
+
+  toogleOpen(id: string) {
+    this.setOpen(id, !this.isOpen(id));
   }
 
   open(id: string) {
@@ -65,33 +72,20 @@ export class TreeNavigator {
       return;
     }
 
-    const parentId = this.get(id)?.parent?.public.data.id;
+    // if already closed and it has a parent, then close the parent
+    const parentId = this.getNode(id)?.parent?.public.data.id;
     if (parentId) {
       this.goto(parentId);
       this.setOpen(parentId, false);
     }
   }
 
-  toogleOpen(id: string) {
-    this.setOpen(id, !this.isOpen(id));
-  }
-
-  gotoNext(id: string) {
+  gotoOffset(id: string, { rows, pages }: NavigationOffset) {
     const index = this.order().indexOf(id);
     if (index >= 0) {
-      this.gotoIndex(index + 1);
+      const target = index + (rows ?? 0) + (pages ?? 0) * this.pageRows();
+      this.gotoIndex(target);
     }
-  }
-
-  gotoPrevious(id: string) {
-    const index = this.order().indexOf(id);
-    this.gotoIndex(index - 1);
-  }
-
-  // O(N)
-  goto(id: string) {
-    this.tree.current?.scrollToItem(id);
-    this.focusElem(id);
   }
 
   gotoFirst() {
@@ -102,32 +96,26 @@ export class TreeNavigator {
     this.gotoIndex(this.order().length - 1);
   }
 
-  gotoLastFocused() {
-    if (this.lastFocused) {
-      this.goto(this.lastFocused);
-    } else {
-      this.gotoFirst();
-    }
+  getCurrentId(): string | undefined {
+    return this.lastFocused ? this.lastFocused : this.getId(0);
+  }
+
+  // O(N)
+  goto(id: string) {
+    // manually mark the node as focused, because
+    // the html element could be outside the virtual list
+    this.lastFocused = id;
+
+    this.tree.current?.scrollToItem(id);
+    this.elemById.get(id)?.focus();
   }
 
   private gotoIndex(index: number) {
     const order = this.order();
-    if (0 <= index && index < order.length) {
-      this.goto(order[index]);
-    }
-  }
+    if (!order.length) return;
 
-  private focusElem(id: string) {
-    const elem = this.elemById.get(id);
-
-    if (!elem) {
-      // the html element is outside the virtual list
-      this.pendingFocus = id;
-      return;
-    }
-
-    this.pendingFocus = undefined;
-    elem.focus();
+    index = Math.max(0, Math.min(index, order.length - 1));
+    this.goto(order[index]);
   }
 
   private order(): string[] {
@@ -136,7 +124,25 @@ export class TreeNavigator {
 
   private setOpen(id: string, state: boolean) {
     if (this.canOpen(id)) {
-      this.get(id)?.public?.setOpen(state);
+      this.getNode(id)?.public?.setOpen(state);
     }
+  }
+
+  private getNode(id: string): JsonNodeRecord | undefined {
+    return this.tree.current?.state.records.get(id);
+  }
+
+  private getId(index: number): string | undefined {
+    const order = this.order();
+    if (0 <= index && index < order.length) {
+      return order[index];
+    }
+  }
+
+  private pageRows(): number {
+    const pageHeight = this.treeElem?.clientHeight;
+    const itemHeight =
+      this.tree.current?.state?.list?.current?.props?.itemSize(0);
+    return pageHeight && itemHeight ? Math.floor(pageHeight / itemHeight) : 0;
   }
 }

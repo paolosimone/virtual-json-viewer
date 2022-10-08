@@ -44,7 +44,6 @@ export function TreeNode({
       style={{ ...style, paddingLeft: `${data.nesting}em` }}
       tabIndex={-1}
       onClick={() => parent?.focus()}
-      onKeyDown={(e) => handleNavigation(data.id, treeNavigator, e)}
     >
       <div ref={contentRef} className={classNames("flex items-start", fade)}>
         <OpenButton data={data} treeNavigator={treeNavigator} />
@@ -102,45 +101,4 @@ function analyzeSearchMatch({
     keySearch: searchMatch.inKey ? searchMatch.search : null,
     valueSearch: isLeaf && searchMatch.inValue ? searchMatch.search : null,
   };
-}
-
-function handleNavigation(
-  id: string,
-  treeNavigator: TreeNavigator,
-  e: React.KeyboardEvent
-) {
-  if (e.shiftKey || e.ctrlKey || e.metaKey) {
-    return;
-  }
-
-  switch (e.key) {
-    case "ArrowDown":
-    case "j":
-      e.preventDefault();
-      treeNavigator.gotoNext(id);
-      return;
-
-    case "ArrowUp":
-    case "k":
-      e.preventDefault();
-      treeNavigator.gotoPrevious(id);
-      return;
-
-    case "ArrowRight":
-    case "l":
-      e.preventDefault();
-      treeNavigator.open(id);
-      return;
-
-    case "ArrowLeft":
-    case "h":
-      e.preventDefault();
-      treeNavigator.close(id);
-      return;
-
-    case " ":
-      e.preventDefault();
-      treeNavigator.toogleOpen(id);
-      return;
-  }
 }

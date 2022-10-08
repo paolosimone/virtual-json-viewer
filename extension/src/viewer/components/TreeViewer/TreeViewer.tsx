@@ -121,25 +121,79 @@ function handleNavigation(
   treeNavigator: TreeNavigator,
   e: React.KeyboardEvent
 ) {
-  switch (e.key) {
-    case "Enter":
-      e.preventDefault();
-      treeNavigator.gotoLastFocused();
-      return;
+  const id = treeNavigator.getCurrentId();
 
-    case "Escape":
-      e.preventDefault();
-      treeElem?.focus();
-      return;
+  // Focus
 
-    case "Home":
-      e.preventDefault();
-      treeNavigator.gotoFirst();
-      return;
+  if (e.key == "Enter") {
+    e.preventDefault();
+    if (id) treeNavigator.goto(id);
+    return;
+  }
 
-    case "End":
-      e.preventDefault();
-      treeNavigator.gotoLast();
-      return;
+  if (e.key == "Escape") {
+    e.preventDefault();
+    treeElem?.focus();
+    return;
+  }
+
+  // Row navigation
+
+  if (e.key == "ArrowDown" || e.key == "j") {
+    e.preventDefault();
+    if (id) treeNavigator.gotoOffset(id, { rows: 1 });
+    return;
+  }
+
+  if (e.key == "ArrowUp" || e.key == "k") {
+    e.preventDefault();
+    if (id) treeNavigator.gotoOffset(id, { rows: -1 });
+    return;
+  }
+
+  // Page navigation
+
+  if (e.key == "PageDown" || e.key == "J") {
+    e.preventDefault();
+    if (id) treeNavigator.gotoOffset(id, { pages: 1 });
+    return;
+  }
+
+  if (e.key == "PageUp" || e.key == "K") {
+    e.preventDefault();
+    if (id) treeNavigator.gotoOffset(id, { pages: -1 });
+    return;
+  }
+
+  if (e.key == "Home") {
+    e.preventDefault();
+    treeNavigator.gotoFirst();
+    return;
+  }
+
+  if (e.key == "End") {
+    e.preventDefault();
+    treeNavigator.gotoLast();
+    return;
+  }
+
+  // Open state
+
+  if (e.key == "ArrowRight" || e.key == "l") {
+    e.preventDefault();
+    if (id) treeNavigator.open(id);
+    return;
+  }
+
+  if (e.key == "ArrowLeft" || e.key == "h") {
+    e.preventDefault();
+    if (id) treeNavigator.close(id);
+    return;
+  }
+
+  if (e.key == " ") {
+    e.preventDefault();
+    if (id) treeNavigator.toogleOpen(id);
+    return;
   }
 }
