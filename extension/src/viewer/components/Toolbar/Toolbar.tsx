@@ -1,12 +1,9 @@
 import classNames from "classnames";
-import { useContext } from "react";
 import * as Json from "viewer/commons/Json";
-import { Icon, IconButton } from "viewer/components";
 import { StateObject } from "viewer/hooks";
-import { TranslationContext } from "viewer/localization";
 import { JQCommand, Search, ViewerMode } from "viewer/state";
-import { dispatch, EventType } from "../../commons/EventBus";
 import { JQCommandBox } from "./JQCommandBox";
+import { OpenStateToggle } from "./OpenStateToggle";
 import { SaveButton } from "./SaveButton";
 import { SearchBox } from "./SearchBox";
 import { ViewerModeToggle } from "./ViewerModeToggle";
@@ -25,7 +22,6 @@ export function Toolbar({
   jqCommandState,
   className,
 }: ToolbarProps): JSX.Element {
-  const t = useContext(TranslationContext);
   const isTreeView = viewerModeState.value === ViewerMode.Tree;
 
   return (
@@ -44,19 +40,7 @@ export function Toolbar({
 
         <Separator />
 
-        <IconButton
-          className="w-7 h-7 px-px"
-          title={t.toolbar.expand}
-          icon={Icon.ExpandAll}
-          onClick={expand}
-        />
-
-        <IconButton
-          className="w-7 h-7 px-px"
-          title={t.toolbar.collapse}
-          icon={Icon.CollapseAll}
-          onClick={collapse}
-        />
+        <OpenStateToggle className="w-14 h-7 px-px" />
 
         <Separator />
 
@@ -80,14 +64,6 @@ export function Toolbar({
       )}
     </div>
   );
-}
-
-function expand() {
-  dispatch(EventType.Expand);
-}
-
-function collapse() {
-  dispatch(EventType.Collapse);
 }
 
 function Separator(): JSX.Element {

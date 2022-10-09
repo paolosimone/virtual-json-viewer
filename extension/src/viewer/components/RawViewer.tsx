@@ -1,16 +1,15 @@
 import classNames from "classnames";
-import {
-  RefObject,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useContext, useMemo, useRef, useState } from "react";
 import { EventType } from "viewer/commons/EventBus";
 import * as Json from "viewer/commons/Json";
-import { useEventBusListener, useRenderedText } from "viewer/hooks";
+import {
+  CHORD_KEY,
+  KeydownEvent,
+  RefCurrent,
+  useEventBusListener,
+  useGlobalKeydownEvent,
+  useRenderedText,
+} from "viewer/hooks";
 import { Search, SettingsContext } from "viewer/state";
 
 export type RawViewerProps = Props<{
@@ -42,7 +41,25 @@ export function RawViewer({
   const highlightedText = useRenderedText(raw, search);
 
   const ref = useRef<HTMLDivElement>(null);
-  useSelectAllText(ref);
+
+  // register shortcuts
+  const hanldeNavigation = useCallback(
+    (e: KeydownEvent) => {
+      if (e[CHORD_KEY] && e.key === "0") {
+        e.preventDefault();
+        ref.current?.focus();
+      }
+    },
+    [ref]
+  );
+  useGlobalKeydownEvent(hanldeNavigation);
+
+  const handleSelectAll = (e: React.KeyboardEvent) => {
+    if (e[CHORD_KEY] && e.key == "a") {
+      e.preventDefault();
+      selectAllText(ref.current);
+    }
+  };
 
   const wrap = minify ? "break-all" : "whitespace-pre";
 
@@ -52,6 +69,7 @@ export function RawViewer({
       tabIndex={0}
       className={classNames("overflow-auto", wrap, className)}
       spellCheck={false}
+      onKeyDown={handleSelectAll}
     >
       {highlightedText}
     </div>
@@ -59,27 +77,8 @@ export function RawViewer({
 }
 
 // html element must be focusable
-function useSelectAllText(ref: RefObject<HTMLElement>) {
-  useEffect(() => {
-    if (!ref.current) {
-      return;
-    }
-
-    const elem = ref.current;
-
-    function selectAll(e: KeyboardEvent) {
-      if ((e.ctrlKey || e.metaKey) && e.key == "a") {
-        e.preventDefault();
-        selectAllText(elem);
-      }
-    }
-
-    elem.addEventListener("keydown", selectAll);
-    return () => elem.removeEventListener("keydown", selectAll);
-  }, [ref.current]);
-}
-
-function selectAllText(elem: HTMLElement) {
+function selectAllText(elem: RefCurrent<HTMLElement>) {
+  if (!elem) return;
   const range = document.createRange();
   range.selectNode(elem);
 

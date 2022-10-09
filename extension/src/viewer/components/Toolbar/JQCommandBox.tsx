@@ -3,12 +3,14 @@ import {
   Dispatch,
   FormEvent,
   SetStateAction,
+  useCallback,
   useContext,
   useEffect,
   useRef,
   useState,
 } from "react";
 import { Icon, IconButton } from "viewer/components";
+import { CHORD_KEY, KeydownEvent, useGlobalKeydownEvent } from "viewer/hooks";
 import { TranslationContext } from "viewer/localization";
 import { JQCommand } from "viewer/state";
 
@@ -70,6 +72,7 @@ export function JQCommandBox({
           icon={Icon.Run}
           onClick={applyFilter}
           dark={false}
+          tabIndex={-1}
         />
       </span>
     </span>
@@ -95,6 +98,15 @@ function FilterInput({
       ref.current.value = filter;
     }
   }, [ref, filter]);
+
+  // register global shortcut
+  const handleShortcut = useCallback((e: KeydownEvent) => {
+    if (e[CHORD_KEY] && e.shiftKey && e.key == "f") {
+      e.preventDefault();
+      ref.current?.focus();
+    }
+  }, []);
+  useGlobalKeydownEvent(handleShortcut);
 
   const onChange = (e: FormEvent<HTMLInputElement>) => {
     const text = (e.target as HTMLInputElement).value.trim();

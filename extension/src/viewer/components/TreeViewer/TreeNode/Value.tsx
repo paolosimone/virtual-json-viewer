@@ -3,19 +3,20 @@ import * as Json from "viewer/commons/Json";
 import { useRenderedText } from "viewer/hooks";
 import { Search } from "viewer/state";
 import { JsonNodeData } from "../model/JsonNode";
+import { TreeNavigator } from "../TreeNavigator";
 
 export type ValueProps = {
   data: JsonNodeData;
-  isOpen: boolean;
+  treeNavigator: TreeNavigator;
   search: Nullable<Search>;
 };
 
 export function Value({
-  data: { value, childrenCount },
-  isOpen,
+  data: { id, value, childrenCount },
+  treeNavigator,
   search,
 }: ValueProps): JSX.Element {
-  if (isOpen) {
+  if (treeNavigator.isOpen(id)) {
     return <span />;
   }
 

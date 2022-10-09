@@ -32,6 +32,119 @@ That's ok, if you are happy with your current plugin, no need to change.
 And if you want to come back later don't worry, we'll still be here, with blazing fast loading time, 
 built-in search, JQ filtering and many other features... but no strawberries, sorry
 
+## Features
+
+- [X] JSON rendering using virtual DOM and collapsible nodes
+    - [X] Sort JSON keys alphabetically
+    - [X] Preview nested item count for closed nodes
+    - [X] Color-encoded value types
+    - [X] Collapse/expand all nodes
+    - [X] Clickable URLs
+- [X] Full text search
+    - [X] Highlight search results
+    - [X] Option to completely hide subtrees without any search match
+    - [X] Option to enable case sensitive search
+- [X] JQ filtering
+- [X] Raw JSON viewer
+    - [X] Prettify/minify 
+- [X] Download JSON
+- [X] Keyboard shortcuts
+- [X] Appearance
+    - [X] Light/dark mode
+    - [ ] Custom theme
+    - [X] Internationalization
+
+### Keyboard shortcuts
+
+🍏 On MacOS `Ctrl` is replaced by the command key (`⌘`)
+
+##### Navigate UI
+
+| Action                       | Primary              | Secondary         |
+|------------------------------|:--------------------:|:-----------------:|
+| Focus Next element           | `Tab`                |                   |
+| Focus Previous element       | `Shift + Tab`        |                   |
+| Trigger button               | `Enter`              |                   |
+| Focus Search                 | `Ctrl + f`           | `/`               |
+| Focus JQ                     | `Ctrl + Shift + f`   |                   |
+| Focus Viewer                 | `Ctrl + 0`           |                   |
+
+##### Toolbar
+
+| Action                       | Primary              | Secondary         |
+|------------------------------|:--------------------:|:-----------------:|
+| Toggle Tree/Raw viewer       | `Ctrl + i`           |                   |
+| Expand                       | `Ctrl + e`           |                   |
+| Collapse                     | `Ctrl + Shift + e`   |                   |
+| Save                         | `Ctrl + s`           |                   |
+
+##### Tree viewer
+
+| Action                       | Primary              | Secondary         |
+|------------------------------|:--------------------:|:-----------------:|
+| Start navigation             | `Enter`              |                   |
+| End navigation               | `Escape`             |                   |
+| Go to next                   | `ArrowDown`          | `j`               |
+| Go to previous               | `ArrowUp`            | `k`               |
+| Go to next page              | `PageDown`           | `Shift + h`       |
+| Go to previous page          | `PageUp`             | `Shift + k`       |
+| Go to first                  | `Home`               | `gg`              |
+| Go to last                   | `End`                | `Shift + g`       |
+| Open node                    | `ArrowRight`         | `l`               |
+| Close node                   | `ArrowLeft`          | `h`               |
+| Toggle node open/close       | `Spacebar`           |                   |
+
+##### Raw viewer
+
+| Action                       | Primary              | Secondary         |
+|------------------------------|:--------------------:|:-----------------:|
+| Select all text              | `Ctrl + a`           |                   |
+
+## Notes on JQ
+
+### JQ is not available on all websites
+
+[JQ](https://stedolan.github.io/jq) has been [compiled to WebAssembly](https://github.com/paolosimone/jq-wasm) and included in this plugin, but some website's Content Security Policy doesn't allow WASM execution. In those cases the JQ command bar is not shown.
+
+_Example:_ https://api.github.com/users/paolosimone/repos
+
+See also [Issue #15](https://github.com/paolosimone/virtual-json-viewer/issues/15)
+
+
+### JQ command must return a valid json
+
+[JQ](https://stedolan.github.io/jq) commands in Virtual Json Viewer must return valid json, otherwise the parsing of the result will fail with an error e.g.
+
+> Unexpected token { in JSON at position 337
+
+Why? The core feature of Virtual Json Viewer is the navigation of (possibly large) json thanks to virtual DOM that allows on-demand rendering. JQ filtering has been added on top of that, just as handy utilities to further improve the user experience.
+
+_Example_
+
+Let's say we want to extract all the page titles from this [Wikipedia search](https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=pizza&utf8=&format=json).
+
+`.query.search[].title` will fail because a sequence of strings is not a valid json:
+```text
+"Pizza"
+"Hawaiian pizza 😱"
+"History of pizza"
+"Pizza Margherita"
+...
+```
+
+We should use `.query.search | map(.title)` instead to obtain a json array:
+```json
+[
+  "Pizza",
+  "Hawaiian pizza 😱",
+  "History of pizza",
+  "Pizza Margherita",
+  ...
+]
+```
+
+okok, the scream emoji was added by me
+
 ## Manual Installation
 
 ### Get the build
@@ -99,73 +212,6 @@ Load extension
 #### Others
 
 The extension has not been tested on other browsers, but should work on any chromium browser.
-
-## Features
-
-- [X] JSON rendering using virtual DOM and collapsable nodes
-    - [X] Sort JSON keys alphabetically
-    - [X] Preview nested item count for closed nodes
-    - [X] Color-encoded value types
-    - [X] Collapse/expand all nodes
-    - [X] Clickable URLs
-- [X] Full text search
-    - [X] Highlight search results
-    - [X] Option to completely hide subtrees without any search match
-    - [X] Option to enable case sensitive search
-- [X] JQ filtering
-- [X] Raw JSON viewer
-    - [X] Prettify/minify 
-- [X] Download JSON
-- [X] Dark mode
-- [X] Internationalization
-- [X] Customizable settings
-
-## Notes on JQ
-
-### JQ is not available on all websites
-
-[JQ](https://stedolan.github.io/jq) has been [compiled to WebAssembly](https://github.com/paolosimone/jq-wasm) and included in this plugin, but some website's Content Security Policy doesn't allow WASM execution. In those cases the JQ command bar is not shown.
-
-_Example:_ https://api.github.com/users/paolosimone/repos
-
-See also [Issue #15](https://github.com/paolosimone/virtual-json-viewer/issues/15)
-
-
-### JQ command must return a valid json
-
-[JQ](https://stedolan.github.io/jq) commands in Virtual Json Viewer must return valid json, otherwise the parsing of the result will fail with an error e.g.
-
-> Unexpected token { in JSON at position 337
-
-Why? The core feature of Virtual Json Viewer is the navigation of (possibly large) json thanks to virtual DOM that allows on-demand rendering. JQ filtering has been added on top of that, just as handy utilities to further improve the user experience.
-
-_Example_
-
-Let's say we want to extract all the page titles from this [Wikipedia search](https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=pizza&utf8=&format=json).
-
-`.query.search[].title` will fail because a sequence of strings is not a valid json:
-```text
-"Pizza"
-"Hawaiian pizza 😱"
-"History of pizza"
-"Pizza Margherita"
-...
-```
-
-We should use `.query.search | map(.title)` instead to obtain a json array:
-```json
-[
-  "Pizza",
-  "Hawaiian pizza 😱",
-  "History of pizza",
-  "Pizza Margherita",
-  ...
-]
-```
-
-okok, the scream emoji was added by me
-
-
 
 ## Contributing
 

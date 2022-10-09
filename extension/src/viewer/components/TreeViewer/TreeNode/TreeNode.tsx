@@ -1,9 +1,11 @@
 import classNames from "classnames";
-import { useEffect, useRef } from "react";
+import { useEffect, useLayoutEffect } from "react";
 import { VariableSizeNodePublicState as NodeState } from "react-vtree";
 import { NodeComponentProps } from "react-vtree/dist/es/Tree";
+import { RefCurrent, useReactiveRef } from "viewer/hooks";
 import { Search } from "viewer/state";
 import { JsonNodeData } from "../model/JsonNode";
+import { TreeNavigator } from "../TreeNavigator";
 import { Key } from "./Key";
 import { OpenButton } from "./OpenButton";
 import { Value } from "./Value";
@@ -17,22 +19,38 @@ export function TreeNode({
   data,
   style,
   resize,
-  isOpen,
-  setOpen,
+  treeData,
 }: JsonTreeNode): JSX.Element {
-  const [parent, content] = useFitContent(resize);
+  const [parent, parentRef] = useReactiveRef<HTMLDivElement>();
+  const [content, contentRef] = useReactiveRef<HTMLDivElement>();
+
+  useFitContent(parent, content, resize);
+
+  const treeNavigator: TreeNavigator = treeData.navigator;
+
+  useLayoutEffect(() => {
+    if (!parent) return;
+    treeNavigator.onElemShown(data.id, parent);
+    return () => treeNavigator.onElemHidden(data.id);
+  }, [data.id, parent, treeNavigator]);
 
   const searchAnalysis = analyzeSearchMatch(data);
   const fade = { "opacity-60": !searchAnalysis.inMatchingPath };
 
   return (
-    <div ref={parent} style={{ ...style, paddingLeft: `${data.nesting}em` }}>
-      <div ref={content} className={classNames("flex items-start", fade)}>
-        <OpenButton data={data} isOpen={isOpen} setOpen={setOpen} />
+    <div
+      ref={parentRef}
+      className="focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-600"
+      style={{ ...style, paddingLeft: `${data.nesting}em` }}
+      tabIndex={-1}
+      onClick={() => parent?.focus()}
+    >
+      <div ref={contentRef} className={classNames("flex items-start", fade)}>
+        <OpenButton data={data} treeNavigator={treeNavigator} />
         <Key data={data} search={searchAnalysis.keySearch} />
         <Value
           data={data}
-          isOpen={isOpen}
+          treeNavigator={treeNavigator}
           search={searchAnalysis.valueSearch}
         />
       </div>
@@ -41,29 +59,27 @@ export function TreeNode({
 }
 
 type Resize = (height: number, shouldForceUpdate?: boolean) => void;
-type Ref = React.RefObject<HTMLDivElement>;
-type ParentContentRefs = [Ref, Ref];
 
-function useFitContent(resize: Resize): ParentContentRefs {
+function useFitContent(
+  parent: RefCurrent<HTMLElement>,
+  content: RefCurrent<HTMLElement>,
+  resize: Resize
+) {
   const PADDING_HEIGHT = 4;
   const TOLERANCE = 2;
 
-  const parent = useRef<HTMLDivElement>(null);
-  const content = useRef<HTMLDivElement>(null);
-
   const fitContent = () => {
-    const parentHeight = parent.current?.clientHeight ?? 0;
-    const contentHeight = (content.current?.clientHeight ?? 0) + PADDING_HEIGHT;
+    if (!parent || !content) return;
+    const parentHeight = parent.clientHeight;
+    const contentHeight = content.clientHeight + PADDING_HEIGHT;
     const delta = Math.abs(contentHeight - parentHeight);
     if (delta > TOLERANCE) {
       resize(contentHeight, true);
     }
   };
 
-  // fit content on every component update
+  // fit content on *every* component update
   useEffect(fitContent);
-
-  return [parent, content];
 }
 
 type SearchMatchAnalysis = {
