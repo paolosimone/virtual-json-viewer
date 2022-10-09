@@ -143,6 +143,6 @@ export class TreeNavigator {
     const pageHeight = this.treeElem?.clientHeight;
     const itemHeight =
       this.tree.current?.state?.list?.current?.props?.itemSize(0);
-    return pageHeight && itemHeight ? Math.floor(pageHeight / itemHeight) : 0;
+    return pageHeight && itemHeight ? Math.ceil(pageHeight / itemHeight) : 1;
   }
 }
