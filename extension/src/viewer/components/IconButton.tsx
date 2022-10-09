@@ -34,6 +34,7 @@ export function IconButton({
     "bg-gray-600": isActive,
   };
 
+  // todo cursor pointer / disabled
   return (
     <button
       className={classNames(

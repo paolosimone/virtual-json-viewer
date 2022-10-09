@@ -3,11 +3,11 @@ import { createContext } from "react";
 export type Theme = {
   version: number;
   name: ThemeSelection;
-  colors: Nullable<ThemeColors>;
+  customColors: ThemeColors;
 };
 
+// TODO replace with just ThemeColors?
 export type ResolvedTheme = {
-  version: number;
   name: ThemeName;
   colors: ThemeColors;
 };
@@ -21,32 +21,30 @@ export enum ThemeName {
 export const SystemThemeName = "system";
 export type ThemeSelection = ThemeName | typeof SystemThemeName;
 
-export type Rgb = string;
+export type HexColor = string;
 
 export type ThemeColors = {
-  viewerBackground: Rgb;
+  viewerBackground: HexColor;
 };
 
 export const LightTheme: ResolvedTheme = {
-  version: 1,
   name: ThemeName.Light,
   colors: {
-    viewerBackground: "14 179 96",
+    viewerBackground: "#BAB1DC",
   },
 };
 
 export const DarkTheme: ResolvedTheme = {
-  version: 1,
   name: ThemeName.Dark,
   colors: {
-    viewerBackground: "14 34 179",
+    viewerBackground: "#20C15E",
   },
 };
 
-export const SystemTheme: Theme = {
+export const DefaultTheme: Theme = {
   version: 1,
   name: SystemThemeName,
-  colors: null,
+  customColors: LightTheme.colors,
 };
 
 export const ThemeContext = createContext<ResolvedTheme>(LightTheme);

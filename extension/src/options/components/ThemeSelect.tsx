@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import { Dispatch, useContext } from "react";
 import { Select } from "viewer/components";
 import { TranslationContext } from "viewer/localization";
@@ -11,12 +12,14 @@ import {
 export type ThemeSelectProps = Props<{
   theme: Theme;
   setTheme: Dispatch<Theme>;
+  onEdit: () => void;
 }>;
 
 export function ThemeSelect({
   theme,
   setTheme,
   className,
+  onEdit,
 }: ThemeSelectProps): JSX.Element {
   const t = useContext(TranslationContext);
 
@@ -30,13 +33,18 @@ export function ThemeSelect({
     label: t.settings.theme[name],
   }));
 
-  // TODO
+  // TODO edit icon
   return (
-    <Select
-      options={[systemOption].concat(themeOptions)}
-      selected={theme.name}
-      setValue={(name) => setTheme({ ...theme, name: name })}
-      className={className}
-    />
+    <span className={classNames(className, "flex gap-4")}>
+      <Select
+        options={[systemOption].concat(themeOptions)}
+        selected={theme.name}
+        setValue={(name) => setTheme({ ...theme, name: name })}
+        className={"grow"}
+      />
+      <button className={"flex-none"} onClick={onEdit}>
+        edit
+      </button>
+    </span>
   );
 }
