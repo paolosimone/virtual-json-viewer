@@ -1,11 +1,16 @@
 import { Dispatch, useContext } from "react";
 import { Select } from "viewer/components";
 import { TranslationContext } from "viewer/localization";
-import { SystemTheme, Theme, ThemeSetting } from "viewer/state";
+import {
+  SystemThemeName,
+  Theme,
+  ThemeName,
+  ThemeSelection,
+} from "viewer/state";
 
 export type ThemeSelectProps = Props<{
-  theme: ThemeSetting;
-  setTheme: Dispatch<ThemeSetting>;
+  theme: Theme;
+  setTheme: Dispatch<Theme>;
 }>;
 
 export function ThemeSelect({
@@ -16,20 +21,21 @@ export function ThemeSelect({
   const t = useContext(TranslationContext);
 
   const systemOption = {
-    value: SystemTheme as ThemeSetting,
-    label: t.settings.theme[SystemTheme],
+    value: SystemThemeName as ThemeSelection,
+    label: t.settings.theme[SystemThemeName],
   };
 
-  const themeOptions = Object.values(Theme).map((theme) => ({
-    value: theme,
-    label: t.settings.theme[theme],
+  const themeOptions = Object.values(ThemeName).map((name) => ({
+    value: name,
+    label: t.settings.theme[name],
   }));
 
+  // TODO
   return (
     <Select
       options={[systemOption].concat(themeOptions)}
-      selected={theme}
-      setValue={setTheme}
+      selected={theme.name}
+      setValue={(name) => setTheme({ ...theme, name: name })}
       className={className}
     />
   );

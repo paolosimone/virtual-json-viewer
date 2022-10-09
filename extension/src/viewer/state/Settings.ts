@@ -8,6 +8,8 @@ export type Settings = {
   linkifyUrls: boolean;
 };
 
+/* Text Size */
+
 export enum TextSize {
   ExtraSmall = "XS",
   Small = "S",
@@ -15,18 +17,6 @@ export enum TextSize {
   Large = "L",
   ExtraLarge = "XL",
 }
-
-export const DefaultSettings: Settings = {
-  version: 1,
-  textSize: TextSize.Medium,
-  indentation: 4,
-  searchDelay: 300,
-  linkifyUrls: true,
-};
-
-export const SettingsContext = createContext<Settings>(DefaultSettings);
-
-/* Text Size */
 
 export function resolveTextSizeClass(textSize: TextSize): string {
   return textSizeClasses[textSize];
@@ -39,3 +29,15 @@ const textSizeClasses: Record<TextSize, string> = {
   [TextSize.Large]: "text-lg",
   [TextSize.ExtraLarge]: "text-xl",
 };
+
+/* Context */
+
+export const DefaultSettings: Settings = {
+  version: 1,
+  textSize: TextSize.Medium,
+  indentation: 4,
+  searchDelay: 300,
+  linkifyUrls: true,
+};
+
+export const SettingsContext = createContext<Settings>(DefaultSettings);

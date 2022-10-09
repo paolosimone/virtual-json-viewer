@@ -1,5 +1,4 @@
 import classNames from "classnames";
-import "tailwindcss/tailwind.css";
 import { useSettings, useTheme } from "viewer/hooks";
 import {
   SystemLanguage,
@@ -9,9 +8,10 @@ import {
 import {
   DefaultSettings,
   resolveTextSizeClass,
-  SystemTheme,
   TextSize,
+  SystemTheme,
 } from "viewer/state";
+import "../global.css";
 import {
   Checkbox,
   LanguageSelect,
@@ -29,7 +29,7 @@ export function App(): JSX.Element {
     <TranslationContext.Provider value={t}>
       <div
         className={classNames(
-          "flex flex-col p-8 dark:bg-gray-700 dark:text-gray-200",
+          "flex flex-col p-8 bg-viewer-background dark:text-gray-200",
           resolveTextSizeClass(settings.textSize)
         )}
       >

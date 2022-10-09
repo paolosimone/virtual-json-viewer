@@ -13,6 +13,7 @@
       "system": "System language"
     },
     "theme": {
+      "custom": "Custom",
       "dark": "Dark",
       "light": "Light",
       "system": "System theme"

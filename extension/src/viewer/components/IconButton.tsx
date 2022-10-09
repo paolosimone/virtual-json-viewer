@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { ButtonHTMLAttributes, useContext } from "react";
-import { Theme, ThemeContext } from "viewer/state";
-import { DARK_FILL, Icon, LIGHT_FILL } from "./Icon";
+import { ThemeContext, ThemeName } from "viewer/state";
+import { Icon } from "./Icon";
 
 export type IconButtonProps = Props<{
   icon: Icon;
@@ -21,10 +21,8 @@ export function IconButton({
   style,
   tabIndex,
 }: IconButtonProps): JSX.Element {
-  const darkTheme = useContext(ThemeContext) === Theme.Dark;
+  const darkTheme = useContext(ThemeContext).name === ThemeName.Dark;
   const useDark = dark !== undefined ? dark : darkTheme;
-
-  const fill = useDark ? DARK_FILL : LIGHT_FILL;
 
   const lightColors = {
     "hover:bg-gray-200": !disabled,
@@ -50,7 +48,7 @@ export function IconButton({
       disabled={disabled}
       tabIndex={tabIndex}
     >
-      <CustomIcon fill={fill} />
+      <CustomIcon fill="fill-viewer-background" />
     </button>
   );
 }
