@@ -59,18 +59,13 @@ export function SearchBox({
       )}
     >
       {isEmpty ? (
-        <IconLabel
-          className="w-5 h-5 ml-1 mr-2"
-          icon={Icon.Search}
-          dark={false}
-        />
+        <IconLabel className="w-5 h-5 ml-1 mr-2" icon={Icon.Search} />
       ) : (
         <IconButton
           className="w-5 h-5 ml-1 mr-2"
           title={t.toolbar.search.clear}
           icon={Icon.Close}
           onClick={clearSearch}
-          dark={false}
         />
       )}
 
@@ -87,7 +82,6 @@ export function SearchBox({
           icon={Icon.EyeClosed}
           onClick={toggleShowMismatch}
           isActive={!search.showMismatch}
-          dark={false}
         />
       )}
 
@@ -97,7 +91,6 @@ export function SearchBox({
         icon={Icon.CaseSensitive}
         onClick={toggleCaseSensitive}
         isActive={search.caseSensitive}
-        dark={false}
       />
     </span>
   );

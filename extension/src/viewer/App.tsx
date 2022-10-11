@@ -18,7 +18,6 @@ import {
   EmptySearch,
   resolveTextSizeClass,
   SettingsContext,
-  ThemeContext,
   ViewerMode,
 } from "./state";
 
@@ -29,7 +28,7 @@ export type AppProps = {
 
 export function App({ jsonText, jqWasmFile }: AppProps): JSX.Element {
   // global settings
-  const [theme] = useTheme();
+  const [_colors] = useTheme();
   const [translation] = useLocalization();
   const [settings] = useSettings();
 
@@ -78,7 +77,6 @@ export function App({ jsonText, jqWasmFile }: AppProps): JSX.Element {
   return (
     <MultiContextProvider
       contexts={[
-        [ThemeContext, theme],
         [TranslationContext, translation],
         [SettingsContext, settings],
       ]}

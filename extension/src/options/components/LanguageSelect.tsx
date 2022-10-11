@@ -1,24 +1,19 @@
-import { Dispatch, useContext } from "react";
+import { GlobalOptionsContext } from "options/Context";
+import { useContext } from "react";
 import { Select } from "viewer/components";
 import {
   Language,
   languageLabels,
   LanguageSetting,
   SystemLanguage,
-  TranslationContext,
 } from "viewer/localization";
 
-export type LanguageSelectProps = Props<{
-  language: LanguageSetting;
-  setLanguage: Dispatch<LanguageSetting>;
-}>;
+export type LanguageSelectProps = BaseProps;
 
 export function LanguageSelect({
-  language,
-  setLanguage,
   className,
 }: LanguageSelectProps): JSX.Element {
-  const t = useContext(TranslationContext);
+  const { t, language, setLanguage } = useContext(GlobalOptionsContext);
 
   const systemOption = {
     value: SystemLanguage as LanguageSetting,

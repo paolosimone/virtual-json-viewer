@@ -11,9 +11,6 @@ export interface Icon {
   (props: IconProps): JSX.Element;
 }
 
-export const LIGHT_FILL = "#424242";
-export const DARK_FILL = "#C5C5C5";
-
 export function CaseSensitive({ fill }: IconProps): JSX.Element {
   return (
     <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -74,6 +71,17 @@ export function CollapseAll({ fill }: IconProps): JSX.Element {
         fillRule="evenodd"
         clipRule="evenodd"
         d="M5.00024 3L6.00024 2H13.0002L14.0002 3V10L13.0002 11H11.0002V13L10.0002 14H3.00024L2.00024 13V6L3.00024 5H5.00024V3ZM6.00024 5H10.0002L11.0002 6V10H13.0002V3H6.00024V5ZM10.0002 6H3.00024V13H10.0002V6Z"
+        className={fill}
+      />
+    </svg>
+  );
+}
+
+export function Edit({ fill }: IconProps): JSX.Element {
+  return (
+    <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M13.2302 1H11.7703L3.52026 9.25L3.36023 9.46997L1.00024 13.59L2.41028 15L6.53027 12.64L6.75024 12.48L15.0002 4.22998V2.77002L13.2302 1ZM2.41028 13.59L3.92029 10.59L5.37024 12.04L2.41028 13.59ZM6.24023 11.53L4.47021 9.76001L12.4702 1.76001L14.2402 3.53003L6.24023 11.53Z"
         className={fill}
       />
     </svg>

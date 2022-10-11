@@ -19,7 +19,7 @@ export function IconLabel({
       style={style}
       title={title}
     >
-      <CustomIcon fill="fill-viewer-background" />
+      <CustomIcon fill="fill-black" />
     </label>
   );
 }

@@ -55,7 +55,6 @@ export function JQCommandBox({
             title={t.toolbar.jq.clear}
             icon={Icon.Close}
             onClick={clearFilter}
-            dark={false}
           />
         )}
 
@@ -71,7 +70,6 @@ export function JQCommandBox({
           title={t.toolbar.jq.run}
           icon={Icon.Run}
           onClick={applyFilter}
-          dark={false}
           tabIndex={-1}
         />
       </span>
