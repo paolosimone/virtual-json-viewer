@@ -52,7 +52,7 @@ export function EditCustomTheme({
 
       {/* color preview */}
       <h1 className="pb-2 font-semibold">Viewer</h1>
-      <div className="grid grid-cols-2 gap-3 items-center">
+      <div className="grid grid-cols-2 gap-2 items-center">
         {previewSectionColorsFor("viewer")}
       </div>
 
@@ -90,16 +90,16 @@ export function ColorPreview({
   return (
     <div
       className={classNames(
-        "flex p-1 text-black bg-white rounded cursor-pointer",
+        "flex text-black bg-white rounded cursor-pointer",
         className
       )}
       onClick={onClick}
     >
-      <span className="grow">{colorKey}</span>
       <div
-        className="basis-1/6 shrink-0 rounded"
+        className="basis-1/6 shrink-0 border border-black rounded"
         style={{ background: color }}
       />
+      <span className="pl-3 grow">{colorKey}</span>
     </div>
   );
 }

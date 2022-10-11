@@ -40,14 +40,10 @@ function CollectionValue({
 }: CollectionValueProps): JSX.Element {
   const count = childrenCount ? ` ${childrenCount} ` : "";
   const preview = Json.isArray(value) ? `[${count}]` : `{${count}}`;
-  const fade = { "opacity-50": childrenCount };
-  return (
-    <span
-      className={classNames("truncate text-gray-600 dark:text-gray-300", fade)}
-    >
-      {preview}
-    </span>
-  );
+  const color = childrenCount
+    ? "text-viewer-text opacity-40"
+    : "text-viewer-value";
+  return <span className={classNames("truncate", color)}>{preview}</span>;
 }
 
 type LiteralValueProps = Props<{
@@ -57,8 +53,8 @@ type LiteralValueProps = Props<{
 
 function LiteralValue({ value, search }: LiteralValueProps): JSX.Element {
   const textColor = Json.isString(value)
-    ? "text-pink-600 dark:text-pink-400"
-    : "text-green-600 dark:text-green-400";
+    ? "text-viewer-value-string"
+    : "text-viewer-value";
   const textValue = literalToString(value);
   const highlightedText = useRenderedText(textValue, search);
   return (

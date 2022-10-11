@@ -4,7 +4,12 @@
 
 @layer base {
   :root {
-    --viewer-background: 255 115 179;
+    --viewer-background-focus: 0 0 0;
+    --viewer-background: 0 0 0;
+    --viewer-key: 0 0 0;
+    --viewer-text: 0 0 0;
+    --viewer-value-string: 0 0 0;
+    --viewer-value: 0 0 0;
   }
 }
 

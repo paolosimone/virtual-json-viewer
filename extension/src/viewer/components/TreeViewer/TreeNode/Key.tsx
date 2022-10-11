@@ -17,7 +17,7 @@ export function Key(props: KeyProps): JSX.Element {
 
   return (
     <KeyElement
-      className="mr-4 whitespace-pre-wrap text-blue-700 dark:text-blue-400"
+      className="mr-4 whitespace-pre-wrap text-viewer-key"
       {...props}
     />
   );
