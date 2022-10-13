@@ -29,7 +29,7 @@ export function ThemeSelect({
       />
       {theme.name === ThemeName.Custom && (
         <IconButton
-          className={"basis-1/12"}
+          className={"basis-1/12 fill-viewer-foreground hover:bg-viewer-focus"}
           icon={Icon.Edit}
           onClick={onEdit}
         />

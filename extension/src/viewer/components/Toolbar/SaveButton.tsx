@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import { useCallback, useContext } from "react";
 import * as Json from "viewer/commons/Json";
 import { Icon, IconButton } from "viewer/components";
@@ -28,7 +29,10 @@ export function SaveButton({ json, className }: SaveButtonProps): JSX.Element {
 
   return (
     <IconButton
-      className={className}
+      className={classNames(
+        "fill-toolbar-foreground hover:bg-toolbar-focus",
+        className
+      )}
       title={t.toolbar.save}
       icon={Icon.Save}
       onClick={save}

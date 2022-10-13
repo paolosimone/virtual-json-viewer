@@ -14,31 +14,40 @@ export enum ThemeName {
 export type HexColor = string;
 
 export type ThemeColors = {
+  jsonKey: HexColor;
+  jsonString: HexColor;
+  jsonValue: HexColor;
+  toolbarBackground: HexColor;
+  toolbarFocus: HexColor;
+  toolbarForeground: HexColor;
   viewerBackground: HexColor;
-  viewerBackgroundFocus: HexColor;
-  viewerKey: HexColor;
-  viewerText: HexColor;
-  viewerValue: HexColor;
-  viewerValueString: HexColor;
+  viewerFocus: HexColor;
+  viewerForeground: HexColor;
 };
 export type ColorKey = keyof ThemeColors;
 
 export const LightColors: ThemeColors = {
+  jsonKey: "#1d4fd8",
+  jsonString: "#db2778",
+  jsonValue: "#16a34a",
+  toolbarBackground: "#f3f4f6",
+  toolbarFocus: "#e5e7eb",
+  toolbarForeground: "#4b5563",
   viewerBackground: "#ffffff",
-  viewerBackgroundFocus: "#ebebf0",
-  viewerKey: "#1d4fd8",
-  viewerText: "#000000",
-  viewerValue: "#16a34a",
-  viewerValueString: "#db2778",
+  viewerFocus: "#e5e7eb",
+  viewerForeground: "#000000",
 };
 
 export const DarkColors: ThemeColors = {
+  jsonKey: "#60a5fa",
+  jsonString: "#f472b5",
+  jsonValue: "#4ade80",
+  toolbarBackground: "#1f2937",
+  toolbarFocus: "#6b7280",
+  toolbarForeground: "#9ca3af",
   viewerBackground: "#374151",
-  viewerBackgroundFocus: "#4b5563",
-  viewerKey: "#60a5fa",
-  viewerText: "#e5e7eb",
-  viewerValue: "#4ade80",
-  viewerValueString: "#f472b5",
+  viewerFocus: "#4b5563",
+  viewerForeground: "#e5e7eb",
 };
 
 export const DefaultTheme: Theme = {

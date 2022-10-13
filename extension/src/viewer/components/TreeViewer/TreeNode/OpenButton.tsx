@@ -17,7 +17,7 @@ export function OpenButton({
         <IconButton
           icon={treeNavigator.isOpen(id) ? Icon.ChevronDown : Icon.ChevronRight}
           onClick={() => treeNavigator.toogleOpen(id)}
-          className="w-4 h-4 align-middle"
+          className="w-4 h-4 align-middle fill-viewer-foreground"
           tabIndex={-1}
         />
       )}

@@ -16,10 +16,7 @@ export function Key(props: KeyProps): JSX.Element {
   const KeyElement = Json.isNumber(props.data.key) ? ArrayKey : ObjectKey;
 
   return (
-    <KeyElement
-      className="mr-4 whitespace-pre-wrap text-viewer-key"
-      {...props}
-    />
+    <KeyElement className="mr-4 whitespace-pre-wrap text-json-key" {...props} />
   );
 }
 

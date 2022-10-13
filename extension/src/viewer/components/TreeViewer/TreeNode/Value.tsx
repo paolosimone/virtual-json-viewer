@@ -41,8 +41,8 @@ function CollectionValue({
   const count = childrenCount ? ` ${childrenCount} ` : "";
   const preview = Json.isArray(value) ? `[${count}]` : `{${count}}`;
   const color = childrenCount
-    ? "text-viewer-text opacity-40"
-    : "text-viewer-value";
+    ? "text-viewer-foreground opacity-40"
+    : "text-json-value";
   return <span className={classNames("truncate", color)}>{preview}</span>;
 }
 
@@ -53,8 +53,8 @@ type LiteralValueProps = Props<{
 
 function LiteralValue({ value, search }: LiteralValueProps): JSX.Element {
   const textColor = Json.isString(value)
-    ? "text-viewer-value-string"
-    : "text-viewer-value";
+    ? "text-json-string"
+    : "text-json-value";
   const textValue = literalToString(value);
   const highlightedText = useRenderedText(textValue, search);
   return (

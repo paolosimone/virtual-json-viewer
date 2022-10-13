@@ -45,15 +45,27 @@ export function EditCustomTheme({
     >
       {/* back button */}
       <IconButton
-        className={"self-end w-7 h-7"}
+        className={
+          "self-end w-7 h-7 fill-viewer-foreground hover:bg-viewer-focus"
+        }
         icon={Icon.Close}
         onClick={() => gotoPage(OptionsPage.Main)}
       />
 
       {/* color preview */}
-      <h1 className="pb-2 font-semibold">Viewer</h1>
-      <div className="grid grid-cols-2 gap-2 items-center">
+      <h1 className="mb-4 font-semibold">Viewer</h1>
+      <div className="grid grid-cols-3 gap-2 items-center">
         {previewSectionColorsFor("viewer")}
+      </div>
+
+      <h1 className="my-4 font-semibold">Toolbar</h1>
+      <div className="grid grid-cols-3 gap-2 items-center">
+        {previewSectionColorsFor("toolbar")}
+      </div>
+
+      <h1 className="my-4 font-semibold">Json</h1>
+      <div className="grid grid-cols-3 gap-2 items-center">
+        {previewSectionColorsFor("json")}
       </div>
 
       {/* color picker popup */}

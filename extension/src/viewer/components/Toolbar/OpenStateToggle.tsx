@@ -30,14 +30,14 @@ export function OpenStateToggle({
         title={t.toolbar.expand}
         icon={Icon.ExpandAll}
         onClick={expand}
-        className="w-1/2"
+        className="w-1/2 fill-toolbar-foreground hover:bg-toolbar-focus"
       />
 
       <IconButton
         title={t.toolbar.collapse}
         icon={Icon.CollapseAll}
         onClick={collapse}
-        className="w-1/2"
+        className="w-1/2 fill-toolbar-foreground hover:bg-toolbar-focus"
       />
     </span>
   );

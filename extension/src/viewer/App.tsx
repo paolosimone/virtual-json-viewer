@@ -90,7 +90,7 @@ export function App({ jsonText, jqWasmFile }: AppProps): JSX.Element {
           json={json}
           search={searchState.value}
           className={classNames(
-            "flex-auto pt-1.5 pl-1.5 bg-viewer-background text-viewer-text selection:bg-amber-200",
+            "flex-auto pt-1.5 pl-1.5 bg-viewer-background text-viewer-foreground selection:bg-amber-200",
             resolveTextSizeClass(settings.textSize)
           )}
         />

@@ -54,15 +54,18 @@ export function SearchBox({
   return (
     <span
       className={classNames(
-        "flex items-center pr-1 border rounded border-gray-200 dark:border-gray-500 bg-white dark:bg-gray-400",
+        "flex items-center pr-1 rounded border border-viewer-background bg-viewer-background text-viewer-foreground",
         className
       )}
     >
       {isEmpty ? (
-        <IconLabel className="w-5 h-5 ml-1 mr-2" icon={Icon.Search} />
+        <IconLabel
+          className="w-5 h-5 ml-1 mr-2 fill-viewer-foreground"
+          icon={Icon.Search}
+        />
       ) : (
         <IconButton
-          className="w-5 h-5 ml-1 mr-2"
+          className="w-5 h-5 ml-1 mr-2 fill-viewer-foreground hover:bg-viewer-focus"
           title={t.toolbar.search.clear}
           icon={Icon.Close}
           onClick={clearSearch}
@@ -70,27 +73,31 @@ export function SearchBox({
       )}
 
       <SearchInput
-        className="flex-1 dark:bg-gray-400 dark:placeholder-gray-700"
+        className="flex-1 bg-inherit placeholder-viewer-foreground/50"
         text={search.text}
         setText={setText}
       />
 
       {!disableShowMismatch && (
         <IconButton
-          className="w-6 h-6"
+          className={classNames(
+            "w-6 h-6 fill-viewer-foreground hover:bg-viewer-focus",
+            { "bg-viewer-focus/50": !search.showMismatch }
+          )}
           title={t.toolbar.search.hideMismatch}
           icon={Icon.EyeClosed}
           onClick={toggleShowMismatch}
-          isActive={!search.showMismatch}
         />
       )}
 
       <IconButton
-        className="w-6 h-6 ml-1"
+        className={classNames(
+          "w-6 h-6 ml-1 fill-viewer-foreground hover:bg-viewer-focus",
+          { "bg-viewer-focus/50": search.caseSensitive }
+        )}
         title={t.toolbar.search.caseSensitive}
         icon={Icon.CaseSensitive}
         onClick={toggleCaseSensitive}
-        isActive={search.caseSensitive}
       />
     </span>
   );
