@@ -4,6 +4,9 @@
 
 @layer base {
   :root {
+    --input-background: 0 0 0;
+    --input-focus: 0 0 0;
+    --input-foreground: 0 0 0;
     --json-key: 0 0 0;
     --json-string: 0 0 0;
     --json-value: 0 0 0;

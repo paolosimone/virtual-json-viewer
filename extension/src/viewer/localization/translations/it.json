@@ -1,6 +1,8 @@
 {
   "settings": {
     "reset": "Ritorna ai valori di default",
+    "edit": "Modifica",
+    "close": "Chiudi",
     "labels": {
       "language": "Lingua",
       "theme": "Tema",
@@ -24,6 +26,28 @@
       "M": "Medio",
       "L": "Grande",
       "XL": "Molto grande"
+    },
+    "colors": {
+      "sections": {
+        "input": "Input",
+        "json": "Json",
+        "toolbar": "Barra degli strumenti",
+        "viewer": "Principale"
+      },
+      "names": {
+        "inputBackground": "Sfondo",
+        "inputFocus": "Selezione",
+        "inputForeground": "Contenuto",
+        "jsonKey": "Chiave",
+        "jsonString": "Testo",
+        "jsonValue": "Valore",
+        "toolbarBackground": "Sfondo",
+        "toolbarFocus": "Selezione",
+        "toolbarForeground": "Contenuto",
+        "viewerBackground": "Sfondo",
+        "viewerFocus": "Selezione",
+        "viewerForeground": "Contenuto"
+      }
     }
   },
   "toolbar": {

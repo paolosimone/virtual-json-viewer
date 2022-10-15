@@ -48,7 +48,7 @@ export function ViewerModeToggle({
         disabled={isTreeView}
         className={classNames("w-1/2 p-0.5 fill-toolbar-foreground", {
           "hover:bg-toolbar-focus": !isTreeView,
-          "bg-toolbar-focus/50": isTreeView,
+          "bg-toolbar-focus": isTreeView,
         })}
       />
 
@@ -59,7 +59,7 @@ export function ViewerModeToggle({
         disabled={!isTreeView}
         className={classNames("w-1/2 p-0.5 fill-toolbar-foreground", {
           "hover:bg-toolbar-focus": isTreeView,
-          "bg-toolbar-focus/50": !isTreeView,
+          "bg-toolbar-focus": !isTreeView,
         })}
       />
     </span>

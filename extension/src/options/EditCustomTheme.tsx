@@ -2,15 +2,18 @@ import classNames from "classnames";
 import { Dispatch, useContext, useState } from "react";
 import { ChromePicker } from "react-color";
 import { Icon, IconButton } from "viewer/components";
+import { FallbackTranslation } from "viewer/localization";
 import { ColorKey, HexColor } from "viewer/state";
 import { GlobalOptionsContext, OptionsPage } from "./Context";
 
 export type EditCustomThemeProps = BaseProps;
 
+type ColorSection = keyof typeof FallbackTranslation.settings.colors.sections;
+
 export function EditCustomTheme({
   className,
 }: EditCustomThemeProps): JSX.Element {
-  const { gotoPage, theme, setTheme } = useContext(GlobalOptionsContext);
+  const { t, gotoPage, theme, setTheme } = useContext(GlobalOptionsContext);
 
   const [pickerColorKey, setPickerColorKey] =
     useState<Nullable<ColorKey>>(null);
@@ -22,29 +25,42 @@ export function EditCustomTheme({
     });
 
   const previewPropsFor = (key: ColorKey) => ({
-    colorKey: key,
+    colorName: t.settings.colors.names[key],
     onClick: () => setPickerColorKey(key),
     color: theme.customColors[key],
     setColor: (color: HexColor) => setThemeColor(key, color),
   });
 
-  const previewSectionColorsFor = (prefix: string) =>
-    Object.keys(theme.customColors)
-      .filter((key) => key.startsWith(prefix))
-      .sort()
-      .map((key) => (
-        <ColorPreview key={key} {...previewPropsFor(key as ColorKey)} />
-      ));
+  const previewSectionColorsFor = (section: ColorSection) => (
+    <div key={section} className="grow">
+      <h1 key={`${section}Title`} className="pb-2 font-semibold">
+        {t.settings.colors.sections[section]}
+      </h1>
+
+      <div
+        key={`${section}Colors`}
+        className="grid grid-cols-3 gap-2 items-center pb-3"
+      >
+        {Object.keys(theme.customColors)
+          .filter((key) => key.startsWith(section))
+          .sort()
+          .map((key) => (
+            <ColorPreview key={key} {...previewPropsFor(key as ColorKey)} />
+          ))}
+      </div>
+    </div>
+  );
 
   return (
     <div
       className={classNames(
         className,
-        "relative flex flex-col pt-2 px-8 pb-8 bg-viewer-background"
+        "relative flex flex-col items-stretch pt-2 px-8 pb-8 bg-viewer-background"
       )}
     >
       {/* back button */}
       <IconButton
+        title={t.settings.close}
         className={
           "self-end w-7 h-7 fill-viewer-foreground hover:bg-viewer-focus"
         }
@@ -53,20 +69,7 @@ export function EditCustomTheme({
       />
 
       {/* color preview */}
-      <h1 className="mb-4 font-semibold">Viewer</h1>
-      <div className="grid grid-cols-3 gap-2 items-center">
-        {previewSectionColorsFor("viewer")}
-      </div>
-
-      <h1 className="my-4 font-semibold">Toolbar</h1>
-      <div className="grid grid-cols-3 gap-2 items-center">
-        {previewSectionColorsFor("toolbar")}
-      </div>
-
-      <h1 className="my-4 font-semibold">Json</h1>
-      <div className="grid grid-cols-3 gap-2 items-center">
-        {previewSectionColorsFor("json")}
-      </div>
+      {SORTED_COLOR_SECTIONS.map(previewSectionColorsFor)}
 
       {/* color picker popup */}
       {pickerColorKey && (
@@ -86,15 +89,22 @@ export function EditCustomTheme({
   );
 }
 
+const SORTED_COLOR_SECTIONS: ColorSection[] = [
+  "json",
+  "viewer",
+  "toolbar",
+  "input",
+];
+
 export type ColorPreviewProps = Props<{
-  colorKey: ColorKey;
+  colorName: string;
   color: HexColor;
   setColor: Dispatch<HexColor>;
   onClick: () => void;
 }>;
 
 export function ColorPreview({
-  colorKey,
+  colorName,
   color,
   className,
   onClick,
@@ -102,7 +112,7 @@ export function ColorPreview({
   return (
     <div
       className={classNames(
-        "flex text-black bg-white rounded cursor-pointer",
+        "flex text-black bg-white rounded cursor-pointer p-0.5",
         className
       )}
       onClick={onClick}
@@ -111,7 +121,7 @@ export function ColorPreview({
         className="basis-1/6 shrink-0 border border-black rounded"
         style={{ background: color }}
       />
-      <span className="pl-3 grow">{colorKey}</span>
+      <span className="pl-3 grow">{colorName}</span>
     </div>
   );
 }

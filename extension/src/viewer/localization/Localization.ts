@@ -20,9 +20,8 @@ export const languageLabels: Record<Language, string> = {
 };
 
 export const FallbackLanguage = Language.English;
-export const TranslationContext = createContext(
-  languageTranslations[FallbackLanguage]
-);
+export const FallbackTranslation = languageTranslations[FallbackLanguage];
+export const TranslationContext = createContext(FallbackTranslation);
 
 export const SystemLanguage = "system";
 export type LanguageSetting = Language | typeof SystemLanguage;

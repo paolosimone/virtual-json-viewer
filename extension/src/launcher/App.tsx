@@ -32,7 +32,7 @@ function LauncherButton({ title, href, className }: LauncherButtonProps) {
   return (
     <button
       className={classNames(
-        "rounded-md bg-gray-100 hover:bg-gray-200 text-4xl",
+        "rounded-md bg-toolbar-background hover:bg-toolbar-focus text-4xl",
         className
       )}
       onClick={navigateTo(href)}

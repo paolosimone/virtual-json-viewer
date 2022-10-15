@@ -46,12 +46,12 @@ export function JQCommandBox({
         onClick={openJQManual}
       />
 
-      <span className="flex items-center flex-1 pr-1 rounded border border-viewer-background bg-viewer-background text-viewer-foreground">
+      <span className="flex items-center flex-1 pr-1 rounded border border-input-background bg-input-background text-input-foreground">
         {isEmpty ? (
           <label className="mx-1 mr-2 select-none">jq</label>
         ) : (
           <IconButton
-            className="w-5 h-5 ml-1 mr-2 fill-viewer-foreground hover:bg-viewer-focus"
+            className="w-5 h-5 ml-1 mr-2 fill-input-foreground hover:bg-input-focus"
             title={t.toolbar.jq.clear}
             icon={Icon.Close}
             onClick={clearFilter}
@@ -59,14 +59,14 @@ export function JQCommandBox({
         )}
 
         <FilterInput
-          className="flex-1 bg-viewer-background placeholder-viewer-foreground/50"
+          className="flex-1 bg-input-background placeholder-input-foreground/50"
           filter={filter}
           setFilter={setFilter}
           onSubmit={applyFilter}
         />
 
         <IconButton
-          className="w-5 h-5 fill-viewer-foreground hover:bg-viewer-focus"
+          className="w-5 h-5 fill-input-foreground hover:bg-input-focus"
           title={t.toolbar.jq.run}
           icon={Icon.Run}
           onClick={applyFilter}

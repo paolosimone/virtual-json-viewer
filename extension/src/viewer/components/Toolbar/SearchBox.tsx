@@ -54,18 +54,18 @@ export function SearchBox({
   return (
     <span
       className={classNames(
-        "flex items-center pr-1 rounded border border-viewer-background bg-viewer-background text-viewer-foreground",
+        "flex items-center pr-1 rounded border border-input-background bg-input-background text-input-foreground",
         className
       )}
     >
       {isEmpty ? (
         <IconLabel
-          className="w-5 h-5 ml-1 mr-2 fill-viewer-foreground"
+          className="w-5 h-5 ml-1 mr-2 fill-input-foreground"
           icon={Icon.Search}
         />
       ) : (
         <IconButton
-          className="w-5 h-5 ml-1 mr-2 fill-viewer-foreground hover:bg-viewer-focus"
+          className="w-5 h-5 ml-1 mr-2 fill-input-foreground hover:bg-input-focus"
           title={t.toolbar.search.clear}
           icon={Icon.Close}
           onClick={clearSearch}
@@ -73,7 +73,7 @@ export function SearchBox({
       )}
 
       <SearchInput
-        className="flex-1 bg-inherit placeholder-viewer-foreground/50"
+        className="flex-1 bg-inherit placeholder-input-foreground/50"
         text={search.text}
         setText={setText}
       />
@@ -81,8 +81,8 @@ export function SearchBox({
       {!disableShowMismatch && (
         <IconButton
           className={classNames(
-            "w-6 h-6 fill-viewer-foreground hover:bg-viewer-focus",
-            { "bg-viewer-focus/50": !search.showMismatch }
+            "w-6 h-6 fill-input-foreground hover:bg-input-focus",
+            { "bg-input-focus": !search.showMismatch }
           )}
           title={t.toolbar.search.hideMismatch}
           icon={Icon.EyeClosed}
@@ -92,8 +92,8 @@ export function SearchBox({
 
       <IconButton
         className={classNames(
-          "w-6 h-6 ml-1 fill-viewer-foreground hover:bg-viewer-focus",
-          { "bg-viewer-focus/50": search.caseSensitive }
+          "w-6 h-6 ml-1 fill-input-foreground hover:bg-input-focus",
+          { "bg-input-focus": search.caseSensitive }
         )}
         title={t.toolbar.search.caseSensitive}
         icon={Icon.CaseSensitive}

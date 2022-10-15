@@ -14,7 +14,7 @@ export function ThemeSelect({
 }: ThemeSelectProps): JSX.Element {
   const { t, theme, setTheme } = useContext(GlobalOptionsContext);
 
-  const themeOptions = Object.values(ThemeName).map((name) => ({
+  const themeOptions = SORTED_THEME_NAMES.map((name) => ({
     value: name,
     label: t.settings.theme[name],
   }));
@@ -29,7 +29,8 @@ export function ThemeSelect({
       />
       {theme.name === ThemeName.Custom && (
         <IconButton
-          className={"basis-1/12 fill-viewer-foreground hover:bg-viewer-focus"}
+          title={t.settings.edit}
+          className={"h-7 w-7 fill-viewer-foreground hover:bg-viewer-focus"}
           icon={Icon.Edit}
           onClick={onEdit}
         />
@@ -37,3 +38,10 @@ export function ThemeSelect({
     </span>
   );
 }
+
+const SORTED_THEME_NAMES = [
+  ThemeName.System,
+  ThemeName.Light,
+  ThemeName.Dark,
+  ThemeName.Custom,
+];

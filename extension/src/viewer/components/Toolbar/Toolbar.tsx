@@ -55,7 +55,7 @@ export function Toolbar({
       </div>
 
       {jqCommandState && (
-        <div className="pt-0.5">
+        <div className="pt-1">
           <JQCommandBox
             command={jqCommandState.value}
             setCommand={jqCommandState.setValue}

@@ -1,6 +1,6 @@
 {
   "name": "virtual-json-viewer",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "anchorme": "^2.1.2",

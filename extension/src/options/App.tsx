@@ -32,7 +32,7 @@ export function App(): JSX.Element {
     <GlobalOptionsContext.Provider value={ctx}>
       <CurrentPage
         className={classNames(
-          "min-w-[500px] min-h-[400px]",
+          "min-w-[500px] min-h-[400px] bg-viewer-background text-viewer-foreground",
           resolveTextSizeClass(settings.textSize)
         )}
       />

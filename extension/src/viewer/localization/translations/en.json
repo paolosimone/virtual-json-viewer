@@ -1,6 +1,8 @@
 {
   "settings": {
     "reset": "Reset default settings",
+    "edit": "Edit",
+    "close": "Close",
     "labels": {
       "language": "Language",
       "theme": "Theme",
@@ -24,6 +26,28 @@
       "M": "Medium",
       "L": "Large",
       "XL": "Extra large"
+    },
+    "colors": {
+      "sections": {
+        "input": "Input",
+        "json": "Json",
+        "toolbar": "Toolbar",
+        "viewer": "Viewer"
+      },
+      "names": {
+        "inputBackground": "Background",
+        "inputFocus": "Focus",
+        "inputForeground": "Foreground",
+        "jsonKey": "Key",
+        "jsonString": "String",
+        "jsonValue": "Value",
+        "toolbarBackground": "Background",
+        "toolbarFocus": "Focus",
+        "toolbarForeground": "Foreground",
+        "viewerBackground": "Background",
+        "viewerFocus": "Focus",
+        "viewerForeground": "Foreground"
+      }
     }
   },
   "toolbar": {
