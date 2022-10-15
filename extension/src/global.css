@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --input-background: 0 0 0;
+    --input-focus: 0 0 0;
+    --input-foreground: 0 0 0;
+    --json-key: 0 0 0;
+    --json-string: 0 0 0;
+    --json-value: 0 0 0;
+    --toolbar-background: 0 0 0;
+    --toolbar-focus: 0 0 0;
+    --toolbar-foreground: 0 0 0;
+    --viewer-background: 0 0 0;
+    --viewer-focus: 0 0 0;
+    --viewer-foreground: 0 0 0;
+  }
+}
+
+@layer components {
+  .absolute-center {
+    @apply absolute right-1/2 bottom-1/2 translate-x-1/2 translate-y-1/2;
+  }
+}

@@ -1,36 +1,47 @@
-import { Dispatch, useContext } from "react";
-import { Select } from "viewer/components";
-import { TranslationContext } from "viewer/localization";
-import { SystemTheme, Theme, ThemeSetting } from "viewer/state";
+import classNames from "classnames";
+import { GlobalOptionsContext } from "options/Context";
+import { useContext } from "react";
+import { Icon, IconButton, Select } from "viewer/components";
+import { ThemeName } from "viewer/state";
 
 export type ThemeSelectProps = Props<{
-  theme: ThemeSetting;
-  setTheme: Dispatch<ThemeSetting>;
+  onEdit: () => void;
 }>;
 
 export function ThemeSelect({
-  theme,
-  setTheme,
   className,
+  onEdit,
 }: ThemeSelectProps): JSX.Element {
-  const t = useContext(TranslationContext);
+  const { t, theme, setTheme } = useContext(GlobalOptionsContext);
 
-  const systemOption = {
-    value: SystemTheme as ThemeSetting,
-    label: t.settings.theme[SystemTheme],
-  };
-
-  const themeOptions = Object.values(Theme).map((theme) => ({
-    value: theme,
-    label: t.settings.theme[theme],
+  const themeOptions = SORTED_THEME_NAMES.map((name) => ({
+    value: name,
+    label: t.settings.theme[name],
   }));
 
   return (
-    <Select
-      options={[systemOption].concat(themeOptions)}
-      selected={theme}
-      setValue={setTheme}
-      className={className}
-    />
+    <span className={classNames(className, "flex gap-3")}>
+      <Select
+        options={themeOptions}
+        selected={theme.name}
+        setValue={(name) => setTheme({ ...theme, name: name })}
+        className={"grow"}
+      />
+      {theme.name === ThemeName.Custom && (
+        <IconButton
+          title={t.settings.edit}
+          className={"h-7 w-7 fill-viewer-foreground hover:bg-viewer-focus"}
+          icon={Icon.Edit}
+          onClick={onEdit}
+        />
+      )}
+    </span>
   );
 }
+
+const SORTED_THEME_NAMES = [
+  ThemeName.System,
+  ThemeName.Light,
+  ThemeName.Dark,
+  ThemeName.Custom,
+];

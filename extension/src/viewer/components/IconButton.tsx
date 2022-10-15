@@ -1,12 +1,9 @@
 import classNames from "classnames";
-import { ButtonHTMLAttributes, useContext } from "react";
-import { Theme, ThemeContext } from "viewer/state";
-import { DARK_FILL, Icon, LIGHT_FILL } from "./Icon";
+import { ButtonHTMLAttributes } from "react";
+import { Icon } from "./Icon";
 
 export type IconButtonProps = Props<{
   icon: Icon;
-  isActive?: boolean;
-  dark?: boolean;
 }> &
   ButtonHTMLAttributes<HTMLButtonElement>;
 
@@ -14,43 +11,19 @@ export function IconButton({
   icon: CustomIcon,
   onClick,
   title,
-  isActive,
   disabled,
   className,
-  dark,
-  style,
   tabIndex,
 }: IconButtonProps): JSX.Element {
-  const darkTheme = useContext(ThemeContext) === Theme.Dark;
-  const useDark = dark !== undefined ? dark : darkTheme;
-
-  const fill = useDark ? DARK_FILL : LIGHT_FILL;
-
-  const lightColors = {
-    "hover:bg-gray-200": !disabled,
-    "bg-gray-300": isActive,
-  };
-
-  const darkColors = {
-    "hover:bg-gray-500": !disabled,
-    "bg-gray-600": isActive,
-  };
-
   return (
     <button
-      className={classNames(
-        "rounded",
-        { "cursor-default": disabled },
-        useDark ? darkColors : lightColors,
-        className
-      )}
-      style={style}
+      className={classNames("rounded disabled:cursor-normal", className)}
       title={title}
       onClick={onClick}
       disabled={disabled}
       tabIndex={tabIndex}
     >
-      <CustomIcon fill={fill} />
+      <CustomIcon />
     </button>
   );
 }

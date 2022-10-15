@@ -1,36 +1,64 @@
-import { Dispatch, useLayoutEffect } from "react";
-import { SystemTheme, Theme, ThemeSetting } from "viewer/state";
+import { Dispatch, useLayoutEffect, useMemo } from "react";
+import tinycolor from "tinycolor2";
+import {
+  ColorKey,
+  DarkColors,
+  DefaultTheme,
+  HexColor,
+  LightColors,
+  Theme,
+  ThemeColors,
+  ThemeName,
+} from "viewer/state";
 import { useMediaQuery, useStorage } from ".";
 
-const KEY = "theme";
+const KEY = "settings-theme";
 
-export function useTheme(): [Theme, ThemeSetting, Dispatch<ThemeSetting>] {
-  const [themeSetting, setThemeSetting] = useStorage<ThemeSetting>(
-    KEY,
-    SystemTheme
-  );
+export function useTheme(): [ThemeColors, Theme, Dispatch<Theme>] {
+  const [theme, setTheme] = useStorage<Theme>(KEY, DefaultTheme);
 
-  const theme = useResolvedTheme(themeSetting);
+  const resolvedTheme = useResolvedTheme(theme);
 
   // apply theme on first render and every time it's updated
-  useLayoutEffect(() => applyTheme(theme), [theme]);
+  useLayoutEffect(() => applyTheme(resolvedTheme), [resolvedTheme]);
 
-  return [theme, themeSetting, setThemeSetting];
+  return [resolvedTheme, theme, setTheme];
 }
 
-function useResolvedTheme(theme: ThemeSetting): Theme {
+function useResolvedTheme(theme: Theme): ThemeColors {
   const isSystemThemeDark = useMediaQuery("(prefers-color-scheme: dark)");
 
-  const darkThemeEnabled =
-    theme === Theme.Dark || (theme === SystemTheme && isSystemThemeDark);
+  return useMemo(() => {
+    if (theme.name === ThemeName.Custom) {
+      return theme.customColors;
+    }
 
-  return darkThemeEnabled ? Theme.Dark : Theme.Light;
+    const darkThemeEnabled =
+      theme.name === ThemeName.Dark ||
+      (theme.name === ThemeName.System && isSystemThemeDark);
+
+    return darkThemeEnabled ? DarkColors : LightColors;
+  }, [theme, isSystemThemeDark]);
 }
 
-function applyTheme(theme: Theme) {
-  if (theme === Theme.Dark) {
-    document.documentElement.classList.add(Theme.Dark);
-  } else {
-    document.documentElement.classList.remove(Theme.Dark);
+function applyTheme(colors: ThemeColors) {
+  const root: Nullable<HTMLElement> = document.querySelector(":root");
+  if (!root) return;
+
+  for (const [key, hex] of Object.entries(colors)) {
+    root.style.setProperty(toCssVariable(key as ColorKey), toTailwindRgb(hex));
   }
+}
+
+function toCssVariable(colorKey: ColorKey): string {
+  const hyphenName = colorKey.replace(
+    /[A-Z]/g,
+    (capital) => `-${capital.toLowerCase()}`
+  );
+  return `--${hyphenName}`;
+}
+
+function toTailwindRgb(hexColor: HexColor): string {
+  const rgb = tinycolor(hexColor).toRgb();
+  return `${rgb.r} ${rgb.g} ${rgb.b}`;
 }

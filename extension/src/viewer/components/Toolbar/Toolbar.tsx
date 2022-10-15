@@ -27,7 +27,7 @@ export function Toolbar({
   return (
     <div
       className={classNames(
-        "flex flex-col py-1 px-0.5 bg-gray-100 dark:bg-gray-800",
+        "flex flex-col py-1 px-0.5 bg-toolbar-background",
         className
       )}
     >
@@ -55,7 +55,7 @@ export function Toolbar({
       </div>
 
       {jqCommandState && (
-        <div className="pt-0.5">
+        <div className="pt-1">
           <JQCommandBox
             command={jqCommandState.value}
             setCommand={jqCommandState.setValue}
@@ -67,7 +67,5 @@ export function Toolbar({
 }
 
 function Separator(): JSX.Element {
-  return (
-    <div className="border-l border-gray-600 dark:border-gray-400 border-opacity-40 h-3/4 mx-2" />
-  );
+  return <div className="border-l border-toolbar-foreground/75 h-3/4 mx-2" />;
 }

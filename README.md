@@ -22,8 +22,7 @@ Simpy follow the instructions on how to perform a [manual installation](#manual-
 
 Rightful question, and the answer is quite simple: the others weren't good enough [for my needs].  
 
-I am a backend developer and in my everyday job I have to debug large json payloads, 
-so large that every other plugin for chrome I tried freezed without showing any content.
+I often have to debug large json payloads, so large that every other plugin for chrome I tried freezed without showing any content.
 
 > "Good for you, but **my** payloads are small, pretty and strawberry flavoured"
 
@@ -51,7 +50,7 @@ built-in search, JQ filtering and many other features... but no strawberries, so
 - [X] Keyboard shortcuts
 - [X] Appearance
     - [X] Light/dark mode
-    - [ ] Custom theme
+    - [X] Custom theme
     - [X] Internationalization
 
 ### Keyboard shortcuts
@@ -143,7 +142,7 @@ We should use `.query.search | map(.title)` instead to obtain a json array:
 ]
 ```
 
-okok, the scream emoji was added by me
+ok ok, I added the scream emoji
 
 ## Manual Installation
 
@@ -254,24 +253,24 @@ Always `yarn format` before creating a commit.
 *Disclaimer*: this is NOT a formal benchmark, just a few tests with syntethic data to give an idea of loading performance time.
 
 **Setup**
-- Virtual Json Viewer v0.1.0 
+- Virtual Json Viewer v1.0.0 
 - Macbook Pro 16 (2019) 2,6 GHz 16 GB
-- Chrome 95.0.4638.69
+- Chrome 106.0.5249.119 
 - Jsons are randomly generated using [this script](https://gist.github.com/paolosimone/437ba2e9675bafcc914b587d53fab0b3) (fixed dept: 10)
 - Files are loaded from disk
 - Load time recorded with Chrome DevTool
     1. Open file in chrome
-    1. Click "Start profiling and reload page" 
-    1. Take the end of the last frame 
+    1. From "Performance insights" tab click "Measure page load"
+    1. Take the "Largest Contentful Paint" (LCP)
 
 **Results**
 
 | Siblings per level | File Size      | Load time       |
 |--------------------|----------------|-----------------|
-| 110                | ~100 KB        | ~250 ms         |
+| 110                | ~100 KB        | ~300 ms         |
 | 1100               | ~1 MB          | ~350 ms         |
-| 11000              | ~10 MB         | ~1200 ms        |
-| 110000             | ~100 MB        | ~10 s           |
+| 11000              | ~10 MB         | ~900 ms         |
+| 110000             | ~100 MB        | ~8000 ms        |
 
 ## References
 
@@ -283,12 +282,12 @@ Always `yarn format` before creating a commit.
 |[jq-wasm](https://github.com/paolosimone/jq-wasm)                                                                          |JQ in the browser                              |
 |[json-stable-stringify](https://github.com/substack/json-stable-stringify)                                                 |Sort keys on JSON serialization apparently is rocket science|
 |[React](https://reactjs.org/)                                                                                              |Learn how to write a frontend application without jQuery and bootstrap|
+|[react-color](https://github.com/casesandberg/react-color)                                                                 |Easily edit the custom theme and, more importantly, looking professional while doing it|
 |[react-vtree](https://github.com/Lodin/react-vtree)                                                                        |Render the JSON. I'd say it's a pretty important role|
 |[TailwindCSS](https://tailwindcss.com/)                                                                                    |Prevent me from touching CSS files|
 |[Typescript](https://www.typescriptlang.org/)                                                                              |Try to forget I'm actually writing JS 🤢|
 |[uid](https://github.com/lukeed/uid)                                                                                       |Fast generation of unique keys for [React lists](https://reactjs.org/docs/lists-and-keys.html#keys) |
 |[vscode-icons](https://github.com/microsoft/vscode-icons)                                                                  |Keep UI buttons clean and intuitive|
-
 
 ## License
 

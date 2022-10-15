@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { useMemo } from "react";
-import "tailwindcss/tailwind.css";
 import * as Json from "viewer/commons/Json";
+import "../global.css";
 import { Alert, RawViewer, Toolbar, TreeViewer } from "./components";
 import { MultiContextProvider } from "./components/MultiContextProvider";
 import {
@@ -18,7 +18,6 @@ import {
   EmptySearch,
   resolveTextSizeClass,
   SettingsContext,
-  ThemeContext,
   ViewerMode,
 } from "./state";
 
@@ -29,7 +28,7 @@ export type AppProps = {
 
 export function App({ jsonText, jqWasmFile }: AppProps): JSX.Element {
   // global settings
-  const [theme] = useTheme();
+  const [_colors] = useTheme();
   const [translation] = useLocalization();
   const [settings] = useSettings();
 
@@ -78,7 +77,6 @@ export function App({ jsonText, jqWasmFile }: AppProps): JSX.Element {
   return (
     <MultiContextProvider
       contexts={[
-        [ThemeContext, theme],
         [TranslationContext, translation],
         [SettingsContext, settings],
       ]}
@@ -92,7 +90,7 @@ export function App({ jsonText, jqWasmFile }: AppProps): JSX.Element {
           json={json}
           search={searchState.value}
           className={classNames(
-            "flex-auto pt-1.5 pl-1.5 dark:bg-gray-700 dark:text-gray-200",
+            "flex-auto pt-1.5 pl-1.5 bg-viewer-background text-viewer-foreground selection:bg-amber-200",
             resolveTextSizeClass(settings.textSize)
           )}
         />

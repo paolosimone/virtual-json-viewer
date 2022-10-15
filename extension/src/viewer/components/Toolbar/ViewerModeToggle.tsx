@@ -37,24 +37,30 @@ export function ViewerModeToggle({
   );
   useGlobalKeydownEvent(handleShortcut);
 
+  const isTreeView = viewerMode === ViewerMode.Tree;
+
   return (
     <span className={classNames("flex items-center rounded-sm", className)}>
       <IconButton
         icon={Icon.ListTree}
         onClick={toggleView}
         title={t.toolbar.treeView}
-        isActive={viewerMode === ViewerMode.Tree}
-        disabled={viewerMode === ViewerMode.Tree}
-        className="w-1/2 p-0.5"
+        disabled={isTreeView}
+        className={classNames("w-1/2 p-0.5 fill-toolbar-foreground", {
+          "hover:bg-toolbar-focus": !isTreeView,
+          "bg-toolbar-focus": isTreeView,
+        })}
       />
 
       <IconButton
         icon={Icon.Json}
         onClick={toggleView}
         title={t.toolbar.rawView}
-        isActive={viewerMode === ViewerMode.Raw}
-        disabled={viewerMode === ViewerMode.Raw}
-        className="w-1/2 p-0.5"
+        disabled={!isTreeView}
+        className={classNames("w-1/2 p-0.5 fill-toolbar-foreground", {
+          "hover:bg-toolbar-focus": isTreeView,
+          "bg-toolbar-focus": !isTreeView,
+        })}
       />
     </span>
   );

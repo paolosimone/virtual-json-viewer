@@ -1,93 +1,54 @@
 import classNames from "classnames";
-import "tailwindcss/tailwind.css";
+import { useState } from "react";
 import { useSettings, useTheme } from "viewer/hooks";
-import {
-  SystemLanguage,
-  TranslationContext,
-  useLocalization,
-} from "viewer/localization";
-import {
-  DefaultSettings,
-  resolveTextSizeClass,
-  SystemTheme,
-  TextSize,
-} from "viewer/state";
-import {
-  Checkbox,
-  LanguageSelect,
-  NumberInput,
-  TextSizeSelect,
-  ThemeSelect,
-} from "./components";
+import { useLocalization } from "viewer/localization";
+import { resolveTextSizeClass } from "viewer/state";
+import { GlobalOptionsContext, OptionsPage } from "./Context";
+import { EditCustomTheme } from "./EditCustomTheme";
+import { MainOptions } from "./MainOptions";
 
 export function App(): JSX.Element {
+  // extremely basic navigation inside options page
+  const [page, gotoPage] = useState(OptionsPage.Main);
+
+  // global context
   const [_, theme, setTheme] = useTheme();
   const [t, language, setLanguage] = useLocalization();
   const [settings, updateSettings] = useSettings();
+  const ctx = {
+    gotoPage: gotoPage,
+    theme: theme,
+    setTheme: setTheme,
+    t: t,
+    language: language,
+    setLanguage: setLanguage,
+    settings: settings,
+    updateSettings: updateSettings,
+  };
+
+  const CurrentPage = buildPageElement(page);
 
   return (
-    <TranslationContext.Provider value={t}>
-      <div
+    <GlobalOptionsContext.Provider value={ctx}>
+      <CurrentPage
         className={classNames(
-          "flex flex-col p-8 dark:bg-gray-700 dark:text-gray-200",
+          "min-w-[500px] min-h-[400px] bg-viewer-background text-viewer-foreground",
           resolveTextSizeClass(settings.textSize)
         )}
-      >
-        <div className="grid grid-cols-2 gap-3 items-center">
-          <label>{t.settings.labels.theme}</label>
-          <ThemeSelect theme={theme} setTheme={setTheme} />
-
-          <label>{t.settings.labels.language}</label>
-          <LanguageSelect language={language} setLanguage={setLanguage} />
-
-          <label>{t.settings.labels.textSize}</label>
-          <TextSizeSelect
-            textSize={settings.textSize}
-            setTextSize={(newTextSize: TextSize) =>
-              updateSettings({ textSize: newTextSize })
-            }
-          />
-
-          <label>{t.settings.labels.indentation}</label>
-          <NumberInput
-            min={1}
-            value={settings.indentation}
-            setValue={(newValue: number) =>
-              updateSettings({ indentation: newValue })
-            }
-          />
-
-          <label>{t.settings.labels.searchDelay}</label>
-          <NumberInput
-            min={0}
-            value={settings.searchDelay}
-            setValue={(newValue: number) =>
-              updateSettings({ searchDelay: newValue })
-            }
-          />
-
-          <label>{t.settings.labels.linkifyUrls}</label>
-          <Checkbox
-            checked={settings.linkifyUrls}
-            setChecked={(checked: boolean) =>
-              updateSettings({ linkifyUrls: checked })
-            }
-          />
-        </div>
-
-        <div className="flex items-center justify-center pt-6">
-          <button
-            className="p-1.5 border rounded-lg text-red-900 dark:text-red-300 border-red-800 bg-red-800 bg-opacity-10 hover:bg-opacity-20 "
-            onClick={() => {
-              setTheme(SystemTheme);
-              setLanguage(SystemLanguage);
-              updateSettings(DefaultSettings);
-            }}
-          >
-            {t.settings.reset}
-          </button>
-        </div>
-      </div>
-    </TranslationContext.Provider>
+      />
+    </GlobalOptionsContext.Provider>
   );
+}
+
+type PageProps = BaseProps;
+type PageElement = (props: PageProps) => JSX.Element;
+
+function buildPageElement(page: OptionsPage): PageElement {
+  switch (page) {
+    case OptionsPage.EditTheme:
+      return EditCustomTheme;
+
+    default:
+      return MainOptions;
+  }
 }
