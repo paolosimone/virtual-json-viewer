@@ -12,7 +12,7 @@ Browser plugin that uses [virtual DOM](https://github.com/Lodin/react-vtree) to 
 
 ### Manifest Version
 
-Starting from Virtual Json Viewer 0.2.0 the build for Chrome will rely on the new [Manifest V3](https://developer.chrome.com/docs/extensions/mv3/intro/) and will require Chromium version 106 or higher.  
+Starting from Virtual Json Viewer 0.2.0 the default build for Chrome relies on the new [Manifest V3](https://developer.chrome.com/docs/extensions/mv3/intro/) and requires Chromium version 106 or higher.  
 If you are running an older version of Chromium because reasons... I got your back!
 Simpy follow the instructions on how to perform a [manual installation](#manual-installation) using a MV2 release.
 
@@ -156,14 +156,14 @@ ok ok, I added the scream emoji
 | Chrome (older) |   V2     |
 | Firefox        |   V2     |
 
-*Note:* the underlying extension code is the same for both manifest version
+*Note:* the only differences are in the manifest. The underlying extension code is the same for all builds
 
 #### From Release
 
-1. Download the latest build from the [release page](https://github.com/paolosimone/virtual-json-viewer/releases)
-    - from version 0.2.0 the default build will use Manifest V3
-    - Manifest V2 builds (suffix `mv2`) will still be available until discontinued by Firefox
-1. Extract the content
+Download the latest build from the [release page](https://github.com/paolosimone/virtual-json-viewer/releases) and extract the content
+    - `virtual-json-viewer-{version}.zip`: Chrome manifest V3
+    - `virtual-json-viewer-{version}-firefox.zip`: Firefox (manifest V2)
+    - `virtual-json-viewer-{version}-mv2.zip`: Chrome manifest V2
 
 #### From source
 
@@ -171,8 +171,9 @@ ok ok, I added the scream emoji
 cd extension
 yarn install
 
-yarn build      # Manifest V3
-yarn build-mv2  # Manifest V2
+yarn build          # Chrome  - Manifest V3
+yarn build-mv2      # Chrome  - Manifest V2
+yarn build-firefox  # Firefox - Manifest V2
 ```
 
 ### Install the extension
@@ -184,15 +185,6 @@ yarn build-mv2  # Manifest V2
 1. Click the load unpacked button and select the `build` directory
 
 #### Firefox
-
-Open the `manifest.json` inside the `build` directory and add a custom extension id ([but why?](https://extensionworkshop.com/documentation/develop/extensions-and-the-add-on-id/#when_do_you_need_an_add-on_id))
-```json
-"browser_specific_settings": {
-  "gecko": {
-    "id": "id@virtualjsonviewer.com"
-  }
-}
-```
 
 Disable native json viewer
 

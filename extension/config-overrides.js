@@ -9,6 +9,7 @@ const CopyPlugin = require("copy-webpack-plugin");
 function convertToChromeExtension(config) {
   const isEnvProduction = process.env.NODE_ENV === "production";
   const manifestVersion = process.env.MANIFEST_VERSION ?? "3";
+  const browser = process.env.BROWSER ?? "chrome";
   const appVersion = process.env.npm_package_version;
 
   // Remove CRA default index.html page
@@ -101,8 +102,18 @@ function convertToChromeExtension(config) {
       {
         from: paths.appPath + `/manifest-v${manifestVersion}.json`,
         to: "manifest.json",
-        transform: (content) =>
-          content.toString().replace("${version}", appVersion),
+        transform: (content) => {
+          const manifest = JSON.parse(content.toString());
+          manifest["version"] = appVersion;
+          if (browser == "firefox") {
+            manifest["browser_specific_settings"] = {
+              gecko: {
+                id: "{bb475b2b-f49c-4f3c-ae36-0fe15a6017e9}",
+              },
+            };
+          }
+          return JSON.stringify(manifest, null, 2);
+        },
       },
     ],
   });
