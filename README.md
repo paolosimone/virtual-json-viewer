@@ -85,7 +85,7 @@ built-in search, JQ filtering and many other features... but no strawberries, so
 | End navigation               | `Escape`             |                   |
 | Go to next                   | `ArrowDown`          | `j`               |
 | Go to previous               | `ArrowUp`            | `k`               |
-| Go to next page              | `PageDown`           | `Shift + h`       |
+| Go to next page              | `PageDown`           | `Shift + j`       |
 | Go to previous page          | `PageUp`             | `Shift + k`       |
 | Go to first                  | `Home`               | `gg`              |
 | Go to last                   | `End`                | `Shift + g`       |
@@ -161,9 +161,10 @@ ok ok, I added the scream emoji
 #### From Release
 
 Download the latest build from the [release page](https://github.com/paolosimone/virtual-json-viewer/releases) and extract the content
-    - `virtual-json-viewer-{version}.zip`: Chrome manifest V3
-    - `virtual-json-viewer-{version}-firefox.zip`: Firefox (manifest V2)
-    - `virtual-json-viewer-{version}-mv2.zip`: Chrome manifest V2
+
+- `virtual-json-viewer-{version}`: Chrome manifest V3
+- `virtual-json-viewer-{version}-mv2`: Chrome manifest V2
+- `virtual-json-viewer-{version}-firefox`: Firefox (manifest V2)
 
 #### From source
 
