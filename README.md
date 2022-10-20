@@ -2,7 +2,7 @@
 
 # ![logo](extension/public/logo/48.png) Virtual Json Viewer
 
-Browser plugin that uses [virtual DOM](https://github.com/Lodin/react-vtree) to render JSONs with built-in search, [JQ filtering*](#notes-on-jq) and many other [features](#features).
+Browser plugin that uses [virtual DOM](https://github.com/Lodin/react-vtree) to render JSONs with built-in search, JQ filtering and many other [features](#features).
 
 ![preview](assets/preview.png)
 
@@ -99,9 +99,19 @@ built-in search, JQ filtering and many other features... but no strawberries, so
 |------------------------------|:--------------------:|:-----------------:|
 | Select all text              | `Ctrl + a`           |                   |
 
-## Notes on JQ
+## FAQ
 
-### JQ is not available on all websites
+### Why the extension doesn't work when opening a file from filesystem?
+
+On Chrome
+
+1. go to `chrome://extensions/`
+1. select "Virtual Json Viewer" 
+1. enable the toggle "Allow access to file URLs"
+
+If this doesn't solve the issue make sure you are using the latest version of both Chrome and Virtual Json Viewer, or manually install the [correct build for your version](#manual-installation).
+
+### Why JQ is not available?
 
 [JQ](https://stedolan.github.io/jq) has been [compiled to WebAssembly](https://github.com/paolosimone/jq-wasm) and included in this plugin, but some website's Content Security Policy doesn't allow WASM execution. In those cases the JQ command bar is not shown.
 
@@ -110,7 +120,7 @@ _Example:_ https://api.github.com/users/paolosimone/repos
 See also [Issue #15](https://github.com/paolosimone/virtual-json-viewer/issues/15)
 
 
-### JQ command must return a valid json
+### Why this valid JQ command doesn't work?
 
 [JQ](https://stedolan.github.io/jq) commands in Virtual Json Viewer must return valid json, otherwise the parsing of the result will fail with an error e.g.
 
