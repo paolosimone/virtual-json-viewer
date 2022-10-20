@@ -12,7 +12,7 @@ export function OpenButton({
   treeNavigator,
 }: OpenProps): JSX.Element {
   return (
-    <span className="w-5 mr-0.5">
+    <span className="min-w-5 mr-0.5">
       {treeNavigator.canOpen(id) && (
         <IconButton
           icon={treeNavigator.isOpen(id) ? Icon.ChevronDown : Icon.ChevronRight}
