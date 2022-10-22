@@ -2,16 +2,7 @@ import { createRoot } from "react-dom/client";
 import { App as ViewerApp } from "./viewer/App";
 
 if (isJson()) {
-  afterHeadAvailable(() => {
-    if (document.readyState === "loading") {
-      // workaround: improve loading time on large json
-      setTextVisibility(false);
-    }
-
-    addFavicon(chrome.runtime.getURL("logo/16.png"));
-    updateTitle();
-  });
-
+  afterHeadAvailable(setupResources);
   afterDocumentLoaded(loadJsonViewer);
 }
 
@@ -43,6 +34,17 @@ function afterDocumentLoaded(callback: () => void) {
   window.addEventListener("load", callback);
 }
 
+function setupResources() {
+  if (document.readyState === "loading") {
+    setLoading(true);
+  }
+
+  addFavicon(chrome.runtime.getURL("logo/16.png"));
+  updateTitle();
+
+  addCSSRef(chrome.runtime.getURL("static/css/content.css"));
+}
+
 function loadJsonViewer() {
   const jsonElement = document.getElementsByTagName("pre")[0];
   const jsonText = jsonElement.innerText;
@@ -51,8 +53,7 @@ function loadJsonViewer() {
   div.style.cssText = "height: 100vh";
   jsonElement.parentNode?.replaceChild(div, jsonElement);
 
-  setTextVisibility(true);
-  addCSSRef(chrome.runtime.getURL("static/css/content.css"));
+  setLoading(false);
 
   createRoot(div).render(
     <ViewerApp
@@ -60,6 +61,24 @@ function loadJsonViewer() {
       jqWasmFile={chrome.runtime.getURL("jq.wasm")}
     />
   );
+}
+
+function setLoading(isLoading: boolean) {
+  setLoadingMessage(isLoading);
+  // workaround: improve loading time on large json
+  setTextVisibility(!isLoading);
+}
+
+function setLoadingMessage(show: boolean) {
+  if (show) {
+    const elem = document.createElement("div");
+    elem.id = "loading";
+    elem.innerText = "Loading...";
+    document.body.appendChild(elem);
+  } else {
+    const elem = document.getElementById("loading");
+    elem?.parentNode?.removeChild(elem);
+  }
 }
 
 function setTextVisibility(visible: boolean) {

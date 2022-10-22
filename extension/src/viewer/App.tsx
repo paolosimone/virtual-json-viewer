@@ -81,7 +81,7 @@ export function App({ jsonText, jqWasmFile }: AppProps): JSX.Element {
         [SettingsContext, settings],
       ]}
     >
-      <div className="flex flex-col h-full overflow-hidden font-mono">
+      <div className="flex flex-col h-full min-w-[500px] min-h-[500px] overflow-hidden font-mono">
         <Toolbar {...toolbarProps} />
 
         {error && <Alert message={error.message} />}

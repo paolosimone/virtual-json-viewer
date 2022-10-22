@@ -16,6 +16,7 @@ import {
   useReactiveRef,
 } from "viewer/hooks";
 import { Search } from "viewer/state";
+import { ViewerPlaceholder } from "../ViewerPlaceholder";
 import { JsonNodeData } from "./model/JsonNode";
 import {
   buildId,
@@ -25,8 +26,6 @@ import {
 } from "./model/JsonTreeWalker";
 import { TreeNavigator } from "./TreeNavigator";
 import { TreeNode } from "./TreeNode";
-
-const RESIZE_DELAY = 100;
 
 export type TreeViewerProps = Props<{
   json: Json.Root;
@@ -42,7 +41,7 @@ export function TreeViewer({
 
   // for some obscure reason AutoSizer doesn't work on Firefox when loaded as extension
   const [parent, parentRef] = useReactiveRef<HTMLDivElement>();
-  const { height, width } = useElementSize(parent, RESIZE_DELAY);
+  const { height, width } = useElementSize(parent);
 
   // tree walker for building the tree
   const treeWalker = useMemo(
@@ -89,6 +88,7 @@ export function TreeViewer({
   const [treeDiv, treeDivRef] = useReactiveRef<HTMLDivElement>();
   if (treeDiv) treeDiv.tabIndex = -1;
 
+  // TODO make placeholder optional
   return (
     <div
       ref={parentRef}
@@ -103,6 +103,7 @@ export function TreeViewer({
         height={height}
         width={width}
         itemData={{ navigator: treeNavigator }}
+        placeholder={<ViewerPlaceholder />}
       >
         {TreeNode}
       </Tree>
