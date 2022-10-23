@@ -46,9 +46,14 @@ export function TreeNode({
       onClick={() => parent?.focus()}
     >
       <div ref={contentRef} className={classNames("flex items-start", fade)}>
-        <OpenButton data={data} treeNavigator={treeNavigator} />
+        <OpenButton
+          className="shrink-0"
+          data={data}
+          treeNavigator={treeNavigator}
+        />
         <Key data={data} search={searchAnalysis.keySearch} />
         <Value
+          className="grow"
           data={data}
           treeNavigator={treeNavigator}
           search={searchAnalysis.valueSearch}

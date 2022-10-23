@@ -30,11 +30,13 @@ import { TreeNode } from "./TreeNode";
 export type TreeViewerProps = Props<{
   json: Json.Root;
   search: Search;
+  enablePlaceholder: boolean;
 }>;
 
 export function TreeViewer({
   json,
   search,
+  enablePlaceholder,
   className,
 }: TreeViewerProps): JSX.Element {
   const tree = useRef<Tree<JsonNodeData>>(null);
@@ -103,7 +105,7 @@ export function TreeViewer({
         height={height}
         width={width}
         itemData={{ navigator: treeNavigator }}
-        placeholder={<ViewerPlaceholder />}
+        placeholder={enablePlaceholder ? <ViewerPlaceholder /> : undefined}
       >
         {TreeNode}
       </Tree>

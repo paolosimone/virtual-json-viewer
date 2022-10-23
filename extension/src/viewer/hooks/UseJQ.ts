@@ -7,8 +7,6 @@ import { Mutex, useEffectAsync } from ".";
 export type JQEnabled = boolean;
 export type JQResult = Json.Root | Error | undefined;
 
-const JQ_WASM_FILE = getURL("jq.wasm");
-
 export function useJQ(
   jsonText: string,
   { filter }: JQCommand
@@ -19,7 +17,7 @@ export function useJQ(
   useEffectAsync(
     async (mutex: Mutex) => {
       try {
-        await loadJQ(JQ_WASM_FILE);
+        await loadJQ();
         if (mutex.hasLock()) setJQEnabled(true);
       } catch (e) {
         if (mutex.hasLock()) {
@@ -48,9 +46,10 @@ export function useJQ(
       }
 
       try {
-        const jq = await loadJQ(JQ_WASM_FILE);
-        const result = await jq.invoke(jsonText, filter);
-        if (mutex.hasLock()) setResult(Json.tryParse(result));
+        const jq = await loadJQ();
+        const output = await jq.invoke(jsonText, filter);
+        const result = Json.tryParse(output);
+        if (mutex.hasLock()) setResult(result);
       } catch (e) {
         if (mutex.hasLock()) setResult(e as Error);
       }
@@ -61,9 +60,11 @@ export function useJQ(
   return [jqEnabled, result];
 }
 
-function loadJQ(jqWasmFile: string): Promise<JQ> {
+const JQ_WASM_FILE = getURL("jq.wasm");
+
+function loadJQ(): Promise<JQ> {
   return newJQ({
-    locateFile: () => jqWasmFile,
+    locateFile: () => JQ_WASM_FILE,
     print: devNull,
     printErr: devNull,
     noExitRuntime: false,

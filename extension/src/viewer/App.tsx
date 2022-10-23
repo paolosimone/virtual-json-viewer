@@ -69,6 +69,12 @@ export function App({ jsonText }: AppProps): JSX.Element {
   const Viewer =
     viewerModeState.value === ViewerMode.Tree ? TreeViewer : RawViewer;
 
+  // heuristic to detect large json and enabled placeholder on loading
+  const isLargeJson = useMemo(
+    () => Json.toString(json).length > 1_000_000,
+    [json]
+  );
+
   return (
     <MultiContextProvider
       contexts={[
@@ -84,8 +90,9 @@ export function App({ jsonText }: AppProps): JSX.Element {
         <Viewer
           json={json}
           search={searchState.value}
+          enablePlaceholder={isLargeJson}
           className={classNames(
-            "flex-auto pt-1.5 pl-1.5 bg-viewer-background text-viewer-foreground selection:bg-amber-200",
+            "flex-auto pt-1.5 pl-1.5 bg-viewer-background text-viewer-foreground selection:bg-amber-200 selection:text-black",
             resolveTextSizeClass(settings.textSize)
           )}
         />
