@@ -55,12 +55,7 @@ function loadJsonViewer() {
 
   setLoading(false);
 
-  createRoot(div).render(
-    <ViewerApp
-      jsonText={jsonText}
-      jqWasmFile={chrome.runtime.getURL("jq.wasm")}
-    />
-  );
+  createRoot(div).render(<ViewerApp jsonText={jsonText} />);
 }
 
 function setLoading(isLoading: boolean) {

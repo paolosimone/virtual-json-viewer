@@ -22,7 +22,8 @@
   "web_accessible_resources": [
     "jq.wasm",
     "logo/16.png",
-    "static/css/content.css"
+    "static/css/content.css",
+    "loading.gif"
   ],
   "browser_action": {
     "default_icon": {

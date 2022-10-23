@@ -8,9 +8,10 @@ import {
   RefCurrent,
   useEventBusListener,
   useGlobalKeydownEvent,
-  useRenderedText,
+  useLazyRenderedText,
 } from "viewer/hooks";
 import { Search, SettingsContext } from "viewer/state";
+import { ViewerPlaceholder } from "./ViewerPlaceholder";
 
 export type RawViewerProps = Props<{
   json: Json.Root;
@@ -38,7 +39,7 @@ export function RawViewer({
     [json, space]
   );
 
-  const highlightedText = useRenderedText(raw, search);
+  const { renderedText, isLoading } = useLazyRenderedText(raw, search);
 
   const ref = useRef<HTMLDivElement>(null);
 
@@ -71,7 +72,7 @@ export function RawViewer({
       spellCheck={false}
       onKeyDown={handleSelectAll}
     >
-      {highlightedText}
+      {isLoading ? <ViewerPlaceholder /> : renderedText}
     </div>
   );
 }

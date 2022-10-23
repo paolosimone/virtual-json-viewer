@@ -1,14 +1,15 @@
 import { useState } from "react";
 import newJQ, { JQ } from "vendor/jq.wasm";
 import * as Json from "viewer/commons/Json";
-import { JQCommand } from "viewer/state";
+import { getURL, JQCommand } from "viewer/state";
 import { Mutex, useEffectAsync } from ".";
 
 export type JQEnabled = boolean;
 export type JQResult = Json.Root | Error | undefined;
 
+const JQ_WASM_FILE = getURL("jq.wasm");
+
 export function useJQ(
-  jqWasmFile: string,
   jsonText: string,
   { filter }: JQCommand
 ): [JQEnabled, JQResult] {
@@ -18,7 +19,7 @@ export function useJQ(
   useEffectAsync(
     async (mutex: Mutex) => {
       try {
-        await loadJQ(jqWasmFile);
+        await loadJQ(JQ_WASM_FILE);
         if (mutex.hasLock()) setJQEnabled(true);
       } catch (e) {
         if (mutex.hasLock()) {
@@ -29,7 +30,7 @@ export function useJQ(
         }
       }
     },
-    [jqWasmFile, setJQEnabled]
+    [setJQEnabled]
   );
 
   // execute command and parse result
@@ -47,14 +48,14 @@ export function useJQ(
       }
 
       try {
-        const jq = await loadJQ(jqWasmFile);
+        const jq = await loadJQ(JQ_WASM_FILE);
         const result = await jq.invoke(jsonText, filter);
         if (mutex.hasLock()) setResult(Json.tryParse(result));
       } catch (e) {
         if (mutex.hasLock()) setResult(e as Error);
       }
     },
-    [jqEnabled, jqWasmFile, jsonText, filter, setResult]
+    [jqEnabled, jsonText, filter, setResult]
   );
 
   return [jqEnabled, result];

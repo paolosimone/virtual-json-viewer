@@ -1,10 +1,9 @@
-import { Dispatch, useContext, useEffect, useMemo, useState } from "react";
-import { Runtime, RuntimeContext } from "viewer/state";
+import { Dispatch, useEffect, useMemo, useState } from "react";
+import { RUNTIME, Runtime } from "viewer/state";
 import { Mutex, useEffectAsync } from ".";
 
 export function useStorage<T>(key: string, defaultValue: T): [T, Dispatch<T>] {
-  const runtime = useContext(RuntimeContext);
-  const storage = runtime === Runtime.Extension ? SYNC_STORAGE : LOCAL_STORAGE;
+  const storage = RUNTIME === Runtime.Extension ? SYNC_STORAGE : LOCAL_STORAGE;
 
   const [value, setValue] = useState(defaultValue);
 

@@ -23,10 +23,9 @@ import {
 
 export type AppProps = {
   jsonText: string;
-  jqWasmFile: string;
 };
 
-export function App({ jsonText, jqWasmFile }: AppProps): JSX.Element {
+export function App({ jsonText }: AppProps): JSX.Element {
   // global settings
   const [_colors] = useTheme();
   const [translation] = useLocalization();
@@ -45,11 +44,7 @@ export function App({ jsonText, jqWasmFile }: AppProps): JSX.Element {
 
   // parse json
   const jsonResult = useMemo(() => Json.tryParse(jsonText), [jsonText]);
-  const [jqEnabled, jqResult] = useJQ(
-    jqWasmFile,
-    jsonText,
-    jqCommandState.value
-  );
+  const [jqEnabled, jqResult] = useJQ(jsonText, jqCommandState.value);
 
   // fatal error page
   if (jsonResult instanceof Error) {
