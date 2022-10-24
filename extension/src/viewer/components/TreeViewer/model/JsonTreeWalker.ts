@@ -104,7 +104,7 @@ function getNodeData(
       nesting: parent ? parent.nesting + 1 : 0,
       isLeaf: isLeaf(value),
       key: key,
-      childrenCount: Json.isCollection(value) ? Json.length(value) : null,
+      childrenCount: Json.isCollection(value) ? value.length : null,
       value: value,
       parent: parent,
       defaultHeight: 30,

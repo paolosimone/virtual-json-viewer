@@ -40,25 +40,32 @@ import stableStringify from "json-stable-stringify";
 
 export type Root = Literal | Collection;
 export type Literal = string | number | boolean | null;
-export type Collection = Array | JObject;
-export type Array = Root[];
+export type Collection = JArray | JObject;
 
-// 'J' prefix to prevent collision with Object type
+// 'J' prefix to prevent collision with native types
+export type JArray = {
+  type: "array";
+  content: Root[];
+  length: number;
+  treeSize: number;
+};
 export type JObject = {
+  type: "object";
   content: ObjectContent;
   keys: string[];
   length: number;
+  treeSize: number;
 };
 export type ObjectContent = { [key: string]: Root };
 
 /* Type predicates */
 
 export function isObject(json: Root): json is JObject {
-  return typeof json === "object" && json !== null && !Array.isArray(json);
+  return typeof json === "object" && json?.type === "object";
 }
 
-export function isArray(json: Root): json is Array {
-  return Array.isArray(json);
+export function isArray(json: Root): json is JArray {
+  return typeof json === "object" && json?.type === "array";
 }
 
 export function isCollection(json: Root): json is Collection {
@@ -85,8 +92,8 @@ export function isNull(value: Literal): value is null {
   return value === null;
 }
 
-export function length(json: Collection): number {
-  return json.length;
+export function treeSize(json: Root): number {
+  return isLiteral(json) ? 1 : json.treeSize;
 }
 
 export function isEmpty(json: Collection): boolean {
@@ -114,30 +121,49 @@ export function toString(value: Root, opts?: ToStringOptions): string {
     : JSON.stringify(value, replacer, opts?.space);
 }
 
-type ReviverInputValue = ObjectContent | Array | Literal;
+type JsonIntermediateValue = ObjectContent | Root[] | Literal;
 
-function reviver(_key: string, value: ReviverInputValue): Root {
-  if (!isObjectContent(value)) {
-    return value;
+function reviver(_key: string, value: JsonIntermediateValue): Root {
+  if (Array.isArray(value)) {
+    const arraySize = value.reduce(
+      (size: number, elem) => size + treeSize(elem),
+      0
+    );
+    return {
+      type: "array",
+      content: value,
+      length: value.length,
+      treeSize: arraySize,
+    };
   }
 
-  const sortedKeys = Object.keys(value).sort();
+  if (isObjectContent(value)) {
+    const sortedKeys = Object.keys(value).sort();
+    const objectSize = Object.values(value).reduce(
+      (size: number, elem) =>
+        size + treeSize(elem) + Number(isCollection(elem)),
+      0
+    );
 
-  return {
-    content: value,
-    keys: sortedKeys,
-    length: sortedKeys.length,
-  };
+    return {
+      type: "object",
+      content: value,
+      keys: sortedKeys,
+      length: sortedKeys.length,
+      treeSize: objectSize,
+    };
+  }
+
+  // literal
+  return value;
 }
 
-function isObjectContent(json: ReviverInputValue): json is ObjectContent {
+function isObjectContent(json: JsonIntermediateValue): json is ObjectContent {
   return typeof json === "object" && json !== null && !Array.isArray(json);
 }
 
-type Json = Exclude<Root, JObject> | ObjectContent;
-
-function replacer(_key: string, value: Root): Json {
-  return isObject(value) ? value.content : value;
+function replacer(_key: string, value: Root): JsonIntermediateValue {
+  return isCollection(value) ? value.content : value;
 }
 
 /* Iteration */
@@ -147,7 +173,7 @@ export type Key = number | string;
 export function* iterator(json: Root): Generator<[Key, Root], void, void> {
   if (isArray(json)) {
     for (let i = 0; i < json.length; i++) {
-      yield [i, json[i]];
+      yield [i, json.content[i]];
     }
   } else if (isObject(json)) {
     for (const key of json.keys) {

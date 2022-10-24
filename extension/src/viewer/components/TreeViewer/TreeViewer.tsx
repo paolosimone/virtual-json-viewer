@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import { RefObject, useCallback, useMemo, useRef } from "react";
 import {
   VariableSizeNodePublicState as NodeState,
@@ -27,16 +28,18 @@ import {
 import { TreeNavigator } from "./TreeNavigator";
 import { TreeNode } from "./TreeNode";
 
+// when the tree size is over this threshold (heuristic), iterating over all elements
+// will take some time and it's better to enable a placeholder
+const PLACEHOLDER_TRESHOLD = 200_000;
+
 export type TreeViewerProps = Props<{
   json: Json.Root;
   search: Search;
-  enablePlaceholder: boolean;
 }>;
 
 export function TreeViewer({
   json,
   search,
-  enablePlaceholder,
   className,
 }: TreeViewerProps): JSX.Element {
   const tree = useRef<Tree<JsonNodeData>>(null);
@@ -90,11 +93,10 @@ export function TreeViewer({
   const [treeDiv, treeDivRef] = useReactiveRef<HTMLDivElement>();
   if (treeDiv) treeDiv.tabIndex = -1;
 
-  // TODO make placeholder optional
   return (
     <div
       ref={parentRef}
-      className={className}
+      className={classNames(className, "relative")}
       tabIndex={0}
       onKeyDown={onKeydown}
     >
@@ -105,7 +107,11 @@ export function TreeViewer({
         height={height}
         width={width}
         itemData={{ navigator: treeNavigator }}
-        placeholder={enablePlaceholder ? <ViewerPlaceholder /> : undefined}
+        placeholder={
+          Json.treeSize(json) > PLACEHOLDER_TRESHOLD ? (
+            <ViewerPlaceholder className="absolute-center" />
+          ) : undefined
+        }
       >
         {TreeNode}
       </Tree>
