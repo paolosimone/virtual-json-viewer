@@ -93,11 +93,15 @@ export function isNull(value: Literal): value is null {
 }
 
 export function treeSize(json: Root): number {
-  return isLiteral(json) ? 1 : json.treeSize;
+  return 1 + (isCollection(json) ? json.treeSize : 0);
 }
 
 export function isEmpty(json: Collection): boolean {
   return json.length === 0;
+}
+
+export function isLeaf(json: Root): boolean {
+  return isLiteral(json) || isEmpty(json);
 }
 
 /* Parsing / Serialization */
@@ -140,8 +144,7 @@ function reviver(_key: string, value: JsonIntermediateValue): Root {
   if (isObjectContent(value)) {
     const sortedKeys = Object.keys(value).sort();
     const objectSize = Object.values(value).reduce(
-      (size: number, elem) =>
-        size + treeSize(elem) + Number(isCollection(elem)),
+      (size: number, elem) => size + treeSize(elem),
       0
     );
 

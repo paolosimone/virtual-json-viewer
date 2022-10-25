@@ -19,12 +19,7 @@ import {
 import { Search } from "viewer/state";
 import { ViewerPlaceholder } from "../ViewerPlaceholder";
 import { JsonNodeData } from "./model/JsonNode";
-import {
-  buildId,
-  getRootNodes,
-  isLeaf,
-  jsonTreeWalker,
-} from "./model/JsonTreeWalker";
+import { buildId, getRootNodes, jsonTreeWalker } from "./model/JsonTreeWalker";
 import { TreeNavigator } from "./TreeNavigator";
 import { TreeNode } from "./TreeNode";
 
@@ -136,7 +131,7 @@ function setOpen(
   const newState = Object.fromEntries(
     getRootNodes(json).map(({ key, value }) => [
       buildId(key, null),
-      { open: !isLeaf(value) && isOpen, subtreeCallback },
+      { open: !Json.isLeaf(value) && isOpen, subtreeCallback },
     ])
   );
 

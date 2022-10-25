@@ -12,7 +12,7 @@ export function jsonTreeWalker(
 }
 
 export function getRootNodes(json: Json.Root): JsonNode[] {
-  if (isLeaf(json)) {
+  if (Json.isLeaf(json)) {
     return [{ key: null, value: json, parent: null }];
   }
 
@@ -21,10 +21,6 @@ export function getRootNodes(json: Json.Root): JsonNode[] {
     value: value,
     parent: null,
   }));
-}
-
-export function isLeaf(json: Json.Root): boolean {
-  return Json.isLiteral(json) || Json.isEmpty(json);
 }
 
 function fullTreeWalker(json: Json.Root): TreeWalker<JsonNodeData> {
@@ -100,9 +96,9 @@ function getNodeData(
   return {
     data: {
       id: buildId(key, parent),
-      isOpenByDefault: (searchMatch?.inValue || false) && !isLeaf(value),
+      isOpenByDefault: (searchMatch?.inValue || false) && !Json.isLeaf(value),
       nesting: parent ? parent.nesting + 1 : 0,
-      isLeaf: isLeaf(value),
+      isLeaf: Json.isLeaf(value),
       key: key,
       childrenCount: Json.isCollection(value) ? value.length : null,
       value: value,

@@ -22,7 +22,7 @@ import { RenderedText } from "./RenderedText";
 import { ViewerPlaceholder } from "./ViewerPlaceholder";
 
 // when the text lenght is over this threshold (heuristic)
-// the rendering will freeze and it's better to defer rendering
+// the tab will freeze and it's better to defer rendering
 const LARGE_TRESHOLD = 1_000_000;
 
 export type RawViewerProps = Props<{
@@ -115,6 +115,14 @@ function useLazyRenderedText(
   // linkifyUrls is disabled for large text to improve performance
   const { linkifyUrls: linkifySettings } = useContext(SettingsContext);
   const linkifyUrls = !isLargeText && linkifySettings;
+
+  useEffect(() => {
+    if (linkifySettings && !linkifyUrls) {
+      console.info(
+        "Large text detected: Linkify URL has been disable to improve performance"
+      );
+    }
+  }, [isLargeText, linkifySettings]);
 
   const renderText = useCallback(
     () => RenderedText({ text, search, linkifyUrls }),
