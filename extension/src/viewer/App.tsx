@@ -23,10 +23,9 @@ import {
 
 export type AppProps = {
   jsonText: string;
-  jqWasmFile: string;
 };
 
-export function App({ jsonText, jqWasmFile }: AppProps): JSX.Element {
+export function App({ jsonText }: AppProps): JSX.Element {
   // global settings
   const [_colors] = useTheme();
   const [translation] = useLocalization();
@@ -45,11 +44,7 @@ export function App({ jsonText, jqWasmFile }: AppProps): JSX.Element {
 
   // parse json
   const jsonResult = useMemo(() => Json.tryParse(jsonText), [jsonText]);
-  const [jqEnabled, jqResult] = useJQ(
-    jqWasmFile,
-    jsonText,
-    jqCommandState.value
-  );
+  const [jqEnabled, jqResult] = useJQ(jsonText, jqCommandState.value);
 
   // fatal error page
   if (jsonResult instanceof Error) {
@@ -81,7 +76,7 @@ export function App({ jsonText, jqWasmFile }: AppProps): JSX.Element {
         [SettingsContext, settings],
       ]}
     >
-      <div className="flex flex-col h-full overflow-hidden font-mono">
+      <div className="flex flex-col h-full min-w-[500px] min-h-[500px] overflow-hidden font-mono">
         <Toolbar {...toolbarProps} />
 
         {error && <Alert message={error.message} />}
@@ -90,7 +85,7 @@ export function App({ jsonText, jqWasmFile }: AppProps): JSX.Element {
           json={json}
           search={searchState.value}
           className={classNames(
-            "flex-auto pt-1.5 pl-1.5 bg-viewer-background text-viewer-foreground selection:bg-amber-200",
+            "flex-auto pt-1.5 pl-1.5 bg-viewer-background text-viewer-foreground selection:bg-amber-200 selection:text-black",
             resolveTextSizeClass(settings.textSize)
           )}
         />

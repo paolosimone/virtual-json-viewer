@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useLayoutEffect, useState } from "react";
 import { RefCurrent } from "./UseReactiveRef";
 
 // The element size, without padding
@@ -8,34 +8,29 @@ export type Size = {
 };
 
 export function useElementSize<T extends Element>(
-  element: RefCurrent<T>,
-  delay?: number
+  element: RefCurrent<T>
 ): Size {
-  const [size, updateSize] = useState<Size>(currentSize(element));
+  const [size, setSize] = useState<Size>(currentSize(element));
 
-  useEffect(() => {
+  const updateSize = useCallback(() => {
+    const newSize = currentSize(element);
+    // prevent useless re-render if size has not actually changed
+    setSize((oldSize) => (isSameSize(oldSize, newSize) ? oldSize : newSize));
+  }, [element, setSize]);
+
+  useLayoutEffect(() => {
     if (!element) return;
 
     // update size on first render
-    updateSize(currentSize(element));
-
-    // throttle resize triggers
-    let timeoutId: NodeJS.Timeout | null = null;
-    const onResize = () => {
-      if (timeoutId) clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => updateSize(currentSize(element)), delay);
-    };
+    updateSize();
 
     // subscribe to resize events
-    const observer = new ResizeObserver(onResize);
+    const observer = new ResizeObserver(updateSize);
     observer.observe(element);
 
     // unsubscribe on exit
-    return () => {
-      if (timeoutId) clearTimeout(timeoutId);
-      observer.disconnect();
-    };
-  }, [element, delay, updateSize]);
+    return () => observer.disconnect();
+  }, [element, updateSize]);
 
   return size;
 }
@@ -55,4 +50,8 @@ function currentSize<T extends Element>(element: RefCurrent<T>): Size {
     height: element.clientHeight - paddingY,
     width: element.clientWidth - paddingX,
   };
+}
+
+function isSameSize(left: Size, right: Size): boolean {
+  return left.height == right.height && left.width == right.width;
 }

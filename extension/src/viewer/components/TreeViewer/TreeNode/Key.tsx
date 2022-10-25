@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import * as Json from "viewer/commons/Json";
 import { useRenderedText } from "viewer/hooks";
 import { Search } from "viewer/state";
@@ -16,7 +17,13 @@ export function Key(props: KeyProps): JSX.Element {
   const KeyElement = Json.isNumber(props.data.key) ? ArrayKey : ObjectKey;
 
   return (
-    <KeyElement className="mr-4 whitespace-pre-wrap text-json-key" {...props} />
+    <KeyElement
+      className={classNames(
+        "mr-4 whitespace-pre-wrap text-json-key",
+        props.className
+      )}
+      {...props}
+    />
   );
 }
 

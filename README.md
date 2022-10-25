@@ -12,7 +12,7 @@ Browser plugin that uses [virtual DOM](https://github.com/Lodin/react-vtree) to 
 
 ### Manifest Version
 
-Starting from Virtual Json Viewer 0.2.0 the default build for Chrome relies on the new [Manifest V3](https://developer.chrome.com/docs/extensions/mv3/intro/) and requires Chromium version 106 or higher.  
+The default build for Chrome relies on the new [Manifest V3](https://developer.chrome.com/docs/extensions/mv3/intro/) and requires Chromium version 106 or higher.  
 If you are running an older version of Chromium because reasons... I got your back!
 Simpy follow the instructions on how to perform a [manual installation](#manual-installation) using a MV2 release.
 

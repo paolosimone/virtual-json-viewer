@@ -7,3 +7,4 @@ export * from "./RawViewer";
 export * from "./RenderedText";
 export * from "./Toolbar";
 export * from "./TreeViewer";
+export * from "./ViewerPlaceholder";

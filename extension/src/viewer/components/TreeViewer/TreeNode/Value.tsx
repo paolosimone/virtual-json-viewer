@@ -5,16 +5,17 @@ import { Search } from "viewer/state";
 import { JsonNodeData } from "../model/JsonNode";
 import { TreeNavigator } from "../TreeNavigator";
 
-export type ValueProps = {
+export type ValueProps = Props<{
   data: JsonNodeData;
   treeNavigator: TreeNavigator;
   search: Nullable<Search>;
-};
+}>;
 
 export function Value({
   data: { id, value, childrenCount },
   treeNavigator,
   search,
+  className,
 }: ValueProps): JSX.Element {
   if (treeNavigator.isOpen(id)) {
     return <span />;
@@ -22,11 +23,15 @@ export function Value({
 
   if (Json.isCollection(value)) {
     return (
-      <CollectionValue value={value} childrenCount={childrenCount as number} />
+      <CollectionValue
+        className={className}
+        value={value}
+        childrenCount={childrenCount as number}
+      />
     );
   }
 
-  return <LiteralValue value={value} search={search} />;
+  return <LiteralValue className={className} value={value} search={search} />;
 }
 
 type CollectionValueProps = Props<{
@@ -37,13 +42,16 @@ type CollectionValueProps = Props<{
 function CollectionValue({
   value,
   childrenCount,
+  className,
 }: CollectionValueProps): JSX.Element {
   const count = childrenCount ? ` ${childrenCount} ` : "";
   const preview = Json.isArray(value) ? `[${count}]` : `{${count}}`;
   const color = childrenCount
     ? "text-viewer-foreground opacity-40"
     : "text-json-value";
-  return <span className={classNames("truncate", color)}>{preview}</span>;
+  return (
+    <span className={classNames("truncate", color, className)}>{preview}</span>
+  );
 }
 
 type LiteralValueProps = Props<{
@@ -51,14 +59,18 @@ type LiteralValueProps = Props<{
   search: Nullable<Search>;
 }>;
 
-function LiteralValue({ value, search }: LiteralValueProps): JSX.Element {
+function LiteralValue({
+  value,
+  search,
+  className,
+}: LiteralValueProps): JSX.Element {
   const textColor = Json.isString(value)
     ? "text-json-string"
     : "text-json-value";
   const textValue = literalToString(value);
   const highlightedText = useRenderedText(textValue, search);
   return (
-    <span className={classNames("whitespace-pre-wrap", textColor)}>
+    <span className={classNames("whitespace-pre-wrap", textColor, className)}>
       {highlightedText}
     </span>
   );

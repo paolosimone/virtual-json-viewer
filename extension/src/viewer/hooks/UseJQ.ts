@@ -1,14 +1,13 @@
 import { useState } from "react";
 import newJQ, { JQ } from "vendor/jq.wasm";
 import * as Json from "viewer/commons/Json";
-import { JQCommand } from "viewer/state";
+import { getURL, JQCommand } from "viewer/state";
 import { Mutex, useEffectAsync } from ".";
 
 export type JQEnabled = boolean;
 export type JQResult = Json.Root | Error | undefined;
 
 export function useJQ(
-  jqWasmFile: string,
   jsonText: string,
   { filter }: JQCommand
 ): [JQEnabled, JQResult] {
@@ -18,7 +17,7 @@ export function useJQ(
   useEffectAsync(
     async (mutex: Mutex) => {
       try {
-        await loadJQ(jqWasmFile);
+        await loadJQ();
         if (mutex.hasLock()) setJQEnabled(true);
       } catch (e) {
         if (mutex.hasLock()) {
@@ -29,7 +28,7 @@ export function useJQ(
         }
       }
     },
-    [jqWasmFile, setJQEnabled]
+    [setJQEnabled]
   );
 
   // execute command and parse result
@@ -47,22 +46,25 @@ export function useJQ(
       }
 
       try {
-        const jq = await loadJQ(jqWasmFile);
-        const result = await jq.invoke(jsonText, filter);
-        if (mutex.hasLock()) setResult(Json.tryParse(result));
+        const jq = await loadJQ();
+        const output = await jq.invoke(jsonText, filter);
+        const result = Json.tryParse(output);
+        if (mutex.hasLock()) setResult(result);
       } catch (e) {
         if (mutex.hasLock()) setResult(e as Error);
       }
     },
-    [jqEnabled, jqWasmFile, jsonText, filter, setResult]
+    [jqEnabled, jsonText, filter, setResult]
   );
 
   return [jqEnabled, result];
 }
 
-function loadJQ(jqWasmFile: string): Promise<JQ> {
+const JQ_WASM_FILE = getURL("jq.wasm");
+
+function loadJQ(): Promise<JQ> {
   return newJQ({
-    locateFile: () => jqWasmFile,
+    locateFile: () => JQ_WASM_FILE,
     print: devNull,
     printErr: devNull,
     noExitRuntime: false,

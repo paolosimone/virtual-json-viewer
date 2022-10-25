@@ -22,7 +22,12 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["jq.wasm", "logo/16.png", "static/css/content.css"],
+      "resources": [
+        "jq.wasm",
+        "logo/16.png",
+        "static/css/content.css",
+        "loading.gif"
+      ],
       "matches": ["<all_urls>"]
     }
   ],

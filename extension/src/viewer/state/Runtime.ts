@@ -1,5 +1,3 @@
-import { createContext } from "react";
-
 export enum Runtime {
   Extension = "extension",
   Web = "web",
@@ -13,4 +11,8 @@ function detectRuntime(): Runtime {
   }
 }
 
-export const RuntimeContext = createContext(detectRuntime());
+export const RUNTIME = detectRuntime();
+
+export function getURL(path: string): string {
+  return RUNTIME === Runtime.Extension ? chrome.runtime.getURL(path) : path;
+}

@@ -14,7 +14,7 @@ export function ViewerWrapper(): JSX.Element {
 
   return (
     <div className="flex flex-col h-screen">
-      <ViewerApp jsonText={jsonText} jqWasmFile="jq.wasm" />
+      <ViewerApp jsonText={jsonText} />
     </div>
   );
 }

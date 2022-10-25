@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import { RefObject, useCallback, useMemo, useRef } from "react";
 import {
   VariableSizeNodePublicState as NodeState,
@@ -16,17 +17,15 @@ import {
   useReactiveRef,
 } from "viewer/hooks";
 import { Search } from "viewer/state";
+import { ViewerPlaceholder } from "../ViewerPlaceholder";
 import { JsonNodeData } from "./model/JsonNode";
-import {
-  buildId,
-  getRootNodes,
-  isLeaf,
-  jsonTreeWalker,
-} from "./model/JsonTreeWalker";
+import { buildId, getRootNodes, jsonTreeWalker } from "./model/JsonTreeWalker";
 import { TreeNavigator } from "./TreeNavigator";
 import { TreeNode } from "./TreeNode";
 
-const RESIZE_DELAY = 100;
+// when the tree size is over this threshold (heuristic), iterating over all elements
+// will take some time and it's better to enable a placeholder
+const PLACEHOLDER_TRESHOLD = 200_000;
 
 export type TreeViewerProps = Props<{
   json: Json.Root;
@@ -42,7 +41,7 @@ export function TreeViewer({
 
   // for some obscure reason AutoSizer doesn't work on Firefox when loaded as extension
   const [parent, parentRef] = useReactiveRef<HTMLDivElement>();
-  const { height, width } = useElementSize(parent, RESIZE_DELAY);
+  const { height, width } = useElementSize(parent);
 
   // tree walker for building the tree
   const treeWalker = useMemo(
@@ -92,7 +91,7 @@ export function TreeViewer({
   return (
     <div
       ref={parentRef}
-      className={className}
+      className={classNames(className, "relative")}
       tabIndex={0}
       onKeyDown={onKeydown}
     >
@@ -103,6 +102,11 @@ export function TreeViewer({
         height={height}
         width={width}
         itemData={{ navigator: treeNavigator }}
+        placeholder={
+          Json.treeSize(json) > PLACEHOLDER_TRESHOLD ? (
+            <ViewerPlaceholder className="absolute-center" />
+          ) : undefined
+        }
       >
         {TreeNode}
       </Tree>
@@ -127,7 +131,7 @@ function setOpen(
   const newState = Object.fromEntries(
     getRootNodes(json).map(({ key, value }) => [
       buildId(key, null),
-      { open: !isLeaf(value) && isOpen, subtreeCallback },
+      { open: !Json.isLeaf(value) && isOpen, subtreeCallback },
     ])
   );
 

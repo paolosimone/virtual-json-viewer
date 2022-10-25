@@ -23,4 +23,7 @@
   .absolute-center {
     @apply absolute right-1/2 bottom-1/2 translate-x-1/2 translate-y-1/2;
   }
+  .red-alert {
+    @apply border border-red-900 bg-red-200 text-red-900;
+  }
 }
