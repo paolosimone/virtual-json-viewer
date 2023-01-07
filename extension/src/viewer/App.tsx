@@ -1,8 +1,14 @@
 import classNames from "classnames";
-import { useMemo } from "react";
+import { useDeferredValue, useEffect, useMemo, useState } from "react";
 import * as Json from "viewer/commons/Json";
 import "../global.css";
-import { Alert, RawViewer, Toolbar, TreeViewer } from "./components";
+import {
+  Alert,
+  RawViewer,
+  Toolbar,
+  TreeViewer,
+  ViewerPlaceholder,
+} from "./components";
 import { MultiContextProvider } from "./components/MultiContextProvider";
 import {
   JQResult,
@@ -17,12 +23,18 @@ import {
   EmptyJQCommand,
   EmptySearch,
   resolveTextSizeClass,
+  Search,
   SettingsContext,
   ViewerMode,
 } from "./state";
 
 export type AppProps = {
   jsonText: string;
+};
+
+type ViewerProps = {
+  json: Json.Root;
+  search: Search;
 };
 
 export function App({ jsonText }: AppProps): JSX.Element {
@@ -45,6 +57,32 @@ export function App({ jsonText }: AppProps): JSX.Element {
   // parse json
   const jsonResult = useMemo(() => Json.tryParse(jsonText), [jsonText]);
   const [jqEnabled, jqResult] = useJQ(jsonText, jqCommandState.value);
+  const [json, error] = resolveJson(jsonResult, jqResult);
+
+  // defer the actual rendering in order to show loading placeholder
+  // Note: viewerMode dependency is important to trigger transition between modes!
+  const targetViewerProps = useMemo(
+    () => ({
+      json: json,
+      search: searchState.value,
+    }),
+    [viewerModeState.value, json, searchState.value]
+  );
+
+  const [nextViewerProps, setNextViewerProps] =
+    useState<Nullable<ViewerProps>>(null);
+  const viewerProps = useDeferredValue<Nullable<ViewerProps>>(nextViewerProps);
+  const isTransition = viewerProps !== targetViewerProps;
+
+  useEffect(() => {
+    const updateTask = setTimeout(
+      () => setNextViewerProps(targetViewerProps),
+      1
+    );
+    return () => clearTimeout(updateTask);
+  }, [setNextViewerProps, targetViewerProps]);
+
+  // -- no hooks below -- //
 
   // fatal error page
   if (jsonResult instanceof Error) {
@@ -55,9 +93,6 @@ export function App({ jsonText }: AppProps): JSX.Element {
       </div>
     );
   }
-
-  // viewer page
-  const [json, error] = resolveJson(jsonResult, jqResult);
 
   const toolbarProps = {
     json: json,
@@ -76,28 +111,35 @@ export function App({ jsonText }: AppProps): JSX.Element {
         [SettingsContext, settings],
       ]}
     >
-      <div className="flex flex-col h-full min-w-[500px] min-h-[500px] overflow-hidden font-mono">
+      <div className="flex flex-col h-full min-w-[500px] min-h-[500px] overflow-hidden font-mono bg-viewer-background">
         <Toolbar {...toolbarProps} />
 
         {error && <Alert message={error.message} />}
 
-        <Viewer
-          json={json}
-          search={searchState.value}
-          className={classNames(
-            "flex-auto pt-1.5 pl-1.5 bg-viewer-background text-viewer-foreground selection:bg-amber-200 selection:text-black",
-            resolveTextSizeClass(settings.textSize)
-          )}
-        />
+        {isTransition ? (
+          <ViewerPlaceholder className="flex-auto" />
+        ) : (
+          <Viewer
+            {...viewerProps}
+            className={classNames(
+              "flex-auto pt-1.5 pl-1.5 text-viewer-foreground selection:bg-amber-200 selection:text-black",
+              resolveTextSizeClass(settings.textSize)
+            )}
+          />
+        )}
       </div>
     </MultiContextProvider>
   );
 }
 
 function resolveJson(
-  jsonResult: Json.Root,
+  jsonResult: Result<Json.Root>,
   jqResult: JQResult
 ): [Json.Root, Nullable<Error>] {
+  if (jsonResult instanceof Error) {
+    return [null, jsonResult];
+  }
+
   if (jqResult === undefined) {
     return [jsonResult, null];
   }

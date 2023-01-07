@@ -11,9 +11,20 @@ export type ViewerPlaceholderProps = BaseProps;
 export function ViewerPlaceholder({
   className,
 }: ViewerPlaceholderProps): JSX.Element {
+  // fadeIn delay mitigates flickering on fast transitions
   return (
     <div className={classNames("flex justify-center mt-8", className)}>
-      <img className="w-20 h-20" src={LOADING_GIF} alt="Loading..." />
+      <img
+        className="w-20 h-20"
+        style={{
+          animationName: "fadeIn",
+          animationDelay: "10ms",
+          animationDuration: "500ms",
+          animationFillMode: "both",
+        }}
+        src={LOADING_GIF}
+        alt="Loading..."
+      />
     </div>
   );
 }

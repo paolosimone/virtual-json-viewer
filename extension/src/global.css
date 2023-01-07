@@ -27,3 +27,12 @@
     @apply border border-red-900 bg-red-200 text-red-900;
   }
 }
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

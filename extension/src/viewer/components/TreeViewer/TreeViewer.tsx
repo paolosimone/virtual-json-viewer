@@ -17,15 +17,10 @@ import {
   useReactiveRef,
 } from "viewer/hooks";
 import { Search } from "viewer/state";
-import { ViewerPlaceholder } from "../ViewerPlaceholder";
 import { JsonNodeData } from "./model/JsonNode";
 import { buildId, getRootNodes, jsonTreeWalker } from "./model/JsonTreeWalker";
 import { TreeNavigator } from "./TreeNavigator";
 import { TreeNode } from "./TreeNode";
-
-// when the tree size is over this threshold (heuristic), iterating over all elements
-// will take some time and it's better to enable a placeholder
-const PLACEHOLDER_TRESHOLD = 200_000;
 
 export type TreeViewerProps = Props<{
   json: Json.Root;
@@ -102,11 +97,6 @@ export function TreeViewer({
         height={height}
         width={width}
         itemData={{ navigator: treeNavigator }}
-        placeholder={
-          Json.treeSize(json) > PLACEHOLDER_TRESHOLD ? (
-            <ViewerPlaceholder className="absolute-center" />
-          ) : undefined
-        }
       >
         {TreeNode}
       </Tree>
