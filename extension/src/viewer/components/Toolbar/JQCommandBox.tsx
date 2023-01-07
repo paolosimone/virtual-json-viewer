@@ -5,12 +5,15 @@ import {
   SetStateAction,
   useCallback,
   useContext,
-  useEffect,
-  useRef,
   useState,
 } from "react";
 import { Icon, IconButton } from "viewer/components";
-import { CHORD_KEY, KeydownEvent, useGlobalKeydownEvent } from "viewer/hooks";
+import {
+  CHORD_KEY,
+  KeydownEvent,
+  useGlobalKeydownEvent,
+  useReactiveRef,
+} from "viewer/hooks";
 import { TranslationContext } from "viewer/localization";
 import { JQCommand } from "viewer/state";
 
@@ -89,21 +92,21 @@ function FilterInput({
   onSubmit,
   className,
 }: FilterInputProps): JSX.Element {
+  const [current, ref] = useReactiveRef<HTMLInputElement>();
+
   // restore the input element internal state on rerender
-  const ref = useRef<HTMLInputElement>(null);
-  useEffect(() => {
-    if (ref.current) {
-      ref.current.value = filter;
-    }
-  }, [ref, filter]);
+  if (current) current.value = filter;
 
   // register global shortcut
-  const handleShortcut = useCallback((e: KeydownEvent) => {
-    if (e[CHORD_KEY] && e.shiftKey && e.key == "f") {
-      e.preventDefault();
-      ref.current?.focus();
-    }
-  }, []);
+  const handleShortcut = useCallback(
+    (e: KeydownEvent) => {
+      if (e[CHORD_KEY] && e.shiftKey && e.key == "f") {
+        e.preventDefault();
+        current?.focus();
+      }
+    },
+    [current]
+  );
   useGlobalKeydownEvent(handleShortcut);
 
   const onChange = (e: FormEvent<HTMLInputElement>) => {

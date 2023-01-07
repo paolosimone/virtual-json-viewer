@@ -6,10 +6,14 @@ import {
   useCallback,
   useContext,
   useEffect,
-  useRef,
 } from "react";
 import { Icon, IconButton, IconLabel } from "viewer/components";
-import { CHORD_KEY, KeydownEvent, useGlobalKeydownEvent } from "viewer/hooks";
+import {
+  CHORD_KEY,
+  KeydownEvent,
+  useGlobalKeydownEvent,
+  useReactiveRef,
+} from "viewer/hooks";
 import { TranslationContext } from "viewer/localization";
 import { Search, SettingsContext } from "viewer/state";
 
@@ -116,7 +120,12 @@ function SearchInput({
   const t = useContext(TranslationContext);
   const { searchDelay } = useContext(SettingsContext);
 
-  // throttle onChange event to wait until user stop typing
+  const [current, ref] = useReactiveRef<HTMLInputElement>();
+
+  // restore the input element internal state on rerender
+  if (current) current.value = text;
+
+  // debounce onChange event to wait until user stops typing
   let timeoutId: Nullable<NodeJS.Timeout> = null;
 
   const maybeClearTimeout = () => {
@@ -124,7 +133,7 @@ function SearchInput({
   };
 
   // clear timeout on component unmount
-  useEffect(() => maybeClearTimeout);
+  useEffect(() => maybeClearTimeout, []);
 
   const onChange = (e: FormEvent<HTMLInputElement>) => {
     maybeClearTimeout();
@@ -132,24 +141,19 @@ function SearchInput({
     timeoutId = setTimeout(() => setText(text), searchDelay);
   };
 
-  const ref = useRef<HTMLInputElement>(null);
-
-  // restore the input element internal state on rerender
-  useEffect(() => {
-    if (ref.current) {
-      ref.current.value = text;
-    }
-  }, [ref, text]);
-
   // override browser search shortcut
   const handleShortcut = useCallback(
     (e: KeydownEvent) => {
-      if ((e[CHORD_KEY] && e.key == "f") || e.key == "/") {
+      if (document.activeElement === current) {
+        return;
+      }
+
+      if ((e[CHORD_KEY] && e.key === "f") || e.key === "/") {
         e.preventDefault();
-        ref.current?.focus();
+        current?.focus();
       }
     },
-    [ref]
+    [current]
   );
   useGlobalKeydownEvent(handleShortcut);
 
