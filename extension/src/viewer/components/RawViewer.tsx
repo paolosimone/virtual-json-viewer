@@ -1,13 +1,5 @@
 import classNames from "classnames";
-import {
-  ReactNode,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useContext, useMemo, useRef, useState } from "react";
 import { EventType } from "viewer/commons/EventBus";
 import * as Json from "viewer/commons/Json";
 import {
@@ -16,9 +8,9 @@ import {
   RefCurrent,
   useEventBusListener,
   useGlobalKeydownEvent,
+  useRenderedText,
 } from "viewer/hooks";
 import { Search, SettingsContext } from "viewer/state";
-import { RenderedText } from "./RenderedText";
 
 export type RawViewerProps = Props<{
   json: Json.Root;
@@ -46,7 +38,7 @@ export function RawViewer({
     [json, space]
   );
 
-  const renderedText = useMaybeRenderedText(raw, search);
+  const renderedText = useRenderedText(raw, search);
 
   const ref = useRef<HTMLDivElement>(null);
 
@@ -93,31 +85,4 @@ function selectAllText(elem: RefCurrent<HTMLElement>) {
   const selection = window.getSelection();
   selection?.removeAllRanges();
   selection?.addRange(range);
-}
-
-// heuristic: https://media.tenor.com/6PFS7ABeJGEAAAAC/dr-evil-one-billion-dollars.gif
-const LARGE_TRESHOLD = 1_000_000;
-
-function useMaybeRenderedText(
-  text: string,
-  search: Nullable<Search>
-): ReactNode {
-  const isLargeText = text.length > LARGE_TRESHOLD;
-
-  // linkifyUrls is disabled for large text to improve performance
-  const { linkifyUrls: linkifySettings } = useContext(SettingsContext);
-  const linkifyUrls = !isLargeText && linkifySettings;
-
-  useEffect(() => {
-    if (linkifySettings && !linkifyUrls) {
-      console.info(
-        "Large text detected: Linkify URL has been disable to improve performance"
-      );
-    }
-  }, [isLargeText, linkifySettings]);
-
-  return useMemo(
-    () => RenderedText({ text, search, linkifyUrls }),
-    [text, search, linkifyUrls]
-  );
 }
