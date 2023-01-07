@@ -111,7 +111,7 @@ export function App({ jsonText }: AppProps): JSX.Element {
         [SettingsContext, settings],
       ]}
     >
-      <div className="flex flex-col h-full min-w-[500px] min-h-[500px] overflow-hidden font-mono">
+      <div className="flex flex-col h-full min-w-[500px] min-h-[500px] overflow-hidden font-mono bg-viewer-background">
         <Toolbar {...toolbarProps} />
 
         {error && <Alert message={error.message} />}
@@ -122,7 +122,7 @@ export function App({ jsonText }: AppProps): JSX.Element {
           <Viewer
             {...viewerProps}
             className={classNames(
-              "flex-auto pt-1.5 pl-1.5 bg-viewer-background text-viewer-foreground selection:bg-amber-200 selection:text-black",
+              "flex-auto pt-1.5 pl-1.5 text-viewer-foreground selection:bg-amber-200 selection:text-black",
               resolveTextSizeClass(settings.textSize)
             )}
           />
