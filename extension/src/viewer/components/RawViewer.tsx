@@ -19,11 +19,6 @@ import {
 } from "viewer/hooks";
 import { Search, SettingsContext } from "viewer/state";
 import { RenderedText } from "./RenderedText";
-import { ViewerPlaceholder } from "./ViewerPlaceholder";
-
-// when the text lenght is over this threshold (heuristic)
-// the tab will freeze and it's better to defer rendering
-const LARGE_TRESHOLD = 1_000_000;
 
 export type RawViewerProps = Props<{
   json: Json.Root;
@@ -51,8 +46,7 @@ export function RawViewer({
     [json, space]
   );
 
-  const isLargeText = raw.length > LARGE_TRESHOLD;
-  const renderedText = useLazyRenderedText(raw, search, isLargeText);
+  const renderedText = useMaybeRenderedText(raw, search);
 
   const ref = useRef<HTMLDivElement>(null);
 
@@ -81,14 +75,11 @@ export function RawViewer({
     <div
       ref={ref}
       tabIndex={0}
-      className={classNames("overflow-auto relative", wrap, className)}
+      className={classNames("overflow-auto", wrap, className)}
       spellCheck={false}
       onKeyDown={handleSelectAll}
     >
-      {isLargeText && <ViewerPlaceholder className="absolute-center" />}
-
-      {/* the text will hide the loading placeholder */}
-      <div className="bg-viewer-background relative z-10">{renderedText}</div>
+      {renderedText}
     </div>
   );
 }
@@ -104,14 +95,15 @@ function selectAllText(elem: RefCurrent<HTMLElement>) {
   selection?.addRange(range);
 }
 
-// common render frequency is 60 fps
-const FRAME_MS = 1 / 60;
+// heuristic: https://media.tenor.com/6PFS7ABeJGEAAAAC/dr-evil-one-billion-dollars.gif
+const LARGE_TRESHOLD = 1_000_000;
 
-function useLazyRenderedText(
+function useMaybeRenderedText(
   text: string,
-  search: Nullable<Search>,
-  isLargeText: boolean
+  search: Nullable<Search>
 ): ReactNode {
+  const isLargeText = text.length > LARGE_TRESHOLD;
+
   // linkifyUrls is disabled for large text to improve performance
   const { linkifyUrls: linkifySettings } = useContext(SettingsContext);
   const linkifyUrls = !isLargeText && linkifySettings;
@@ -124,29 +116,8 @@ function useLazyRenderedText(
     }
   }, [isLargeText, linkifySettings]);
 
-  const renderText = useCallback(
+  return useMemo(
     () => RenderedText({ text, search, linkifyUrls }),
     [text, search, linkifyUrls]
   );
-
-  // the rendering is done on first render only for small text
-  const defaultRenderedText = isLargeText ? null : renderText();
-  const [renderedText, setRenderedText] =
-    useState<Nullable<ReactNode>>(defaultRenderedText);
-
-  useEffect(() => {
-    if (!isLargeText) return;
-
-    // clear the text
-    setRenderedText(null);
-
-    // defer the actual rendering to next frame
-    const renderTask = setTimeout(
-      () => setRenderedText(renderText()),
-      FRAME_MS
-    );
-    return () => clearTimeout(renderTask);
-  }, [isLargeText, renderText, setRenderedText]);
-
-  return renderedText;
 }

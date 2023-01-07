@@ -52,7 +52,7 @@
   },
   "toolbar": {
     "treeView": "Vista navigabile",
-    "rawView": "Testo",
+    "rawView": "Testo (lento)",
     "expand": "Espandi",
     "collapse": "Chiudi",
     "save": "Salva",

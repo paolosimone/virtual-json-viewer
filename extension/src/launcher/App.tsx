@@ -1,8 +1,11 @@
 import classNames from "classnames";
+import "../global.css";
+import { useTheme } from "../viewer/hooks";
 import { OptionsWrapper } from "./OptionsWrapper";
 import { ViewerWrapper } from "./ViewerWrapper";
 
 export function App(): JSX.Element {
+  const [_colors] = useTheme();
   // extremely basic routing, no need for React Router
   switch (window.location.pathname) {
     case "/viewer":
@@ -32,7 +35,7 @@ function LauncherButton({ title, href, className }: LauncherButtonProps) {
   return (
     <button
       className={classNames(
-        "rounded-md bg-toolbar-background hover:bg-toolbar-focus text-4xl",
+        "rounded-md text-toolbar-foreground bg-toolbar-background hover:bg-toolbar-focus text-4xl",
         className
       )}
       onClick={navigateTo(href)}

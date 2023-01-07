@@ -52,7 +52,7 @@
   },
   "toolbar": {
     "treeView": "Tree",
-    "rawView": "Raw",
+    "rawView": "Raw (slow)",
     "expand": "Expand",
     "collapse": "Collapse",
     "save": "Download",
