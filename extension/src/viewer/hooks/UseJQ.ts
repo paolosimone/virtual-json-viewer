@@ -2,7 +2,7 @@ import { useState } from "react";
 import newJQ, { JQ } from "vendor/jq.wasm";
 import * as Json from "viewer/commons/Json";
 import { getURL, JQCommand } from "viewer/state";
-import { Mutex, useEffectAsync } from ".";
+import { Mutex, useEffectAsync, useSettings } from ".";
 
 export type JQEnabled = boolean;
 export type JQResult = Json.Root | Error | undefined;
@@ -11,11 +11,18 @@ export function useJQ(
   jsonText: string,
   { filter }: JQCommand
 ): [JQEnabled, JQResult] {
+  const [settings] = useSettings();
+
   // check if wasm is enabled on first load
   const [jqEnabled, setJQEnabled] = useState<boolean>(true);
 
   useEffectAsync(
     async (mutex: Mutex) => {
+      if (!settings.enableJQ && mutex.hasLock()) {
+        setJQEnabled(false);
+        return;
+      }
+
       try {
         await loadJQ();
         if (mutex.hasLock()) setJQEnabled(true);
@@ -28,7 +35,7 @@ export function useJQ(
         }
       }
     },
-    [setJQEnabled]
+    [settings.enableJQ, setJQEnabled]
   );
 
   // execute command and parse result

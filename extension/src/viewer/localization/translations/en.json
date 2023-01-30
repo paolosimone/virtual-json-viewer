@@ -9,6 +9,8 @@
       "textSize": "Text size",
       "indentation": "Indentation",
       "searchDelay": "Search delay (ms)",
+      "defaultNodeState": "Default tree view state",
+      "enableJQ": "Enable JQ",
       "linkifyUrls": "Clickable URLs"
     },
     "language": {
@@ -26,6 +28,10 @@
       "M": "Medium",
       "L": "Large",
       "XL": "Extra large"
+    },
+    "nodeState": {
+      "expanded": "Expanded",
+      "collapsed": "Collapsed"
     },
     "colors": {
       "sections": {

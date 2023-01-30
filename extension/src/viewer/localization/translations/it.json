@@ -9,6 +9,8 @@
       "textSize": "Dimensioni caratteri",
       "indentation": "Indentazione",
       "searchDelay": "Ritardo nella ricerca (ms)",
+      "defaultNodeState": "Stato di default dell'albero",
+      "enableJQ": "Abilita JQ",
       "linkifyUrls": "Trasforma URLs in links"
     },
     "language": {
@@ -26,6 +28,10 @@
       "M": "Medio",
       "L": "Grande",
       "XL": "Molto grande"
+    },
+    "nodeState": {
+      "expanded": "Aperto",
+      "collapsed": "Chiuso"
     },
     "colors": {
       "sections": {
@@ -51,7 +57,7 @@
     }
   },
   "toolbar": {
-    "treeView": "Vista navigabile",
+    "treeView": "Albero",
     "rawView": "Testo (lento)",
     "expand": "Espandi",
     "collapse": "Chiudi",

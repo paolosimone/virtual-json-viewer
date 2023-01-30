@@ -15,6 +15,7 @@ import {
   useGlobalKeydownEvent,
   useKeydownBuffer,
   useReactiveRef,
+  useSettings,
 } from "viewer/hooks";
 import { Search } from "viewer/state";
 import { JsonNodeData } from "./model/JsonNode";
@@ -32,6 +33,7 @@ export function TreeViewer({
   search,
   className,
 }: TreeViewerProps): JSX.Element {
+  const [settings] = useSettings();
   const tree = useRef<Tree<JsonNodeData>>(null);
 
   // for some obscure reason AutoSizer doesn't work on Firefox when loaded as extension
@@ -40,8 +42,8 @@ export function TreeViewer({
 
   // tree walker for building the tree
   const treeWalker = useMemo(
-    () => jsonTreeWalker(json, search),
-    [json, search]
+    () => jsonTreeWalker(json, search, settings.expandNodes),
+    [json, search, settings.expandNodes]
   );
 
   // global events

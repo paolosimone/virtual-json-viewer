@@ -6,6 +6,8 @@ export type Settings = {
   indentation: number;
   searchDelay: number;
   linkifyUrls: boolean;
+  expandNodes: boolean;
+  enableJQ: boolean;
 };
 
 /* Text Size */
@@ -38,6 +40,8 @@ export const DefaultSettings: Settings = {
   indentation: 4,
   searchDelay: 300,
   linkifyUrls: true,
+  expandNodes: false,
+  enableJQ: true,
 };
 
 export const SettingsContext = createContext<Settings>(DefaultSettings);
