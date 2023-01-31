@@ -1,4 +1,4 @@
 export enum ViewerMode {
-  Tree,
-  Raw,
+  Tree = "tree",
+  Raw = "raw",
 }

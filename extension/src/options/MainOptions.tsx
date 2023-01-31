@@ -10,6 +10,7 @@ import {
   TextSizeSelect,
   ThemeSelect,
 } from "./components";
+import { NodeStateSelect } from "./components/NodeStateSelect";
 import { GlobalOptionsContext, OptionsPage } from "./Context";
 
 export type MainOptionsProps = BaseProps;
@@ -55,6 +56,20 @@ export function MainOptions({ className }: MainOptionsProps): JSX.Element {
         setValue={(newValue: number) =>
           updateSettings({ searchDelay: newValue })
         }
+      />
+
+      <label>{t.settings.labels.defaultNodeState}</label>
+      <NodeStateSelect
+        expandNodes={settings.expandNodes}
+        setExpandNodes={(newExpandNodes: boolean) =>
+          updateSettings({ expandNodes: newExpandNodes })
+        }
+      />
+
+      <label>{t.settings.labels.enableJQ}</label>
+      <Checkbox
+        checked={settings.enableJQ}
+        setChecked={(checked: boolean) => updateSettings({ enableJQ: checked })}
       />
 
       <label>{t.settings.labels.linkifyUrls}</label>

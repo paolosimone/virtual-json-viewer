@@ -6,9 +6,13 @@ import { NodeFilter } from "./NodeFilter";
 
 export function jsonTreeWalker(
   json: Json.Root,
-  search: Search
+  search: Search,
+  expandNodes: boolean
 ): TreeWalker<JsonNodeData> {
-  return search.text ? filteredTreeWalker(json, search) : fullTreeWalker(json);
+  const getNodeData = nodeDataBuilder(expandNodes);
+  return search.text
+    ? filteredTreeWalker(json, getNodeData, search)
+    : fullTreeWalker(json, getNodeData);
 }
 
 export function getRootNodes(json: Json.Root): JsonNode[] {
@@ -23,7 +27,10 @@ export function getRootNodes(json: Json.Root): JsonNode[] {
   }));
 }
 
-function fullTreeWalker(json: Json.Root): TreeWalker<JsonNodeData> {
+function fullTreeWalker(
+  json: Json.Root,
+  getNodeData: NodeDataBuilder
+): TreeWalker<JsonNodeData> {
   return function* () {
     for (const node of getRootNodes(json)) {
       yield getNodeData(node);
@@ -46,6 +53,7 @@ function fullTreeWalker(json: Json.Root): TreeWalker<JsonNodeData> {
 
 function filteredTreeWalker(
   json: Json.Root,
+  getNodeData: NodeDataBuilder,
   search: Search
 ): TreeWalker<JsonNodeData> {
   const filter = new NodeFilter(search);
@@ -89,23 +97,32 @@ export function buildId(
   return `${parent?.id ?? ""}.${key ?? ""}`;
 }
 
-function getNodeData(
-  { key, value, parent }: JsonNode,
-  searchMatch: Nullable<SearchMatch> = null
-): TreeWalkerValue<JsonNodeData> {
-  return {
-    data: {
-      id: buildId(key, parent),
-      isOpenByDefault: (searchMatch?.inValue || false) && !Json.isLeaf(value),
-      nesting: parent ? parent.nesting + 1 : 0,
-      isLeaf: Json.isLeaf(value),
-      key: key,
-      childrenCount: Json.isCollection(value) ? Json.length(value) : null,
-      value: value,
-      parent: parent,
-      defaultHeight: 30,
-      searchMatch: searchMatch,
-    },
+type NodeDataBuilder = (
+  node: JsonNode,
+  searchMatch?: Nullable<SearchMatch>
+) => TreeWalkerValue<JsonNodeData>;
+
+function nodeDataBuilder(isOpenByDefault: boolean): NodeDataBuilder {
+  return function getNodeData(
+    { key, value, parent }: JsonNode,
+    searchMatch: Nullable<SearchMatch> = null
+  ): TreeWalkerValue<JsonNodeData> {
+    return {
+      data: {
+        id: buildId(key, parent),
+        isOpenByDefault:
+          !Json.isLeaf(value) &&
+          (searchMatch?.inValue || (searchMatch === null && isOpenByDefault)),
+        nesting: parent ? parent.nesting + 1 : 0,
+        isLeaf: Json.isLeaf(value),
+        key: key,
+        childrenCount: Json.isCollection(value) ? Json.length(value) : null,
+        value: value,
+        parent: parent,
+        defaultHeight: 30,
+        searchMatch: searchMatch,
+      },
+    };
   };
 }
 
