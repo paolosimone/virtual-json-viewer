@@ -92,12 +92,16 @@ built-in search, JQ filtering and many other features... but no strawberries, so
 | Open node                    | `ArrowRight`         | `l`               |
 | Close node                   | `ArrowLeft`          | `h`               |
 | Toggle node open/close       | `Spacebar`           |                   |
+| Select key text              | `Shift + ArrowLeft`  | `Shift + h`       |
+| Select value text            | `Shift + ArrowRight` | `Shift + l`       |
+| Select node text             | `Ctrl + a`           |                   |
 
 ##### Raw viewer
 
 | Action                       | Primary              | Secondary         |
 |------------------------------|:--------------------:|:-----------------:|
 | Select all text              | `Ctrl + a`           |                   |
+| Deselect text                | `Escape`             |                   |
 
 ## FAQ
 

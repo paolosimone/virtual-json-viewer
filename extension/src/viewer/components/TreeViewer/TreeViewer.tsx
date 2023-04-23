@@ -4,6 +4,7 @@ import {
   VariableSizeNodePublicState as NodeState,
   VariableSizeTree as Tree,
 } from "react-vtree";
+import * as DOM from "viewer/commons/Dom";
 import { EventType } from "viewer/commons/EventBus";
 import * as Json from "viewer/commons/Json";
 import {
@@ -18,10 +19,10 @@ import {
   useSettings,
 } from "viewer/hooks";
 import { Search } from "viewer/state";
-import { JsonNodeData } from "./model/JsonNode";
-import { buildId, getRootNodes, jsonTreeWalker } from "./model/JsonTreeWalker";
 import { TreeNavigator } from "./TreeNavigator";
 import { TreeNode } from "./TreeNode";
+import { JsonNodeData } from "./model/JsonNode";
+import { buildId, getRootNodes, jsonTreeWalker } from "./model/JsonTreeWalker";
 
 export type TreeViewerProps = Props<{
   json: Json.Root;
@@ -148,6 +149,7 @@ function handleNavigation(
   if (e.key == "Escape") {
     e.preventDefault();
     treeElem?.focus();
+    DOM.deselectAllText();
     return;
   }
 

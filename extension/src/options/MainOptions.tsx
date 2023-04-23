@@ -3,6 +3,7 @@ import { useContext } from "react";
 import { SystemLanguage } from "viewer/localization";
 import { DefaultSettings, DefaultTheme, TextSize } from "viewer/state";
 import "../global.css";
+import { GlobalOptionsContext, OptionsPage } from "./Context";
 import {
   Checkbox,
   LanguageSelect,
@@ -11,7 +12,6 @@ import {
   ThemeSelect,
 } from "./components";
 import { NodeStateSelect } from "./components/NodeStateSelect";
-import { GlobalOptionsContext, OptionsPage } from "./Context";
 
 export type MainOptionsProps = BaseProps;
 

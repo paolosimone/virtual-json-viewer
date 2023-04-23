@@ -2,13 +2,14 @@ import classNames from "classnames";
 import { useEffect, useLayoutEffect } from "react";
 import { VariableSizeNodePublicState as NodeState } from "react-vtree";
 import { NodeComponentProps } from "react-vtree/dist/es/Tree";
-import { RefCurrent, useReactiveRef } from "viewer/hooks";
+import * as DOM from "viewer/commons/Dom";
+import { CHORD_KEY, RefCurrent, useReactiveRef } from "viewer/hooks";
 import { Search } from "viewer/state";
-import { JsonNodeData } from "../model/JsonNode";
 import { TreeNavigator } from "../TreeNavigator";
-import { Key } from "./Key";
+import { JsonNodeData } from "../model/JsonNode";
+import { Key, KeyHandle } from "./Key";
 import { OpenButton } from "./OpenButton";
-import { Value } from "./Value";
+import { Value, ValueHandle } from "./Value";
 
 export type JsonTreeNode = NodeComponentProps<
   JsonNodeData,
@@ -23,6 +24,8 @@ export function TreeNode({
 }: JsonTreeNode): JSX.Element {
   const [parent, parentRef] = useReactiveRef<HTMLDivElement>();
   const [content, contentRef] = useReactiveRef<HTMLDivElement>();
+  const [key, keyRef] = useReactiveRef<KeyHandle>();
+  const [value, valueRef] = useReactiveRef<ValueHandle>();
 
   useFitContent(parent, content, resize);
 
@@ -34,6 +37,10 @@ export function TreeNode({
     return () => treeNavigator.onElemHidden(data.id);
   }, [data.id, parent, treeNavigator]);
 
+  const onKeydown = (e: React.KeyboardEvent) => {
+    handleShortcuts({ content, key, value }, e);
+  };
+
   const searchAnalysis = analyzeSearchMatch(data);
   const fade = { "opacity-60": !searchAnalysis.inMatchingPath };
 
@@ -44,6 +51,7 @@ export function TreeNode({
       style={{ ...style, paddingLeft: `${data.nesting}em` }}
       tabIndex={-1}
       onClick={() => parent?.focus()}
+      onKeyDown={onKeydown}
     >
       <div ref={contentRef} className={classNames("flex items-start", fade)}>
         <OpenButton
@@ -51,8 +59,9 @@ export function TreeNode({
           data={data}
           treeNavigator={treeNavigator}
         />
-        <Key data={data} search={searchAnalysis.keySearch} />
+        <Key ref={keyRef} data={data} search={searchAnalysis.keySearch} />
         <Value
+          ref={valueRef}
           className="grow"
           data={data}
           treeNavigator={treeNavigator}
@@ -106,4 +115,33 @@ function analyzeSearchMatch({
     keySearch: searchMatch.inKey ? searchMatch.search : null,
     valueSearch: isLeaf && searchMatch.inValue ? searchMatch.search : null,
   };
+}
+
+type NodeRefs = {
+  content: RefCurrent<HTMLDivElement>;
+  key: RefCurrent<KeyHandle>;
+  value: RefCurrent<ValueHandle>;
+};
+
+function handleShortcuts(
+  { content, key, value }: NodeRefs,
+  e: React.KeyboardEvent
+) {
+  if (e[CHORD_KEY] && !e.shiftKey && e.key === "a") {
+    e.preventDefault();
+    if (content) DOM.selectAllText(content);
+    return;
+  }
+
+  if ((e.shiftKey && e.key == "ArrowLeft") || e.key == "H") {
+    e.preventDefault();
+    key?.selectText();
+    return;
+  }
+
+  if ((e.shiftKey && e.key == "ArrowRight") || e.key == "L") {
+    e.preventDefault();
+    value?.selectText();
+    return;
+  }
 }

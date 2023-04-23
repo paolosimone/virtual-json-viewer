@@ -1,5 +1,5 @@
 import { useCallback, useContext } from "react";
-import { dispatch, EventType } from "viewer/commons/EventBus";
+import { EventType, dispatch } from "viewer/commons/EventBus";
 import { Icon, IconButton } from "viewer/components";
 import { CHORD_KEY, KeydownEvent, useGlobalKeydownEvent } from "viewer/hooks";
 import { TranslationContext } from "viewer/localization";

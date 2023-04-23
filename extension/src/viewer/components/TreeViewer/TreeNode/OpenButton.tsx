@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { Icon, IconButton } from "viewer/components";
-import { JsonNodeData } from "../model/JsonNode";
 import { TreeNavigator } from "../TreeNavigator";
+import { JsonNodeData } from "../model/JsonNode";
 
 export type OpenProps = Props<{
   data: JsonNodeData;
