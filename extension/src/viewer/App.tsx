@@ -1,5 +1,11 @@
 import classNames from "classnames";
-import { useDeferredValue, useEffect, useMemo, useState } from "react";
+import {
+  useCallback,
+  useDeferredValue,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import * as Json from "viewer/commons/Json";
 import "../global.css";
 import {
@@ -11,7 +17,10 @@ import {
 } from "./components";
 import { MultiContextProvider } from "./components/MultiContextProvider";
 import {
+  CHORD_KEY,
   JQResult,
+  KeydownEvent,
+  useGlobalKeydownEvent,
   useJQ,
   useSessionStorage,
   useSettings,
@@ -22,10 +31,10 @@ import { TranslationContext, useLocalization } from "./localization";
 import {
   EmptyJQCommand,
   EmptySearch,
-  resolveTextSizeClass,
   Search,
   SettingsContext,
   ViewerMode,
+  resolveTextSizeClass,
 } from "./state";
 
 export type AppProps = {
@@ -81,6 +90,14 @@ export function App({ jsonText }: AppProps): JSX.Element {
     );
     return () => clearTimeout(updateTask);
   }, [setNextViewerProps, targetViewerProps]);
+
+  // disable "select all" shortcut
+  const handleNavigation = useCallback((e: KeydownEvent) => {
+    if (e[CHORD_KEY] && !e.shiftKey && e.key === "a") {
+      e.preventDefault();
+    }
+  }, []);
+  useGlobalKeydownEvent(handleNavigation);
 
   // -- no hooks below -- //
 

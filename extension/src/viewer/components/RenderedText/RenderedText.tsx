@@ -3,14 +3,14 @@ import { uid } from "uid";
 import { Search } from "viewer/state";
 import {
   HighlightedText,
-  matchSearch,
-  SearchMatch,
   SEARCH_TYPE,
+  SearchMatch,
+  matchSearch,
 } from "./HighlightedText";
 import {
-  LinkifiedText,
-  LinkMatch,
   LINK_TYPE,
+  LinkMatch,
+  LinkifiedText,
   matchLinks,
 } from "./LinkifiedText";
 

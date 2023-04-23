@@ -1,11 +1,11 @@
 import classNames from "classnames";
 import { useCallback, useContext, useMemo, useRef, useState } from "react";
+import * as DOM from "viewer/commons/Dom";
 import { EventType } from "viewer/commons/EventBus";
 import * as Json from "viewer/commons/Json";
 import {
   CHORD_KEY,
   KeydownEvent,
-  RefCurrent,
   useEventBusListener,
   useGlobalKeydownEvent,
   useRenderedText,
@@ -43,7 +43,7 @@ export function RawViewer({
   const ref = useRef<HTMLDivElement>(null);
 
   // register shortcuts
-  const hanldeNavigation = useCallback(
+  const handleNavigation = useCallback(
     (e: KeydownEvent) => {
       if (e[CHORD_KEY] && e.key === "0") {
         e.preventDefault();
@@ -52,12 +52,19 @@ export function RawViewer({
     },
     [ref]
   );
-  useGlobalKeydownEvent(hanldeNavigation);
+  useGlobalKeydownEvent(handleNavigation);
 
   const handleSelectAll = (e: React.KeyboardEvent) => {
-    if (e[CHORD_KEY] && e.key == "a") {
+    if (e[CHORD_KEY] && !e.shiftKey && e.key === "a") {
       e.preventDefault();
-      selectAllText(ref.current);
+      if (ref.current) DOM.selectAllText(ref.current);
+      return;
+    }
+
+    if (e.key == "Escape") {
+      e.preventDefault();
+      DOM.deselectAllText();
+      return;
     }
   };
 
@@ -74,15 +81,4 @@ export function RawViewer({
       {renderedText}
     </div>
   );
-}
-
-// html element must be focusable
-function selectAllText(elem: RefCurrent<HTMLElement>) {
-  if (!elem) return;
-  const range = document.createRange();
-  range.selectNode(elem);
-
-  const selection = window.getSelection();
-  selection?.removeAllRanges();
-  selection?.addRange(range);
 }
