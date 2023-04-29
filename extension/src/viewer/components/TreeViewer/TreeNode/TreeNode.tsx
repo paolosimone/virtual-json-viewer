@@ -127,7 +127,7 @@ function handleShortcuts(
   { content, key, value }: NodeRefs,
   e: React.KeyboardEvent
 ) {
-  if (e[CHORD_KEY] && !e.shiftKey && e.key === "a") {
+  if (e[CHORD_KEY] && e.key === "a") {
     e.preventDefault();
     if (content) DOM.selectAllText(content);
     return;

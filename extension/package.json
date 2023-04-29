@@ -1,6 +1,6 @@
 {
   "name": "virtual-json-viewer",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "private": true,
   "dependencies": {
     "anchorme": "^3.0.4",
@@ -56,13 +56,13 @@
     ]
   },
   "devDependencies": {
-    "@types/chrome": "^0.0.233",
+    "@types/chrome": "^0.0.234",
     "@types/jest": "^29.5.1",
     "@types/json-stable-stringify": "^1.0.33",
-    "@types/node": "^18.15.13",
-    "@types/react": "^18.0.38",
+    "@types/node": "^18.16.3",
+    "@types/react": "^18.2.0",
     "@types/react-color": "^3.0.6",
-    "@types/react-dom": "^18.0.11",
+    "@types/react-dom": "^18.2.1",
     "@types/react-window": "^1.8.3",
     "@types/tinycolor2": "^1.4.3",
     "autoprefixer": "^10.4.14",
@@ -70,10 +70,10 @@
     "copy-webpack-plugin": "11.0.0",
     "customize-cra": "^1.0.0",
     "postcss": "^8.4.23",
-    "prettier": "^2.8.7",
+    "prettier": "^2.8.8",
     "prettier-plugin-organize-imports": "^3.2.2",
     "react-scripts": "5.0.1",
-    "tailwindcss": "^3.3.1",
+    "tailwindcss": "^3.3.2",
     "typescript": "^5.0.4"
   },
   "resolutions": {

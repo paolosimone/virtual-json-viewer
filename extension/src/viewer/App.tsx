@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import {
   useCallback,
+  useContext,
   useDeferredValue,
   useEffect,
   useMemo,
@@ -93,7 +94,7 @@ export function App({ jsonText }: AppProps): JSX.Element {
 
   // disable "select all" shortcut
   const handleNavigation = useCallback((e: KeydownEvent) => {
-    if (e[CHORD_KEY] && !e.shiftKey && e.key === "a") {
+    if (e[CHORD_KEY] && e.key === "a") {
       e.preventDefault();
     }
   }, []);
@@ -105,7 +106,7 @@ export function App({ jsonText }: AppProps): JSX.Element {
   if (jsonResult instanceof Error) {
     return (
       <div className="flex flex-col h-full font-mono">
-        <Alert message={jsonResult.message} />
+        <Alert>{jsonResult.message}</Alert>
         <div className="p-3 whitespace-pre">{jsonText}</div>
       </div>
     );
@@ -131,7 +132,12 @@ export function App({ jsonText }: AppProps): JSX.Element {
       <div className="flex flex-col h-full min-w-[500px] min-h-[500px] overflow-hidden font-mono bg-viewer-background">
         <Toolbar {...toolbarProps} />
 
-        {error && <Alert message={error.message} />}
+        {error && (
+          <Alert>
+            <JqErrorTitle error={error} />
+            {error.message}
+          </Alert>
+        )}
 
         {isTransition ? (
           <ViewerPlaceholder className="flex-auto" />
@@ -166,4 +172,30 @@ function resolveJson(
   }
 
   return [jqResult, null];
+}
+
+type JQErrorTitleProps = Props<{
+  error: Error;
+}>;
+
+function JqErrorTitle({ error }: JQErrorTitleProps): JSX.Element {
+  const t = useContext(TranslationContext);
+
+  if (error instanceof SyntaxError) {
+    return (
+      <div className={"font-bold"}>
+        {t.toolbar.jq.syntaxError}{" "}
+        <a
+          className={"underline text-blue-800"}
+          href="https://github.com/paolosimone/virtual-json-viewer#why-this-valid-jq-command-doesnt-work"
+          target="_blank"
+          rel="noreferrer"
+        >
+          [?]
+        </a>
+      </div>
+    );
+  }
+
+  return <div className={"font-bold"}>{t.toolbar.jq.genericError}</div>;
 }
