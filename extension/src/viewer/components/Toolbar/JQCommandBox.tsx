@@ -100,7 +100,7 @@ function FilterInput({
   // register global shortcut
   const handleShortcut = useCallback(
     (e: KeydownEvent) => {
-      if (e[CHORD_KEY] && e.shiftKey && e.key == "f") {
+      if (e[CHORD_KEY] && e.key == "F") {
         e.preventDefault();
         current?.focus();
       }

@@ -94,7 +94,7 @@ export function App({ jsonText }: AppProps): JSX.Element {
 
   // disable "select all" shortcut
   const handleNavigation = useCallback((e: KeydownEvent) => {
-    if (e[CHORD_KEY] && !e.shiftKey && e.key === "a") {
+    if (e[CHORD_KEY] && e.key === "a") {
       e.preventDefault();
     }
   }, []);

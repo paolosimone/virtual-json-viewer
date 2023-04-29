@@ -55,7 +55,7 @@ export function RawViewer({
   useGlobalKeydownEvent(handleNavigation);
 
   const handleSelectAll = (e: React.KeyboardEvent) => {
-    if (e[CHORD_KEY] && !e.shiftKey && e.key === "a") {
+    if (e[CHORD_KEY] && e.key === "a") {
       e.preventDefault();
       if (ref.current) DOM.selectAllText(ref.current);
       return;

@@ -17,7 +17,7 @@ export function OpenStateToggle({
       e.preventDefault();
       expand();
     }
-    if (e[CHORD_KEY] && e.shiftKey && e.key == "e") {
+    if (e[CHORD_KEY] && e.key == "E") {
       e.preventDefault();
       collapse();
     }
