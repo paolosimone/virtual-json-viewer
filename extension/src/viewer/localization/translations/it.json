@@ -71,7 +71,9 @@
     "jq": {
       "clear": "Cancella",
       "manual": "Manuale",
-      "run": "Applica il filtro"
+      "run": "Esegui il comando",
+      "syntaxError": "Il comando JQ deve restituire un JSON valido",
+      "genericError": "Comando JQ fallito"
     }
   }
 }
