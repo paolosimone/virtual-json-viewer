@@ -145,7 +145,7 @@ Let's say we want to extract all the page titles from this [Wikipedia search](ht
 ...
 ```
 
-We should use `.query.search | map(.title)` instead to obtain a json array:
+We should use `[.query.search[].title]` instead to obtain a json array:
 ```json
 [
   "Pizza",
