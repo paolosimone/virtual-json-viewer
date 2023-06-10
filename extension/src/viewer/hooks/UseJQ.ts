@@ -11,14 +11,15 @@ export function useJQ(
   jsonText: string,
   { filter }: JQCommand
 ): [JQEnabled, JQResult] {
-  const [settings] = useSettings();
+  // it's called outside settings context
+  const [{ enableJQ, sortKeys }] = useSettings();
 
   // check if wasm is enabled on first load
   const [jqEnabled, setJQEnabled] = useState<boolean>(true);
 
   useEffectAsync(
     async (mutex: Mutex) => {
-      if (!settings.enableJQ && mutex.hasLock()) {
+      if (!enableJQ && mutex.hasLock()) {
         setJQEnabled(false);
         return;
       }
@@ -35,7 +36,7 @@ export function useJQ(
         }
       }
     },
-    [settings.enableJQ, setJQEnabled]
+    [enableJQ, setJQEnabled]
   );
 
   // execute command and parse result
@@ -55,13 +56,13 @@ export function useJQ(
       try {
         const jq = await loadJQ();
         const output = await jq.invoke(jsonText, filter);
-        const result = Json.tryParse(output);
+        const result = Json.tryParse(output, { sortKeys });
         if (mutex.hasLock()) setResult(result);
       } catch (e) {
         if (mutex.hasLock()) setResult(e as Error);
       }
     },
-    [jqEnabled, jsonText, filter, setResult]
+    [jqEnabled, jsonText, filter, sortKeys, setResult]
   );
 
   return [jqEnabled, result];

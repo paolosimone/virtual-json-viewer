@@ -22,7 +22,7 @@ export function RawViewer({
   search,
   className,
 }: RawViewerProps): JSX.Element {
-  const { indentation } = useContext(SettingsContext);
+  const { indentation, sortKeys } = useContext(SettingsContext);
   const [minify, setMinify] = useState(false);
 
   const expand = useCallback(() => setMinify(false), [setMinify]);
@@ -34,8 +34,8 @@ export function RawViewer({
   const space = minify ? undefined : indentation;
 
   const raw = useMemo(
-    () => Json.toString(json, { sortKeys: true, space: space }),
-    [json, space]
+    () => Json.toString(json, { sortKeys, space }),
+    [json, sortKeys, space]
   );
 
   const renderedText = useRenderedText(raw, search);

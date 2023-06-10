@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { RefObject, useCallback, useMemo, useRef } from "react";
+import { RefObject, useCallback, useContext, useMemo, useRef } from "react";
 import {
   VariableSizeNodePublicState as NodeState,
   VariableSizeTree as Tree,
@@ -16,9 +16,8 @@ import {
   useGlobalKeydownEvent,
   useKeydownBuffer,
   useReactiveRef,
-  useSettings,
 } from "viewer/hooks";
-import { Search } from "viewer/state";
+import { Search, SettingsContext } from "viewer/state";
 import { TreeNavigator } from "./TreeNavigator";
 import { TreeNode } from "./TreeNode";
 import { JsonNodeData } from "./model/JsonNode";
@@ -34,7 +33,7 @@ export function TreeViewer({
   search,
   className,
 }: TreeViewerProps): JSX.Element {
-  const [settings] = useSettings();
+  const { expandNodes } = useContext(SettingsContext);
   const tree = useRef<Tree<JsonNodeData>>(null);
 
   // for some obscure reason AutoSizer doesn't work on Firefox when loaded as extension
@@ -43,8 +42,8 @@ export function TreeViewer({
 
   // tree walker for building the tree
   const treeWalker = useMemo(
-    () => jsonTreeWalker(json, search, settings.expandNodes),
-    [json, search, settings.expandNodes]
+    () => jsonTreeWalker(json, search, expandNodes),
+    [json, search, expandNodes]
   );
 
   // global events

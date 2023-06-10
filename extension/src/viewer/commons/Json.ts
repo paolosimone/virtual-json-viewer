@@ -99,8 +99,13 @@ export function isLeaf(json: Root): boolean {
 
 /* Parsing / Serialization */
 
-export function tryParse(text: string): Result<Root> {
+export type TryParseOptions = {
+  sortKeys?: boolean;
+};
+
+export function tryParse(text: string, opts?: TryParseOptions): Result<Root> {
   try {
+    const reviver = buildReviver(opts?.sortKeys || false);
     return JSON.parse(text, reviver);
   } catch (e) {
     return e as Error;
@@ -119,18 +124,25 @@ export function toString(value: Root, opts?: ToStringOptions): string {
 }
 
 type ReviverInputValue = ObjectContent | Array | Literal;
+type Reviver = (key: string, value: ReviverInputValue) => Root;
 
-function reviver(_key: string, value: ReviverInputValue): Root {
-  if (!isObjectContent(value)) {
-    return value;
-  }
+function buildReviver(sortKeys: boolean): Reviver {
+  return function (_key: string, value: ReviverInputValue): Root {
+    if (!isObjectContent(value)) {
+      return value;
+    }
 
-  const sortedKeys = Object.keys(value).sort();
+    // Note: sorting doesn't affect performance because
+    // Object.keys() is already O(NlogN) for large objects
+    // Ref: https://stackoverflow.com/a/64912755
+    const keys = Object.keys(value);
+    if (sortKeys) keys.sort();
 
-  return {
-    content: value,
-    keys: sortedKeys,
-    length: sortedKeys.length,
+    return {
+      content: value,
+      keys: keys,
+      length: keys.length,
+    };
   };
 }
 
