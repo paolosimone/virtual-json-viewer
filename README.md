@@ -34,11 +34,11 @@ built-in search, JQ filtering and many other features... but no strawberries, so
 ## Features
 
 - [X] JSON rendering using virtual DOM and collapsible nodes
-    - [X] Sort JSON keys alphabetically
-    - [X] Preview nested item count for closed nodes
     - [X] Color-encoded value types
     - [X] Collapse/expand all nodes
+    - [X] Preview nested item count for closed nodes
     - [X] Clickable URLs
+    - [X] Option to sort JSON keys alphabetically
 - [X] Full text search
     - [X] Highlight search results
     - [X] Option to completely hide subtrees without any search match
@@ -123,7 +123,6 @@ _Example:_ https://api.github.com/users/paolosimone/repos
 
 See also [Issue #15](https://github.com/paolosimone/virtual-json-viewer/issues/15)
 
-
 ### Why this valid JQ command doesn't work?
 
 [JQ](https://stedolan.github.io/jq) commands in Virtual Json Viewer must return valid json, otherwise the parsing of the result will fail with an error e.g.
@@ -157,6 +156,44 @@ We should use `[.query.search[].title]` instead to obtain a json array:
 ```
 
 ok ok, I added the scream emoji
+
+### Why the content shown by the extension is different from the actual JSON?
+
+The json content is parsed using Javascript's [JSON.parse](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse) in order to be rendered both in Tree and Raw view, and even from Download button. For the vast majority of cases this shouldn't be a problem but if you find yourself in need of debugging the original json text I'd suggest you to ~~start praying~~ turn to more suitable tools like API clients and text editors.
+
+Here are some well-known Javascript behaviour that could lead to differences between the original json and its javascript parsed object.  
+
+#### Large numbers are truncated
+
+Integers outside the range `Number.MIN_SAFE_INTEGER` and `Number.MAX_SAFE_INTEGER` are rounded ([MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MAX_SAFE_INTEGER))
+
+```javascript
+JSON.parse('{"wrong": 10000000000000099}')
+{wrong: 10000000000000100}
+```
+
+Floating point numbers are rounded to 16 digits
+
+```javascript
+JSON.parse('{"wrong": 1.12345678901234567890}')
+{wrong: 1.1234567890123457}
+```
+
+#### Keys order is not preserved 
+
+Even disabling the alphabetical ordering feature flag there is no guarantee that the order of keys on screen will be the same as the original json. The actual order will be the output of `Object.keys(JSON.parse(json))`. For instance by ECMAScript specification integer-like keys will be iterated first ([MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...in#:~:text=The%20traversal%20order,of%20property%20creation.))
+
+```javascript
+Object.keys(JSON.parse('{"ZZZ": "_", "AAA": "_", "42": "_"}'))
+['42', 'ZZZ', 'AAA']
+```
+
+#### Unicode escapes are parsed
+
+```javascript
+JSON.parse('{"\u3053\u3093\u306B\u3061\u306F": "\u4E16\u754C"}')
+{'こんにちは': '世界'}
+```
 
 ## Manual Installation
 
