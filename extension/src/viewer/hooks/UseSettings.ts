@@ -26,7 +26,7 @@ export function useSettings(): [Settings, DispatchSettings] {
 
 function maybeUpgrade(settings: Settings): Nullable<Settings> {
   // changes in the same version are backward compatible
-  if (isLatestVersion(settings) && haveMissingKeys(settings)) {
+  if (isLatestVersion(settings) && hasMissingKeys(settings)) {
     return { ...DefaultSettings, ...settings };
   }
 
@@ -40,6 +40,6 @@ function isLatestVersion(settings: Settings): boolean {
   return settings.version == DefaultSettings.version;
 }
 
-function haveMissingKeys(settings: Settings): boolean {
-  return Object.keys(settings).length < Object.keys(DefaultSettings).length;
+function hasMissingKeys(settings: Settings): boolean {
+  return Object.keys(DefaultSettings).some((key: string) => !(key in settings));
 }

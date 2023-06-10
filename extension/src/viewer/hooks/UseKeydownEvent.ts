@@ -54,6 +54,15 @@ export function useKeydownBuffer(
   }, [onKeydownBuffer, bufferSize, keypressDelay]);
 }
 
+// performs a double check because one works on windows and one on macos
+// even if I have no idea why (god I hate frontends)
+export function isUpperCaseKeypress(e: KeydownEvent, letter: string): boolean {
+  return (
+    e.key == letter.toUpperCase() ||
+    (e.shiftKey && e.key == letter.toLowerCase())
+  );
+}
+
 export const CHORD_KEY = isMacOs() ? "metaKey" : "ctrlKey";
 
 function isMacOs(): boolean {

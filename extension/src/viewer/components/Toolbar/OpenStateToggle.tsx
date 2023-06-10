@@ -1,7 +1,12 @@
 import { useCallback, useContext } from "react";
 import { EventType, dispatch } from "viewer/commons/EventBus";
 import { Icon, IconButton } from "viewer/components";
-import { CHORD_KEY, KeydownEvent, useGlobalKeydownEvent } from "viewer/hooks";
+import {
+  CHORD_KEY,
+  KeydownEvent,
+  isUpperCaseKeypress,
+  useGlobalKeydownEvent,
+} from "viewer/hooks";
 import { TranslationContext } from "viewer/localization";
 
 export type OpenStateToggleProps = BaseProps;
@@ -17,7 +22,7 @@ export function OpenStateToggle({
       e.preventDefault();
       expand();
     }
-    if (e[CHORD_KEY] && e.key == "E") {
+    if (e[CHORD_KEY] && isUpperCaseKeypress(e, "E")) {
       e.preventDefault();
       collapse();
     }
