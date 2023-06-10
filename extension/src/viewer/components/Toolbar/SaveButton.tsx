@@ -12,8 +12,11 @@ export type SaveButtonProps = Props<{
 
 export function SaveButton({ json, className }: SaveButtonProps): JSX.Element {
   const t = useContext(TranslationContext);
-  const { indentation } = useContext(SettingsContext);
-  const save = useCallback(() => saveJson(json, indentation), [json]);
+  const { sortKeys, indentation } = useContext(SettingsContext);
+  const save = useCallback(
+    () => saveJson(json, { sortKeys, space: indentation }),
+    [json, sortKeys, indentation]
+  );
 
   // register global shortcut
   const handleShortcut = useCallback(
@@ -40,13 +43,13 @@ export function SaveButton({ json, className }: SaveButtonProps): JSX.Element {
   );
 }
 
-function saveJson(json: Json.Root, indent: number) {
+function saveJson(json: Json.Root, opts: Json.ToStringOptions) {
   let filename = document.title;
   if (!filename.endsWith(".json")) {
     filename += ".json";
   }
 
-  const text = Json.toString(json, { sortKeys: true, space: indent });
+  const text = Json.toString(json, opts);
 
   const element = document.createElement("a");
   element.setAttribute(

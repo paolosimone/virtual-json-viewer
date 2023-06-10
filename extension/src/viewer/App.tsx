@@ -65,7 +65,10 @@ export function App({ jsonText }: AppProps): JSX.Element {
   );
 
   // parse json
-  const jsonResult = useMemo(() => Json.tryParse(jsonText), [jsonText]);
+  const jsonResult = useMemo(
+    () => Json.tryParse(jsonText, { sortKeys: settings.sortKeys }),
+    [jsonText, settings.sortKeys]
+  );
   const [jqEnabled, jqResult] = useJQ(jsonText, jqCommandState.value);
   const [json, error] = resolveJson(jsonResult, jqResult);
 

@@ -4,14 +4,15 @@
     "edit": "Edit",
     "close": "Close",
     "labels": {
-      "language": "Language",
-      "theme": "Theme",
-      "textSize": "Text size",
-      "indentation": "Indentation",
-      "searchDelay": "Search delay (ms)",
       "defaultNodeState": "Default tree view state",
       "enableJQ": "Enable JQ",
-      "linkifyUrls": "Clickable URLs"
+      "indentation": "Indentation",
+      "language": "Language",
+      "linkifyUrls": "Clickable URLs",
+      "searchDelay": "Search delay (ms)",
+      "sortKeys": "Sort keys",
+      "textSize": "Text size",
+      "theme": "Theme"
     },
     "language": {
       "system": "System language"

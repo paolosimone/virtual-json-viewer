@@ -4,14 +4,15 @@
     "edit": "Modifica",
     "close": "Chiudi",
     "labels": {
-      "language": "Lingua",
-      "theme": "Tema",
-      "textSize": "Dimensioni caratteri",
-      "indentation": "Indentazione",
-      "searchDelay": "Ritardo nella ricerca (ms)",
       "defaultNodeState": "Stato di default dell'albero",
       "enableJQ": "Abilita JQ",
-      "linkifyUrls": "Trasforma URLs in links"
+      "indentation": "Indentazione",
+      "language": "Lingua",
+      "linkifyUrls": "Trasforma URLs in links",
+      "searchDelay": "Ritardo nella ricerca (ms)",
+      "sortKeys": "Chiavi in ordine alfabetico",
+      "textSize": "Dimensioni caratteri",
+      "theme": "Tema"
     },
     "language": {
       "system": "Lingua di sistema"

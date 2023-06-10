@@ -80,6 +80,12 @@ export function MainOptions({ className }: MainOptionsProps): JSX.Element {
         }
       />
 
+      <label>{t.settings.labels.sortKeys}</label>
+      <Checkbox
+        checked={settings.sortKeys}
+        setChecked={(checked: boolean) => updateSettings({ sortKeys: checked })}
+      />
+
       <div className="col-span-2 pt-2 flex flex-col place-items-center">
         <button
           className="p-2 red-alert rounded-lg hover:bg-opacity-80"
