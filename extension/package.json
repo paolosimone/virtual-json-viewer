@@ -3,7 +3,7 @@
   "version": "1.0.5",
   "private": true,
   "dependencies": {
-    "anchorme": "^3.0.4",
+    "anchorme": "^3.0.5",
     "json-stable-stringify": "^1.0.2",
     "react": "^18.2.0",
     "react-app-rewired": "^2.0",
@@ -56,28 +56,25 @@
     ]
   },
   "devDependencies": {
-    "@types/chrome": "^0.0.234",
-    "@types/jest": "^29.5.1",
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@types/chrome": "^0.0.237",
+    "@types/jest": "^29.5.2",
     "@types/json-stable-stringify": "^1.0.33",
-    "@types/node": "^18.16.3",
-    "@types/react": "^18.2.0",
+    "@types/node": "^20.2.6",
+    "@types/react": "^18.2.10",
     "@types/react-color": "^3.0.6",
-    "@types/react-dom": "^18.2.1",
+    "@types/react-dom": "^18.2.4",
     "@types/react-window": "^1.8.3",
     "@types/tinycolor2": "^1.4.3",
     "autoprefixer": "^10.4.14",
     "classnames": "^2.3.2",
     "copy-webpack-plugin": "11.0.0",
     "customize-cra": "^1.0.0",
-    "postcss": "^8.4.23",
+    "postcss": "^8.4.24",
     "prettier": "^2.8.8",
     "prettier-plugin-organize-imports": "^3.2.2",
     "react-scripts": "5.0.1",
     "tailwindcss": "^3.3.2",
-    "typescript": "^5.0.4"
-  },
-  "resolutions": {
-    "@types/react": "^18.0.21",
-    "@types/react-dom": "^18.0.6"
+    "typescript": "^5.1.3"
   }
 }
