@@ -11,6 +11,7 @@ import { Icon, IconButton } from "viewer/components";
 import {
   CHORD_KEY,
   KeydownEvent,
+  isUpperCaseKeypress,
   useGlobalKeydownEvent,
   useReactiveRef,
 } from "viewer/hooks";
@@ -100,7 +101,7 @@ function FilterInput({
   // register global shortcut
   const handleShortcut = useCallback(
     (e: KeydownEvent) => {
-      if (e[CHORD_KEY] && e.key == "F") {
+      if (e[CHORD_KEY] && isUpperCaseKeypress(e, "f")) {
         e.preventDefault();
         current?.focus();
       }

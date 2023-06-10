@@ -11,6 +11,7 @@ import {
   CHORD_KEY,
   KeydownBufferEvent,
   KeydownEvent,
+  isUpperCaseKeypress,
   useElementSize,
   useEventBusListener,
   useGlobalKeydownEvent,
@@ -169,13 +170,13 @@ function handleNavigation(
 
   // Page navigation
 
-  if (e.key == "PageDown" || e.key == "J") {
+  if (e.key == "PageDown" || isUpperCaseKeypress(e, "j")) {
     e.preventDefault();
     if (id) treeNavigator.gotoOffset(id, { pages: 1 });
     return;
   }
 
-  if (e.key == "PageUp" || e.key == "K") {
+  if (e.key == "PageUp" || isUpperCaseKeypress(e, "k")) {
     e.preventDefault();
     if (id) treeNavigator.gotoOffset(id, { pages: -1 });
     return;
@@ -187,7 +188,7 @@ function handleNavigation(
     return;
   }
 
-  if (e.key == "End" || e.key == "G") {
+  if (e.key == "End" || isUpperCaseKeypress(e, "g")) {
     e.preventDefault();
     treeNavigator.gotoLast();
     return;
