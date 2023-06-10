@@ -22,7 +22,7 @@ export function OpenStateToggle({
       e.preventDefault();
       expand();
     }
-    if (e[CHORD_KEY] && isUpperCaseKeypress(e, "e")) {
+    if (e[CHORD_KEY] && isUpperCaseKeypress(e, "E")) {
       e.preventDefault();
       collapse();
     }

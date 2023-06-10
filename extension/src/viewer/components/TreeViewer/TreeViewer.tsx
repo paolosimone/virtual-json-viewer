@@ -170,13 +170,13 @@ function handleNavigation(
 
   // Page navigation
 
-  if (e.key == "PageDown" || isUpperCaseKeypress(e, "j")) {
+  if (e.key == "PageDown" || isUpperCaseKeypress(e, "J")) {
     e.preventDefault();
     if (id) treeNavigator.gotoOffset(id, { pages: 1 });
     return;
   }
 
-  if (e.key == "PageUp" || isUpperCaseKeypress(e, "k")) {
+  if (e.key == "PageUp" || isUpperCaseKeypress(e, "K")) {
     e.preventDefault();
     if (id) treeNavigator.gotoOffset(id, { pages: -1 });
     return;
@@ -188,7 +188,7 @@ function handleNavigation(
     return;
   }
 
-  if (e.key == "End" || isUpperCaseKeypress(e, "g")) {
+  if (e.key == "End" || isUpperCaseKeypress(e, "G")) {
     e.preventDefault();
     treeNavigator.gotoLast();
     return;
