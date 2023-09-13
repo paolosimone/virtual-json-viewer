@@ -93,7 +93,6 @@ export function TreeViewer({
       tabIndex={0}
       onKeyDown={onKeydown}
     >
-      {/* @ts-expect-error Tree is a legacy JSX class component */}
       <Tree
         ref={tree}
         treeWalker={treeWalker}
