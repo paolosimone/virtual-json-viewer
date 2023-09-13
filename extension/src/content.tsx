@@ -51,7 +51,7 @@ function loadJsonViewer() {
 
   const div = document.createElement("div");
   div.style.cssText = "height: 100vh";
-  jsonElement.parentNode?.replaceChild(div, jsonElement);
+  jsonElement.parentNode?.replaceChildren(div);
 
   setLoading(false);
 
