@@ -68,8 +68,15 @@
     "save": "Salva",
     "search": {
       "clear": "Cancella",
-      "caseSensitive": "Maiuscole/Minuscole",
-      "hideMismatch": "Nascondi rami senza risultati",
+      "case": {
+        "insensitive": "Ignora maiuscolo",
+        "sensitive": "Considera maiuscolo"
+      },
+      "visibility": {
+        "all": "Mostra tutto",
+        "subtree": "Mostra albero",
+        "match": "Mostra solo i risultati"
+      },
       "placeholder": "cerca"
     },
     "jq": {

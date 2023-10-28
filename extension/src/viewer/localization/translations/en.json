@@ -68,8 +68,15 @@
     "save": "Download",
     "search": {
       "clear": "Clear",
-      "caseSensitive": "Case sensitive",
-      "hideMismatch": "Hide mismatch",
+      "case": {
+        "insensitive": "Case insensitive",
+        "sensitive": "Case sensitive"
+      },
+      "visibility": {
+        "all": "Show all",
+        "subtree": "Show subtree",
+        "match": "Show matches only"
+      },
       "placeholder": "search"
     },
     "jq": {

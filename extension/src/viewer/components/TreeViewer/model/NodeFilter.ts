@@ -1,5 +1,5 @@
 import * as Json from "viewer/commons/Json";
-import { Search } from "viewer/state";
+import { Search, SearchVisibility } from "viewer/state";
 import { JsonNode, SearchMatch } from "./JsonNode";
 
 export class NodeFilter {
@@ -98,17 +98,30 @@ interface KeepStrategy {
   keep(match: SearchMatch): boolean;
 }
 
-function buildKeepStrategy({ showMismatch }: Search): KeepStrategy {
-  return showMismatch ? new KeepFullPaths() : new KeepPathsUntilMatch();
+function buildKeepStrategy({ visibility }: Search): KeepStrategy {
+  switch (visibility) {
+    case SearchVisibility.All:
+      return new KeepAll();
+    case SearchVisibility.Subtree:
+      return new KeepSubtree();
+    case SearchVisibility.Match:
+      return new KeepUntilMatch();
+  }
 }
 
-class KeepFullPaths implements KeepStrategy {
+class KeepAll implements KeepStrategy {
+  keep(_match: SearchMatch): boolean {
+    return true;
+  }
+}
+
+class KeepSubtree implements KeepStrategy {
   keep(match: SearchMatch): boolean {
     return match.inAncestor || match.inKey || match.inValue;
   }
 }
 
-class KeepPathsUntilMatch implements KeepStrategy {
+class KeepUntilMatch implements KeepStrategy {
   keep(match: SearchMatch): boolean {
     return match.inKey || match.inValue;
   }
