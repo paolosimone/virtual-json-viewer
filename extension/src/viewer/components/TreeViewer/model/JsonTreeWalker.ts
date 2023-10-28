@@ -7,7 +7,7 @@ import { NodeFilter } from "./NodeFilter";
 export function jsonTreeWalker(
   json: Json.Root,
   search: Search,
-  expandNodes: boolean
+  expandNodes: boolean,
 ): TreeWalker<JsonNodeData> {
   const getNodeData = nodeDataBuilder(expandNodes);
   return search.text
@@ -29,7 +29,7 @@ export function getRootNodes(json: Json.Root): JsonNode[] {
 
 function fullTreeWalker(
   json: Json.Root,
-  getNodeData: NodeDataBuilder
+  getNodeData: NodeDataBuilder,
 ): TreeWalker<JsonNodeData> {
   return function* () {
     for (const node of getRootNodes(json)) {
@@ -54,7 +54,7 @@ function fullTreeWalker(
 function filteredTreeWalker(
   json: Json.Root,
   getNodeData: NodeDataBuilder,
-  search: Search
+  search: Search,
 ): TreeWalker<JsonNodeData> {
   const filter = new NodeFilter(search);
 
@@ -92,20 +92,20 @@ function filteredTreeWalker(
 
 export function buildId(
   key: Nullable<Json.Key>,
-  parent: Nullable<JsonNodeData>
+  parent: Nullable<JsonNodeData>,
 ): string {
   return `${parent?.id ?? ""}.${key ?? ""}`;
 }
 
 type NodeDataBuilder = (
   node: JsonNode,
-  searchMatch?: Nullable<SearchMatch>
+  searchMatch?: Nullable<SearchMatch>,
 ) => TreeWalkerValue<JsonNodeData>;
 
 function nodeDataBuilder(isOpenByDefault: boolean): NodeDataBuilder {
   return function getNodeData(
     { key, value, parent }: JsonNode,
-    searchMatch: Nullable<SearchMatch> = null
+    searchMatch: Nullable<SearchMatch> = null,
   ): TreeWalkerValue<JsonNodeData> {
     return {
       data: {

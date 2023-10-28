@@ -25,7 +25,7 @@ export type SearchOptions = Props<{
 
 export function matchSearch(
   text: string,
-  { searchText, caseSensitive }: SearchOptions
+  { searchText, caseSensitive }: SearchOptions,
 ): SearchMatch[] {
   const flags = "g" + (caseSensitive ? "" : "i");
   const matches = text.matchAll(new RegExp(escapeRegExp(searchText), flags));

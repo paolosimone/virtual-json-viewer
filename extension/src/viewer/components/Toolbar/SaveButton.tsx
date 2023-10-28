@@ -15,7 +15,7 @@ export function SaveButton({ json, className }: SaveButtonProps): JSX.Element {
   const { sortKeys, indentation } = useContext(SettingsContext);
   const save = useCallback(
     () => saveJson(json, { sortKeys, space: indentation }),
-    [json, sortKeys, indentation]
+    [json, sortKeys, indentation],
   );
 
   // register global shortcut
@@ -26,7 +26,7 @@ export function SaveButton({ json, className }: SaveButtonProps): JSX.Element {
         save();
       }
     },
-    [save]
+    [save],
   );
   useGlobalKeydownEvent(handleShortcut);
 
@@ -34,7 +34,7 @@ export function SaveButton({ json, className }: SaveButtonProps): JSX.Element {
     <IconButton
       className={classNames(
         "fill-toolbar-foreground hover:bg-toolbar-focus",
-        className
+        className,
       )}
       title={t.toolbar.save}
       icon={Icon.Save}
@@ -54,7 +54,7 @@ function saveJson(json: Json.Root, opts: Json.ToStringOptions) {
   const element = document.createElement("a");
   element.setAttribute(
     "href",
-    "data:text/plain;charset=utf-8," + encodeURIComponent(text)
+    "data:text/plain;charset=utf-8," + encodeURIComponent(text),
   );
   element.setAttribute("download", filename);
 

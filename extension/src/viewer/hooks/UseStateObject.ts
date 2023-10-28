@@ -12,10 +12,10 @@ export function useStateObject<S>(initialState: S | (() => S)): StateObject<S> {
 
 export function useStateObjectAdapter<S>([value, setValue]: [
   S,
-  Dispatch<SetStateAction<S>>
+  Dispatch<SetStateAction<S>>,
 ]): StateObject<S> {
   return useMemo(
     () => ({ value: value, setValue: setValue }),
-    [value, setValue]
+    [value, setValue],
   );
 }

@@ -55,7 +55,7 @@ export function EditCustomTheme({
     <div
       className={classNames(
         className,
-        "relative flex flex-col items-stretch pt-2 px-8 pb-8 bg-viewer-background"
+        "relative flex flex-col items-stretch pt-2 px-8 pb-8 bg-viewer-background",
       )}
     >
       {/* back button */}
@@ -113,7 +113,7 @@ export function ColorPreview({
     <div
       className={classNames(
         "flex text-black bg-white rounded cursor-pointer p-0.5",
-        className
+        className,
       )}
       onClick={onClick}
     >

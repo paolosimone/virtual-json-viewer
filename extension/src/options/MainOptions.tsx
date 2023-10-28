@@ -23,7 +23,7 @@ export function MainOptions({ className }: MainOptionsProps): JSX.Element {
     <div
       className={classNames(
         "grid grid-cols-2 gap-3 items-center p-8",
-        className
+        className,
       )}
     >
       <label>{t.settings.labels.theme}</label>

@@ -33,7 +33,7 @@ export function App(): JSX.Element {
       <CurrentPage
         className={classNames(
           "min-w-[500px] min-h-[400px] bg-viewer-background text-viewer-foreground",
-          resolveTextSizeClass(settings.textSize)
+          resolveTextSizeClass(settings.textSize),
         )}
       />
     </GlobalOptionsContext.Provider>

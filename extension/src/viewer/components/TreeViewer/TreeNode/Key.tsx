@@ -17,7 +17,7 @@ export type KeyHandle = {
 
 export const Key = forwardRef(function Key(
   props: KeyProps,
-  ref: ForwardedRef<KeyHandle>
+  ref: ForwardedRef<KeyHandle>,
 ): JSX.Element {
   if (props.data.key === null) {
     return <span />;
@@ -31,7 +31,7 @@ export const Key = forwardRef(function Key(
         if (keyRef.current) DOM.selectAllText(keyRef.current);
       },
     }),
-    [keyRef]
+    [keyRef],
   );
 
   const KeyElement = Json.isNumber(props.data.key) ? ArrayKey : ObjectKey;
@@ -41,7 +41,7 @@ export const Key = forwardRef(function Key(
       ref={keyRef}
       className={classNames(
         "mr-4 whitespace-pre-wrap text-json-key",
-        props.className
+        props.className,
       )}
       {...props}
     />
@@ -50,7 +50,7 @@ export const Key = forwardRef(function Key(
 
 const ArrayKey = forwardRef(function ArrayKey(
   { data, className }: KeyProps,
-  ref: ForwardedRef<HTMLSpanElement>
+  ref: ForwardedRef<HTMLSpanElement>,
 ): JSX.Element {
   return (
     <span className={className}>
@@ -62,7 +62,7 @@ const ArrayKey = forwardRef(function ArrayKey(
 
 const ObjectKey = forwardRef(function ObjectKey(
   { data, search, className }: KeyProps,
-  ref: ForwardedRef<HTMLSpanElement>
+  ref: ForwardedRef<HTMLSpanElement>,
 ): JSX.Element {
   const highlightedKey = useRenderedText(data.key as string, search);
 

@@ -35,7 +35,7 @@ export function RawViewer({
 
   const raw = useMemo(
     () => Json.toString(json, { sortKeys, space }),
-    [json, sortKeys, space]
+    [json, sortKeys, space],
   );
 
   const renderedText = useRenderedText(raw, search);
@@ -50,7 +50,7 @@ export function RawViewer({
         ref.current?.focus();
       }
     },
-    [ref]
+    [ref],
   );
   useGlobalKeydownEvent(handleNavigation);
 

@@ -2,7 +2,7 @@ import { DependencyList, useEffect } from "react";
 
 export function useEffectAsync(
   effectAsync: SynchronizedEffect,
-  deps?: DependencyList
+  deps?: DependencyList,
 ): void {
   useEffect(
     () => {
@@ -18,7 +18,7 @@ export function useEffectAsync(
       };
     },
     // eslint-disable-next-line
-    deps ?? []
+    deps ?? [],
   );
 }
 

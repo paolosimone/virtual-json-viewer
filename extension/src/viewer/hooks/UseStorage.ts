@@ -20,7 +20,7 @@ export function useStorage<T>(key: string, defaultValue: T): [T, Dispatch<T>] {
       }
       setValue(value);
     },
-    [storage, key, defaultValue]
+    [storage, key, defaultValue],
   );
 
   // subscribe to external changes
@@ -31,7 +31,7 @@ export function useStorage<T>(key: string, defaultValue: T): [T, Dispatch<T>] {
     () => (newValue: T) => {
       storage.set(key, newValue).then(() => setValue(newValue));
     },
-    [storage, key, setValue]
+    [storage, key, setValue],
   );
 
   return [value, setValueAndStorage];

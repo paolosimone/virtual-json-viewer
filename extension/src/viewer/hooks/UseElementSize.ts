@@ -8,7 +8,7 @@ export type Size = {
 };
 
 export function useElementSize<T extends Element>(
-  element: RefCurrent<T>
+  element: RefCurrent<T>,
 ): Size {
   const [size, setSize] = useState<Size>(currentSize(element));
 

@@ -106,7 +106,7 @@ function FilterInput({
         current?.focus();
       }
     },
-    [current]
+    [current],
   );
   useGlobalKeydownEvent(handleShortcut);
 

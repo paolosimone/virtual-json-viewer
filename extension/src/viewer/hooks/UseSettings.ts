@@ -18,7 +18,7 @@ export function useSettings(): [Settings, DispatchSettings] {
     () => (newSettings: Partial<Settings>) => {
       setSettings({ ...settings, ...newSettings });
     },
-    [settings, setSettings]
+    [settings, setSettings],
   );
 
   return [settings, updateSettings];

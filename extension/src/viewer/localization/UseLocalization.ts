@@ -14,11 +14,11 @@ const KEY = "language";
 export function useLocalization(): [
   Translation,
   LanguageSetting,
-  Dispatch<LanguageSetting>
+  Dispatch<LanguageSetting>,
 ] {
   const [language, setLanguage] = useStorage<LanguageSetting>(
     KEY,
-    SystemLanguage
+    SystemLanguage,
   );
   const translation = resolveTranslation(language);
   return [translation, language, setLanguage];
@@ -36,7 +36,7 @@ function resolveTranslation(languageSetting: LanguageSetting) {
 function resolveSystemLanguage(): Language {
   const systemLanguage = navigator.language.toLowerCase().substr(0, 2);
   const language = Object.values(Language).find(
-    (lang) => lang === systemLanguage
+    (lang) => lang === systemLanguage,
   );
   return language ?? FallbackLanguage;
 }

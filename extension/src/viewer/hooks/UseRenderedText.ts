@@ -7,7 +7,7 @@ const LARGE_TEXT_LENGTH = 1_000_000;
 
 export function useRenderedText(
   text: string,
-  search: Nullable<Search>
+  search: Nullable<Search>,
 ): ReactNode {
   const { linkifyUrls: linkifySettings } = useContext(SettingsContext);
 
@@ -18,7 +18,7 @@ export function useRenderedText(
   useEffect(() => {
     if (linkifySettings && !linkifyUrls) {
       console.info(
-        "Large text detected: Linkify URL has been disable to improve performance"
+        "Large text detected: Linkify URL has been disable to improve performance",
       );
     }
   }, [isLargeText, linkifySettings]);
@@ -30,6 +30,6 @@ export function useRenderedText(
         search: search,
         linkifyUrls: linkifyUrls,
       }),
-    [text, search, linkifyUrls]
+    [text, search, linkifyUrls],
   );
 }

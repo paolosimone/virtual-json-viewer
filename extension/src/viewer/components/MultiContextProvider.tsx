@@ -4,12 +4,12 @@ type MultiContextProviderProps = Props<{
 
 // https://github.com/facebook/react/issues/14620#issuecomment-491366098
 export function MultiContextProvider(
-  props: MultiContextProviderProps
+  props: MultiContextProviderProps,
 ): JSX.Element {
   return props.contexts.reduce(
     (acc, [Context, value]) => (
       <Context.Provider value={value}>{acc}</Context.Provider>
     ),
-    props.children
+    props.children,
   ) as JSX.Element;
 }

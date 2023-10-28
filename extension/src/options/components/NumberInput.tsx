@@ -31,7 +31,7 @@ export function NumberInput({
       type="number"
       className={classNames(
         "pl-1 bg-input-background text-input-foreground border border-input-focus focus:outline-none cursor-pointer",
-        className
+        className,
       )}
       onChange={setNewValue}
       value={value}

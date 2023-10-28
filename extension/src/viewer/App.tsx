@@ -55,19 +55,19 @@ export function App({ jsonText }: AppProps): JSX.Element {
 
   // application state
   const viewerModeState = useStateObjectAdapter(
-    useSessionStorage("viewer", ViewerMode.Tree)
+    useSessionStorage("viewer", ViewerMode.Tree),
   );
   const searchState = useStateObjectAdapter(
-    useSessionStorage("search", EmptySearch)
+    useSessionStorage("search", EmptySearch),
   );
   const jqCommandState = useStateObjectAdapter(
-    useSessionStorage("jq", EmptyJQCommand)
+    useSessionStorage("jq", EmptyJQCommand),
   );
 
   // parse json
   const jsonResult = useMemo(
     () => Json.tryParse(jsonText, { sortKeys: settings.sortKeys }),
-    [jsonText, settings.sortKeys]
+    [jsonText, settings.sortKeys],
   );
   const [jqEnabled, jqResult] = useJQ(jsonText, jqCommandState.value);
   const [json, error] = resolveJson(jsonResult, jqResult);
@@ -79,7 +79,7 @@ export function App({ jsonText }: AppProps): JSX.Element {
       json: json,
       search: searchState.value,
     }),
-    [viewerModeState.value, json, searchState.value]
+    [viewerModeState.value, json, searchState.value],
   );
 
   const [nextViewerProps, setNextViewerProps] =
@@ -90,7 +90,7 @@ export function App({ jsonText }: AppProps): JSX.Element {
   useEffect(() => {
     const updateTask = setTimeout(
       () => setNextViewerProps(targetViewerProps),
-      1
+      1,
     );
     return () => clearTimeout(updateTask);
   }, [setNextViewerProps, targetViewerProps]);
@@ -149,7 +149,7 @@ export function App({ jsonText }: AppProps): JSX.Element {
             {...viewerProps}
             className={classNames(
               "flex-auto pt-1.5 pl-1.5 text-viewer-foreground selection:bg-amber-200 selection:text-black",
-              resolveTextSizeClass(settings.textSize)
+              resolveTextSizeClass(settings.textSize),
             )}
           />
         )}
@@ -160,7 +160,7 @@ export function App({ jsonText }: AppProps): JSX.Element {
 
 function resolveJson(
   jsonResult: Result<Json.Root>,
-  jqResult: JQResult
+  jqResult: JQResult,
 ): [Json.Root, Nullable<Error>] {
   if (jsonResult instanceof Error) {
     return [null, jsonResult];

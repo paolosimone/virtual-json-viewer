@@ -20,9 +20,9 @@ export function ViewerModeToggle({
   const toggleView = useCallback(
     () =>
       setViewerMode((viewerMode) =>
-        viewerMode === ViewerMode.Tree ? ViewerMode.Raw : ViewerMode.Tree
+        viewerMode === ViewerMode.Tree ? ViewerMode.Raw : ViewerMode.Tree,
       ),
-    [setViewerMode]
+    [setViewerMode],
   );
 
   // register global shortcut
@@ -33,7 +33,7 @@ export function ViewerModeToggle({
         toggleView();
       }
     },
-    [toggleView]
+    [toggleView],
   );
   useGlobalKeydownEvent(handleShortcut);
 

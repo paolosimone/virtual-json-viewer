@@ -77,7 +77,7 @@ type Resize = (height: number, shouldForceUpdate?: boolean) => void;
 function useFitContent(
   parent: RefCurrent<HTMLElement>,
   content: RefCurrent<HTMLElement>,
-  resize: Resize
+  resize: Resize,
 ) {
   const PADDING_HEIGHT = 4;
   const TOLERANCE = 2;
@@ -125,7 +125,7 @@ type NodeRefs = {
 
 function handleShortcuts(
   { content, key, value }: NodeRefs,
-  e: React.KeyboardEvent
+  e: React.KeyboardEvent,
 ) {
   if (e[CHORD_KEY] && e.key === "a") {
     e.preventDefault();

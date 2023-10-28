@@ -28,7 +28,7 @@ export function Toolbar({
     <div
       className={classNames(
         "flex flex-col py-1 px-0.5 bg-toolbar-background",
-        className
+        className,
       )}
     >
       <div className="flex items-center">

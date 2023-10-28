@@ -20,7 +20,7 @@ export class TreeNavigator {
 
   constructor(
     tree: RefObject<Tree<JsonNodeData>>,
-    treeElem: RefCurrent<HTMLElement>
+    treeElem: RefCurrent<HTMLElement>,
   ) {
     this.tree = tree;
     this.treeElem = treeElem;

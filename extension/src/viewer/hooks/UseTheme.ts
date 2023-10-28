@@ -53,7 +53,7 @@ function applyTheme(colors: ThemeColors) {
 function toCssVariable(colorKey: ColorKey): string {
   const hyphenName = colorKey.replace(
     /[A-Z]/g,
-    (capital) => `-${capital.toLowerCase()}`
+    (capital) => `-${capital.toLowerCase()}`,
   );
   return `--${hyphenName}`;
 }

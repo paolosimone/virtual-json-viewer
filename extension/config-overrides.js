@@ -80,7 +80,7 @@ function convertToChromeExtension(config) {
   replacePlugin(
     config.plugins,
     (name) => /ManifestPlugin/i.test(name),
-    manifestPlugin
+    manifestPlugin,
   );
 
   // Custom MiniCssExtractPlugin instance to get rid of hash in filename template
@@ -90,7 +90,7 @@ function convertToChromeExtension(config) {
   replacePlugin(
     config.plugins,
     (name) => /MiniCssExtractPlugin/i.test(name),
-    miniCssExtractPlugin
+    miniCssExtractPlugin,
   );
 
   // Remove GenerateSW plugin from config.plugins to disable service worker generation
@@ -128,7 +128,7 @@ function replacePlugin(plugins, nameMatcher, newPlugin) {
     (plugin) =>
       plugin.constructor &&
       plugin.constructor.name &&
-      nameMatcher(plugin.constructor.name)
+      nameMatcher(plugin.constructor.name),
   );
 
   if (i > -1) {

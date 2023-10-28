@@ -21,7 +21,7 @@ export function Checkbox({
       type="checkbox"
       className={classNames(
         "pl-1 bg-input-background focus:outline-none cursor-pointer",
-        className
+        className,
       )}
       onChange={setNewChecked}
       checked={checked}

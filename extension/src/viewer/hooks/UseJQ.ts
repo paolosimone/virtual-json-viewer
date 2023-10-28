@@ -9,7 +9,7 @@ export type JQResult = Json.Root | Error | undefined;
 
 export function useJQ(
   jsonText: string,
-  { filter }: JQCommand
+  { filter }: JQCommand,
 ): [JQEnabled, JQResult] {
   // it's called outside settings context
   const [{ enableJQ, sortKeys }] = useSettings();
@@ -30,13 +30,13 @@ export function useJQ(
       } catch (e) {
         if (mutex.hasLock()) {
           console.warn(
-            "Unable to load JQ, Wasm is probably disabled due to CSP. For additional info: https://github.com/WebAssembly/content-security-policy/blob/main/proposals/CSP.md"
+            "Unable to load JQ, Wasm is probably disabled due to CSP. For additional info: https://github.com/WebAssembly/content-security-policy/blob/main/proposals/CSP.md",
           );
           setJQEnabled(false);
         }
       }
     },
-    [enableJQ, setJQEnabled]
+    [enableJQ, setJQEnabled],
   );
 
   // execute command and parse result
@@ -62,7 +62,7 @@ export function useJQ(
         if (mutex.hasLock()) setResult(e as Error);
       }
     },
-    [jqEnabled, jsonText, filter, sortKeys, setResult]
+    [jqEnabled, jsonText, filter, sortKeys, setResult],
   );
 
   return [jqEnabled, result];

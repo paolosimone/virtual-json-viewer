@@ -44,7 +44,7 @@ export function TreeViewer({
   // tree walker for building the tree
   const treeWalker = useMemo(
     () => jsonTreeWalker(json, search, expandNodes),
-    [json, search, expandNodes]
+    [json, search, expandNodes],
   );
 
   // global events
@@ -62,19 +62,19 @@ export function TreeViewer({
         parent?.focus();
       }
     },
-    [parent]
+    [parent],
   );
   useGlobalKeydownEvent(handleShortcut);
 
   // keyboard navigation
   const treeNavigator = useMemo(
     () => new TreeNavigator(tree, parent),
-    [tree, parent]
+    [tree, parent],
   );
 
   const navigate = useCallback(
     (e: KeydownBufferEvent) => handleNavigation(parent, treeNavigator, e),
-    [parent, treeNavigator]
+    [parent, treeNavigator],
   );
   const onKeydown = useKeydownBuffer(navigate, {
     bufferSize: 2,
@@ -110,11 +110,11 @@ export function TreeViewer({
 function setOpen(
   json: Json.Root,
   tree: RefObject<Tree<JsonNodeData>>,
-  isOpen: boolean
+  isOpen: boolean,
 ) {
   function subtreeCallback(
     node: NodeState<JsonNodeData>,
-    ownerNode: NodeState<JsonNodeData>
+    ownerNode: NodeState<JsonNodeData>,
   ) {
     if (node !== ownerNode) {
       node.isOpen = !node.data.isLeaf && isOpen;
@@ -125,7 +125,7 @@ function setOpen(
     getRootNodes(json).map(({ key, value }) => [
       buildId(key, null),
       { open: !Json.isLeaf(value) && isOpen, subtreeCallback },
-    ])
+    ]),
   );
 
   tree.current?.recomputeTree(newState);
@@ -134,7 +134,7 @@ function setOpen(
 function handleNavigation(
   treeElem: Nullable<HTMLElement>,
   treeNavigator: TreeNavigator,
-  { last: e, text }: KeydownBufferEvent
+  { last: e, text }: KeydownBufferEvent,
 ) {
   const id = treeNavigator.getCurrentId();
 

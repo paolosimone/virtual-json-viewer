@@ -24,7 +24,7 @@ export type UseKeydownBufferArgs = {
 
 export function useKeydownBuffer(
   onKeydownBuffer: OnKeydownBuffer,
-  { bufferSize, keypressDelay }: UseKeydownBufferArgs
+  { bufferSize, keypressDelay }: UseKeydownBufferArgs,
 ): OnKeydown {
   return useMemo(() => {
     let buffer: KeydownEvent[] = [];

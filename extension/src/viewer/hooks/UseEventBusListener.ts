@@ -3,7 +3,7 @@ import { EventType, subscribe, unsubscribe } from "../commons/EventBus";
 
 export function useEventBusListener(
   event: EventType,
-  listener: EventListener
+  listener: EventListener,
 ): void {
   useEffect(() => {
     subscribe(event, listener);

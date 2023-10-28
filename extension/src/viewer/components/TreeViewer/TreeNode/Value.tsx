@@ -24,7 +24,7 @@ export const Value = forwardRef(function Value(
     search,
     className,
   }: ValueProps,
-  ref: ForwardedRef<ValueHandle>
+  ref: ForwardedRef<ValueHandle>,
 ): JSX.Element {
   if (treeNavigator.isOpen(id)) {
     return <span />;
@@ -77,7 +77,7 @@ type LiteralValueProps = Props<{
 
 export const LiteralValue = forwardRef(function LiteralValue(
   { value, search, className }: LiteralValueProps,
-  ref: ForwardedRef<ValueHandle>
+  ref: ForwardedRef<ValueHandle>,
 ): JSX.Element {
   const valueRef = useRef<HTMLSpanElement>(null);
 
@@ -88,7 +88,7 @@ export const LiteralValue = forwardRef(function LiteralValue(
         if (valueRef.current) DOM.selectAllText(valueRef.current);
       },
     }),
-    [valueRef]
+    [valueRef],
   );
 
   const textValue = value?.toString() ?? "null";
