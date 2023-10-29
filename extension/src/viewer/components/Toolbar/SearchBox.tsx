@@ -15,7 +15,7 @@ import {
   useReactiveRef,
 } from "viewer/hooks";
 import { TranslationContext } from "viewer/localization";
-import { Search, SettingsContext } from "viewer/state";
+import { Search, SearchVisibility, SettingsContext } from "viewer/state";
 
 export type SearchBoxProps = Props<{
   search: Search;
@@ -49,7 +49,7 @@ export function SearchBox({
   function toggleShowMismatch() {
     setSearch((search: Search) => ({
       ...search,
-      showMismatch: !search.showMismatch,
+      visibility: nextSearchMismatch(search.visibility),
     }));
   }
 
@@ -86,10 +86,9 @@ export function SearchBox({
         <IconButton
           className={classNames(
             "w-6 h-6 fill-input-foreground hover:bg-input-focus",
-            { "bg-input-focus": !search.showMismatch },
           )}
-          title={t.toolbar.search.hideMismatch}
-          icon={Icon.EyeClosed}
+          title={t.toolbar.search.visibility[search.visibility]}
+          icon={SEARCH_MISMATCH_ICONS[search.visibility]}
           onClick={toggleShowMismatch}
         />
       )}
@@ -97,14 +96,28 @@ export function SearchBox({
       <IconButton
         className={classNames(
           "w-6 h-6 ml-1 fill-input-foreground hover:bg-input-focus",
-          { "bg-input-focus": search.caseSensitive },
         )}
-        title={t.toolbar.search.caseSensitive}
-        icon={Icon.CaseSensitive}
+        title={
+          t.toolbar.search.case[
+            search.caseSensitive ? "sensitive" : "insensitive"
+          ]
+        }
+        icon={search.caseSensitive ? Icon.CaseSensitive : Icon.CaseInsensitive}
         onClick={toggleCaseSensitive}
       />
     </span>
   );
+}
+
+const SEARCH_MISMATCH_ICONS: Record<SearchVisibility, Icon.Icon> = {
+  [SearchVisibility.All]: Icon.Eye,
+  [SearchVisibility.Subtree]: Icon.EyeClosed,
+  [SearchVisibility.Match]: Icon.EyeClosedCross,
+};
+
+function nextSearchMismatch(current: SearchVisibility): SearchVisibility {
+  const values = Object.values(SearchVisibility);
+  return values[(values.indexOf(current) + 1) % values.length];
 }
 
 type SearchInputProps = Props<{

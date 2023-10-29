@@ -168,12 +168,24 @@ function useApplicationState(settings: Settings): ApplicationState {
     "viewer",
     settings.viewerMode,
   );
-
   if (!viewerWasInSession) {
     useEffect(() => setViewer(settings.viewerMode), [settings]);
   }
 
-  const [search, setSearch] = useSessionStorage("search", EmptySearch);
+  const [search, setSearch, searchWasInSession] = useSessionStorage(
+    "search",
+    EmptySearch,
+  );
+  if (!searchWasInSession) {
+    useEffect(
+      () =>
+        setSearch((search) => ({
+          ...search,
+          visibility: settings.searchVisibility,
+        })),
+      [settings],
+    );
+  }
 
   const [jq, setJQ] = useSessionStorage("jq", EmptyJQCommand);
 

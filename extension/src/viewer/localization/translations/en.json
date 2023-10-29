@@ -3,17 +3,23 @@
     "reset": "Reset default settings",
     "edit": "Edit",
     "close": "Close",
+    "sections": {
+      "system": "System",
+      "viewer": "Viewer",
+      "toolbar": "Toolbar"
+    },
     "labels": {
-      "defaultViewer": "Default viewer",
-      "defaultNodeState": "Default tree view state",
       "enableJQ": "Enable JQ",
       "indentation": "Indentation",
       "language": "Language",
       "linkifyUrls": "Clickable URLs",
       "searchDelay": "Search delay (ms)",
+      "searchVisibility": "Default search visibility",
       "sortKeys": "Sort keys",
       "textSize": "Text size",
-      "theme": "Theme"
+      "theme": "Theme",
+      "viewer": "Default viewer",
+      "viewerTreeNode": "Default tree view state"
     },
     "language": {
       "system": "System language"
@@ -68,8 +74,15 @@
     "save": "Download",
     "search": {
       "clear": "Clear",
-      "caseSensitive": "Case sensitive",
-      "hideMismatch": "Hide mismatch",
+      "case": {
+        "insensitive": "Case insensitive",
+        "sensitive": "Case sensitive"
+      },
+      "visibility": {
+        "all": "Show all",
+        "subtree": "Show subtree",
+        "match": "Show matches only"
+      },
       "placeholder": "search"
     },
     "jq": {

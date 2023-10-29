@@ -1,11 +1,17 @@
+export enum SearchVisibility {
+  All = "all",
+  Subtree = "subtree",
+  Match = "match",
+}
+
 export type Search = {
   text: string;
-  showMismatch: boolean;
+  visibility: SearchVisibility;
   caseSensitive: boolean;
 };
 
 export const EmptySearch: Search = {
   text: "",
-  showMismatch: true,
+  visibility: SearchVisibility.Subtree,
   caseSensitive: false,
 };

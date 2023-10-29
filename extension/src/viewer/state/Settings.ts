@@ -1,5 +1,6 @@
 import { createContext } from "react";
 import { ViewerMode } from "./ViewerMode";
+import { EmptySearch, SearchVisibility } from "./Search";
 
 export type Settings = {
   version: number;
@@ -9,6 +10,7 @@ export type Settings = {
   indentation: number;
   linkifyUrls: boolean;
   searchDelay: number;
+  searchVisibility: SearchVisibility;
   sortKeys: boolean;
   textSize: TextSize;
   viewerMode: ViewerMode;
@@ -46,6 +48,7 @@ export const DefaultSettings: Settings = {
   indentation: 4,
   linkifyUrls: true,
   searchDelay: 300,
+  searchVisibility: EmptySearch.visibility,
   sortKeys: true,
   textSize: TextSize.Medium,
   viewerMode: ViewerMode.Tree,
