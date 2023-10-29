@@ -44,7 +44,7 @@ export function ViewerModeToggle({
       <IconButton
         icon={Icon.ListTree}
         onClick={toggleView}
-        title={t.toolbar.treeView}
+        title={t.toolbar.view.tree}
         disabled={isTreeView}
         className={classNames("w-1/2 p-0.5 fill-toolbar-foreground", {
           "hover:bg-toolbar-focus": !isTreeView,
@@ -55,7 +55,7 @@ export function ViewerModeToggle({
       <IconButton
         icon={Icon.Json}
         onClick={toggleView}
-        title={t.toolbar.rawView}
+        title={t.toolbar.view.raw}
         disabled={!isTreeView}
         className={classNames("w-1/2 p-0.5 fill-toolbar-foreground", {
           "hover:bg-toolbar-focus": isTreeView,

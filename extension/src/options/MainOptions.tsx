@@ -1,7 +1,12 @@
 import classNames from "classnames";
 import { useContext } from "react";
 import { SystemLanguage } from "viewer/localization";
-import { DefaultSettings, DefaultTheme, TextSize } from "viewer/state";
+import {
+  DefaultSettings,
+  DefaultTheme,
+  TextSize,
+  ViewerMode,
+} from "viewer/state";
 import "../global.css";
 import { GlobalOptionsContext, OptionsPage } from "./Context";
 import {
@@ -10,6 +15,7 @@ import {
   NumberInput,
   TextSizeSelect,
   ThemeSelect,
+  ViewerSelect,
 } from "./components";
 import { NodeStateSelect } from "./components/NodeStateSelect";
 
@@ -55,6 +61,14 @@ export function MainOptions({ className }: MainOptionsProps): JSX.Element {
         value={settings.searchDelay}
         setValue={(newValue: number) =>
           updateSettings({ searchDelay: newValue })
+        }
+      />
+
+      <label>{t.settings.labels.defaultViewer}</label>
+      <ViewerSelect
+        viewerMode={settings.viewerMode}
+        setViewerMode={(newViewerMode: ViewerMode) =>
+          updateSettings({ viewerMode: newViewerMode })
         }
       />
 

@@ -4,7 +4,8 @@
     "edit": "Modifica",
     "close": "Chiudi",
     "labels": {
-      "defaultNodeState": "Stato di default dell'albero",
+      "defaultViewer": "Vista iniziale",
+      "defaultNodeState": "Stato iniziale dell'albero",
       "enableJQ": "Abilita JQ",
       "indentation": "Indentazione",
       "language": "Lingua",
@@ -58,8 +59,10 @@
     }
   },
   "toolbar": {
-    "treeView": "Albero",
-    "rawView": "Testo (lento)",
+    "view": {
+      "tree": "Albero",
+      "raw": "Testo (lento)"
+    },
     "expand": "Espandi",
     "collapse": "Chiudi",
     "save": "Salva",

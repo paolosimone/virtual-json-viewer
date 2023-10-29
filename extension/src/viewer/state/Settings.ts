@@ -1,4 +1,5 @@
 import { createContext } from "react";
+import { ViewerMode } from "./ViewerMode";
 
 export type Settings = {
   version: number;
@@ -10,6 +11,7 @@ export type Settings = {
   searchDelay: number;
   sortKeys: boolean;
   textSize: TextSize;
+  viewerMode: ViewerMode;
 };
 
 /* Text Size */
@@ -46,6 +48,7 @@ export const DefaultSettings: Settings = {
   searchDelay: 300,
   sortKeys: true,
   textSize: TextSize.Medium,
+  viewerMode: ViewerMode.Tree,
 };
 
 export const SettingsContext = createContext<Settings>(DefaultSettings);

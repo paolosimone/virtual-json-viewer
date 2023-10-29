@@ -14,8 +14,5 @@ export function useStateObjectAdapter<S>([value, setValue]: [
   S,
   Dispatch<SetStateAction<S>>,
 ]): StateObject<S> {
-  return useMemo(
-    () => ({ value: value, setValue: setValue }),
-    [value, setValue],
-  );
+  return useMemo(() => ({ value, setValue }), [value, setValue]);
 }
