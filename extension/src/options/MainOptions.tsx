@@ -11,11 +11,10 @@ import "../global.css";
 import { GlobalOptionsContext, OptionsPage } from "./Context";
 import {
   Checkbox,
+  EnumSelect,
   LanguageSelect,
   NumberInput,
-  TextSizeSelect,
   ThemeSelect,
-  ViewerSelect,
 } from "./components";
 import { NodeStateSelect } from "./components/NodeStateSelect";
 
@@ -39,11 +38,13 @@ export function MainOptions({ className }: MainOptionsProps): JSX.Element {
       <LanguageSelect />
 
       <label>{t.settings.labels.textSize}</label>
-      <TextSizeSelect
-        textSize={settings.textSize}
-        setTextSize={(newTextSize: TextSize) =>
+      <EnumSelect
+        enumType={TextSize}
+        value={settings.textSize}
+        setValue={(newTextSize: TextSize) =>
           updateSettings({ textSize: newTextSize })
         }
+        labels={t.settings.textSize}
       />
 
       <label>{t.settings.labels.indentation}</label>
@@ -65,11 +66,13 @@ export function MainOptions({ className }: MainOptionsProps): JSX.Element {
       />
 
       <label>{t.settings.labels.defaultViewer}</label>
-      <ViewerSelect
-        viewerMode={settings.viewerMode}
-        setViewerMode={(newViewerMode: ViewerMode) =>
+      <EnumSelect
+        enumType={ViewerMode}
+        value={settings.viewerMode}
+        setValue={(newViewerMode: ViewerMode) =>
           updateSettings({ viewerMode: newViewerMode })
         }
+        labels={t.toolbar.view}
       />
 
       <label>{t.settings.labels.defaultNodeState}</label>
