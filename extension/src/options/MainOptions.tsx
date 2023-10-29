@@ -4,6 +4,7 @@ import { SystemLanguage } from "viewer/localization";
 import {
   DefaultSettings,
   DefaultTheme,
+  SearchVisibility,
   TextSize,
   ViewerMode,
 } from "viewer/state";
@@ -27,10 +28,13 @@ export function MainOptions({ className }: MainOptionsProps): JSX.Element {
   return (
     <div
       className={classNames(
-        "grid grid-cols-2 gap-3 items-center p-8",
+        "grid grid-cols-2 gap-y-2 items-center px-8 py-4",
         className,
       )}
     >
+      {/* SYSTEM */}
+      <h2 className="col-span-2 text-center">{t.settings.sections.system}</h2>
+
       <label>{t.settings.labels.theme}</label>
       <ThemeSelect onEdit={() => gotoPage(OptionsPage.EditTheme)} />
 
@@ -41,10 +45,31 @@ export function MainOptions({ className }: MainOptionsProps): JSX.Element {
       <EnumSelect
         enumType={TextSize}
         value={settings.textSize}
-        setValue={(newTextSize: TextSize) =>
-          updateSettings({ textSize: newTextSize })
+        setValue={(newValue: TextSize) =>
+          updateSettings({ textSize: newValue })
         }
         labels={t.settings.textSize}
+      />
+
+      {/* VIEWER */}
+      <h2 className="col-span-2 text-center">{t.settings.sections.viewer}</h2>
+
+      <label>{t.settings.labels.viewer}</label>
+      <EnumSelect
+        enumType={ViewerMode}
+        value={settings.viewerMode}
+        setValue={(newValue: ViewerMode) =>
+          updateSettings({ viewerMode: newValue })
+        }
+        labels={t.toolbar.view}
+      />
+
+      <label>{t.settings.labels.viewerTreeNode}</label>
+      <NodeStateSelect
+        expandNodes={settings.expandNodes}
+        setExpandNodes={(newExpandNodes: boolean) =>
+          updateSettings({ expandNodes: newExpandNodes })
+        }
       />
 
       <label>{t.settings.labels.indentation}</label>
@@ -56,37 +81,10 @@ export function MainOptions({ className }: MainOptionsProps): JSX.Element {
         }
       />
 
-      <label>{t.settings.labels.searchDelay}</label>
-      <NumberInput
-        min={0}
-        value={settings.searchDelay}
-        setValue={(newValue: number) =>
-          updateSettings({ searchDelay: newValue })
-        }
-      />
-
-      <label>{t.settings.labels.defaultViewer}</label>
-      <EnumSelect
-        enumType={ViewerMode}
-        value={settings.viewerMode}
-        setValue={(newViewerMode: ViewerMode) =>
-          updateSettings({ viewerMode: newViewerMode })
-        }
-        labels={t.toolbar.view}
-      />
-
-      <label>{t.settings.labels.defaultNodeState}</label>
-      <NodeStateSelect
-        expandNodes={settings.expandNodes}
-        setExpandNodes={(newExpandNodes: boolean) =>
-          updateSettings({ expandNodes: newExpandNodes })
-        }
-      />
-
-      <label>{t.settings.labels.enableJQ}</label>
+      <label>{t.settings.labels.sortKeys}</label>
       <Checkbox
-        checked={settings.enableJQ}
-        setChecked={(checked: boolean) => updateSettings({ enableJQ: checked })}
+        checked={settings.sortKeys}
+        setChecked={(checked: boolean) => updateSettings({ sortKeys: checked })}
       />
 
       <label>{t.settings.labels.linkifyUrls}</label>
@@ -97,10 +95,32 @@ export function MainOptions({ className }: MainOptionsProps): JSX.Element {
         }
       />
 
-      <label>{t.settings.labels.sortKeys}</label>
+      {/* TOOLBAR */}
+      <h2 className="col-span-2 text-center">{t.settings.sections.toolbar}</h2>
+
+      <label>{t.settings.labels.searchDelay}</label>
+      <NumberInput
+        min={0}
+        value={settings.searchDelay}
+        setValue={(newValue: number) =>
+          updateSettings({ searchDelay: newValue })
+        }
+      />
+
+      <label>{t.settings.labels.searchVisibility}</label>
+      <EnumSelect
+        enumType={SearchVisibility}
+        value={settings.searchVisibility}
+        setValue={(newValue: SearchVisibility) =>
+          updateSettings({ searchVisibility: newValue })
+        }
+        labels={t.toolbar.search.visibility}
+      />
+
+      <label>{t.settings.labels.enableJQ}</label>
       <Checkbox
-        checked={settings.sortKeys}
-        setChecked={(checked: boolean) => updateSettings({ sortKeys: checked })}
+        checked={settings.enableJQ}
+        setChecked={(checked: boolean) => updateSettings({ enableJQ: checked })}
       />
 
       <div className="col-span-2 pt-2 flex flex-col place-items-center">

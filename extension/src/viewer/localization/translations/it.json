@@ -3,17 +3,23 @@
     "reset": "Ritorna ai valori di default",
     "edit": "Modifica",
     "close": "Chiudi",
+    "sections": {
+      "system": "Sistema",
+      "viewer": "Vista",
+      "toolbar": "Barra degli strumenti"
+    },
     "labels": {
-      "defaultViewer": "Vista iniziale",
-      "defaultNodeState": "Stato iniziale dell'albero",
       "enableJQ": "Abilita JQ",
       "indentation": "Indentazione",
       "language": "Lingua",
       "linkifyUrls": "Trasforma URLs in links",
       "searchDelay": "Ritardo nella ricerca (ms)",
+      "searchVisibility": "Visibilità iniziale della ricerca",
       "sortKeys": "Chiavi in ordine alfabetico",
       "textSize": "Dimensioni caratteri",
-      "theme": "Tema"
+      "theme": "Tema",
+      "viewer": "Vista iniziale",
+      "viewerTreeNode": "Stato iniziale dell'albero"
     },
     "language": {
       "system": "Lingua di sistema"
