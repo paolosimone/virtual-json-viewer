@@ -59,7 +59,7 @@ export function SearchBox({
     <span
       className={classNames(
         "flex items-center pr-1 rounded border border-input-background bg-input-background text-input-foreground",
-        className
+        className,
       )}
     >
       {isEmpty ? (
@@ -86,7 +86,7 @@ export function SearchBox({
         <IconButton
           className={classNames(
             "w-6 h-6 fill-input-foreground hover:bg-input-focus",
-            { "bg-input-focus": !search.showMismatch }
+            { "bg-input-focus": !search.showMismatch },
           )}
           title={t.toolbar.search.hideMismatch}
           icon={Icon.EyeClosed}
@@ -97,7 +97,7 @@ export function SearchBox({
       <IconButton
         className={classNames(
           "w-6 h-6 ml-1 fill-input-foreground hover:bg-input-focus",
-          { "bg-input-focus": search.caseSensitive }
+          { "bg-input-focus": search.caseSensitive },
         )}
         title={t.toolbar.search.caseSensitive}
         icon={Icon.CaseSensitive}
@@ -153,7 +153,7 @@ function SearchInput({
         current?.focus();
       }
     },
-    [current]
+    [current],
   );
   useGlobalKeydownEvent(handleShortcut);
 

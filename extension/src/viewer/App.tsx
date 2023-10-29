@@ -21,6 +21,7 @@ import {
   CHORD_KEY,
   JQResult,
   KeydownEvent,
+  StateObject,
   useGlobalKeydownEvent,
   useJQ,
   useSessionStorage,
@@ -32,7 +33,9 @@ import { TranslationContext, useLocalization } from "./localization";
 import {
   EmptyJQCommand,
   EmptySearch,
+  JQCommand,
   Search,
+  Settings,
   SettingsContext,
   ViewerMode,
   resolveTextSizeClass,
@@ -54,22 +57,14 @@ export function App({ jsonText }: AppProps): JSX.Element {
   const [settings] = useSettings();
 
   // application state
-  const viewerModeState = useStateObjectAdapter(
-    useSessionStorage("viewer", ViewerMode.Tree),
-  );
-  const searchState = useStateObjectAdapter(
-    useSessionStorage("search", EmptySearch),
-  );
-  const jqCommandState = useStateObjectAdapter(
-    useSessionStorage("jq", EmptyJQCommand),
-  );
+  const state = useApplicationState(settings);
 
   // parse json
   const jsonResult = useMemo(
     () => Json.tryParse(jsonText, { sortKeys: settings.sortKeys }),
     [jsonText, settings.sortKeys],
   );
-  const [jqEnabled, jqResult] = useJQ(jsonText, jqCommandState.value);
+  const [jqEnabled, jqResult] = useJQ(jsonText, state.jqCommand.value);
   const [json, error] = resolveJson(jsonResult, jqResult);
 
   // defer the actual rendering in order to show loading placeholder
@@ -77,9 +72,9 @@ export function App({ jsonText }: AppProps): JSX.Element {
   const targetViewerProps = useMemo(
     () => ({
       json: json,
-      search: searchState.value,
+      search: state.search.value,
     }),
-    [viewerModeState.value, json, searchState.value],
+    [state.viewerMode.value, json, state.search.value],
   );
 
   const [nextViewerProps, setNextViewerProps] =
@@ -117,13 +112,13 @@ export function App({ jsonText }: AppProps): JSX.Element {
 
   const toolbarProps = {
     json: json,
-    viewerModeState: viewerModeState,
-    searchState: searchState,
-    jqCommandState: jqEnabled ? jqCommandState : undefined,
+    viewerModeState: state.viewerMode,
+    searchState: state.search,
+    jqCommandState: jqEnabled ? state.jqCommand : undefined,
   };
 
   const Viewer =
-    viewerModeState.value === ViewerMode.Tree ? TreeViewer : RawViewer;
+    state.viewerMode.value === ViewerMode.Tree ? TreeViewer : RawViewer;
 
   return (
     <MultiContextProvider
@@ -156,6 +151,37 @@ export function App({ jsonText }: AppProps): JSX.Element {
       </div>
     </MultiContextProvider>
   );
+}
+
+type ApplicationState = {
+  viewerMode: StateObject<ViewerMode>;
+  search: StateObject<Search>;
+  jqCommand: StateObject<JQCommand>;
+};
+
+// Application state is stored in session and kept on page reload.
+// Default state is customizable in settings but not available on first render,
+// so we need to subscribe to update the state when settings are loaded,
+// unless of course the state was already loaded from an existing session.
+function useApplicationState(settings: Settings): ApplicationState {
+  const [viewer, setViewer, viewerWasInSession] = useSessionStorage(
+    "viewer",
+    settings.viewerMode,
+  );
+
+  if (!viewerWasInSession) {
+    useEffect(() => setViewer(settings.viewerMode), [settings]);
+  }
+
+  const [search, setSearch] = useSessionStorage("search", EmptySearch);
+
+  const [jq, setJQ] = useSessionStorage("jq", EmptyJQCommand);
+
+  return {
+    viewerMode: useStateObjectAdapter([viewer, setViewer]),
+    search: useStateObjectAdapter([search, setSearch]),
+    jqCommand: useStateObjectAdapter([jq, setJQ]),
+  };
 }
 
 function resolveJson(
