@@ -7,7 +7,11 @@ if (isJson()) {
 }
 
 function isJson(): boolean {
-  return document.contentType === "application/json";
+  // see: https://www.iana.org/assignments/media-types/media-types.xhtml
+  return (
+    document.contentType.startsWith("application/") &&
+    document.contentType.endsWith("json")
+  );
 }
 
 function afterHeadAvailable(callback: () => void) {
