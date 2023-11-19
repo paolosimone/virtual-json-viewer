@@ -70,6 +70,7 @@
     "classnames": "^2.3.2",
     "copy-webpack-plugin": "11.0.0",
     "customize-cra": "^1.0.0",
+    "modify-source-webpack-plugin": "^4.1.0",
     "postcss": "^8.4.31",
     "prettier": "^3.1.0",
     "prettier-plugin-organize-imports": "^3.2.4",

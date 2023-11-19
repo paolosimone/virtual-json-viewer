@@ -6321,7 +6321,7 @@ loader-runner@^4.2.0:
   resolved "https://registry.yarnpkg.com/loader-runner/-/loader-runner-4.3.0.tgz#c1b4a163b99f614830353b16755e7149ac2314e1"
   integrity sha512-3R/1M+yS3j5ou80Me59j7F9IMs4PXs3VqRrm0TU3AbKPxlmpoY1TNscJV/oGJXo8qCatFGTfDbY6W6ipGOYXfg==
 
-loader-utils@^2.0.0, loader-utils@^2.0.4:
+"loader-utils-webpack-v4@npm:loader-utils@^2.0.4", loader-utils@^2.0.0, loader-utils@^2.0.4:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/loader-utils/-/loader-utils-2.0.4.tgz#8b5cb38b5c34a9a018ee1fc0e6a066d1dfcc528c"
   integrity sha512-xXqpXoINfFhgua9xiqD8fPFHgkoq1mmmpE92WlDbm9rNRd/EbRb+Gqf908T2DMfuHjjJlksiK2RbHVOdD/MqSw==
@@ -6572,6 +6572,14 @@ mkdirp@~0.5.1:
   integrity sha512-FP+p8RB8OWpF3YZBCrP5gtADmtXApB5AMLn+vdyA+PyxCjrCs00mjyUozssO33cwDeT3wNGdLxJ5M//YqtHAJw==
   dependencies:
     minimist "^1.2.6"
+
+modify-source-webpack-plugin@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/modify-source-webpack-plugin/-/modify-source-webpack-plugin-4.1.0.tgz#feb8ac9c4f9812f338b522485f40bf5b4731df1f"
+  integrity sha512-UaLQyFXoPWpWxkNUBFo9BotC20CCAGe7HEX9iKtB0P0MgNXgURf9TXUgNGuY5iVV5lDDQtcMjT2vneQWnNmwEw==
+  dependencies:
+    loader-utils-webpack-v4 "npm:loader-utils@^2.0.4"
+    schema-utils "^4.0.0"
 
 ms@2.0.0:
   version "2.0.0"

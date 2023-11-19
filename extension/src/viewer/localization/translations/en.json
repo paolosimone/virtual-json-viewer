@@ -6,7 +6,8 @@
     "sections": {
       "system": "System",
       "viewer": "Viewer",
-      "toolbar": "Toolbar"
+      "toolbar": "Toolbar",
+      "support": "Support"
     },
     "labels": {
       "enableJQ": "Enable JQ",

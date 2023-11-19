@@ -4,6 +4,10 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { WebpackManifestPlugin } = require("webpack-manifest-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
+const {
+  ModifySourcePlugin,
+  ReplaceOperation,
+} = require("modify-source-webpack-plugin");
 
 // Make the build output compatible with chrome extension structure
 function convertToChromeExtension(config) {
@@ -49,6 +53,21 @@ function convertToChromeExtension(config) {
     minifyCSS: true,
     minifyURLs: true,
   };
+
+  // Inject correct store link in options
+  const storeLink =
+    browser == "firefox"
+      ? "https://addons.mozilla.org/en-GB/firefox/addon/virtual-json-viewer"
+      : "https://chromewebstore.google.com/detail/cipnpfcceoapeahdgomheoecidglopld";
+  const replaceStoreLinkPlaceholder = new ModifySourcePlugin({
+    rules: [
+      {
+        test: /MainOptions\.tsx$/,
+        operations: [new ReplaceOperation("once", "${STORE_LINK}", storeLink)],
+      },
+    ],
+  });
+  config.plugins.push(replaceStoreLinkPlaceholder);
 
   // Options page
   const optionsHtmlPlugin = new HtmlWebpackPlugin({
