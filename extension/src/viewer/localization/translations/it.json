@@ -6,7 +6,8 @@
     "sections": {
       "system": "Sistema",
       "viewer": "Vista",
-      "toolbar": "Barra degli strumenti"
+      "toolbar": "Barra degli strumenti",
+      "support": "Supporto"
     },
     "labels": {
       "enableJQ": "Abilita JQ",

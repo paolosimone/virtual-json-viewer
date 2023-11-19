@@ -33,7 +33,9 @@ export function MainOptions({ className }: MainOptionsProps): JSX.Element {
       )}
     >
       {/* SYSTEM */}
-      <h2 className="col-span-2 text-center">{t.settings.sections.system}</h2>
+      <h2 className="col-span-2 text-center font-semibold">
+        {t.settings.sections.system}
+      </h2>
 
       <label>{t.settings.labels.theme}</label>
       <ThemeSelect onEdit={() => gotoPage(OptionsPage.EditTheme)} />
@@ -52,7 +54,9 @@ export function MainOptions({ className }: MainOptionsProps): JSX.Element {
       />
 
       {/* VIEWER */}
-      <h2 className="col-span-2 text-center">{t.settings.sections.viewer}</h2>
+      <h2 className="col-span-2 text-center font-semibold">
+        {t.settings.sections.viewer}
+      </h2>
 
       <label>{t.settings.labels.viewer}</label>
       <EnumSelect
@@ -96,7 +100,9 @@ export function MainOptions({ className }: MainOptionsProps): JSX.Element {
       />
 
       {/* TOOLBAR */}
-      <h2 className="col-span-2 text-center">{t.settings.sections.toolbar}</h2>
+      <h2 className="col-span-2 text-center font-semibold">
+        {t.settings.sections.toolbar}
+      </h2>
 
       <label>{t.settings.labels.searchDelay}</label>
       <NumberInput
@@ -123,7 +129,31 @@ export function MainOptions({ className }: MainOptionsProps): JSX.Element {
         setChecked={(checked: boolean) => updateSettings({ enableJQ: checked })}
       />
 
-      <div className="col-span-2 pt-2 flex flex-col place-items-center">
+      {/* SUPPORT */}
+      <h2 className="col-span-2 text-center font-semibold">
+        {t.settings.sections.support}
+      </h2>
+      <div className="col-span-2 flex justify-around">
+        <LinkButton
+          link="https://github.com/paolosimone/virtual-json-viewer"
+          emoji="&#11088;"
+          label="Github"
+        />
+        <LinkButton link="${STORE_LINK}" emoji="&#128172;" label="Review" />
+        <LinkButton
+          link="https://github.com/paolosimone/virtual-json-viewer#keyboard-shortcuts"
+          emoji="&#9000;"
+          label="Shortcuts"
+        />
+        <LinkButton
+          link="https://github.com/paolosimone/virtual-json-viewer/issues"
+          emoji="&#128030;"
+          label="Bugs"
+        />
+      </div>
+
+      {/* RESET */}
+      <div className="col-span-2 mt-4 flex flex-col place-items-center">
         <button
           className="p-2 red-alert rounded-lg hover:bg-opacity-80"
           onClick={() => {
@@ -136,5 +166,34 @@ export function MainOptions({ className }: MainOptionsProps): JSX.Element {
         </button>
       </div>
     </div>
+  );
+}
+
+type LinkButtonProps = Props<{
+  link: string;
+  label: string;
+  emoji: string;
+}>;
+
+function LinkButton({
+  link,
+  label,
+  emoji,
+  className,
+}: LinkButtonProps): JSX.Element {
+  return (
+    <a
+      className={classNames(
+        "border border-transparent hover:border-viewer-foreground rounded-lg py-1 px-2",
+        className,
+      )}
+      href={link}
+      target="_blank"
+      rel="noreferrer"
+    >
+      <span>{emoji}</span>
+      <span> </span>
+      <span className="underline">{label}</span>
+    </a>
   );
 }
