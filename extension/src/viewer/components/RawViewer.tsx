@@ -1,25 +1,36 @@
 import classNames from "classnames";
-import { useCallback, useContext, useMemo, useRef, useState } from "react";
+import {
+  ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import * as DOM from "viewer/commons/Dom";
 import { EventType } from "viewer/commons/EventBus";
 import * as Json from "viewer/commons/Json";
+import { RenderedText } from "viewer/components";
 import {
   CHORD_KEY,
   KeydownEvent,
   useEventBusListener,
   useGlobalKeydownEvent,
-  useRenderedText,
 } from "viewer/hooks";
 import { Search, SettingsContext } from "viewer/state";
+import { uid } from "uid";
 
 export type RawViewerProps = Props<{
-  json: Json.Root;
+  jsonLines: Json.Lines;
   search: Search;
+  isLargeJson: boolean;
 }>;
 
 export function RawViewer({
-  json,
+  jsonLines,
   search,
+  isLargeJson,
   className,
 }: RawViewerProps): JSX.Element {
   const { indentation, sortKeys } = useContext(SettingsContext);
@@ -33,12 +44,12 @@ export function RawViewer({
 
   const space = minify ? undefined : indentation;
 
-  const raw = useMemo(
-    () => Json.toString(json, { sortKeys, space }),
-    [json, sortKeys, space],
+  const rawLines = useMemo(
+    () => jsonLines.map((line) => Json.toString(line, { sortKeys, space })),
+    [jsonLines, sortKeys, space],
   );
 
-  const renderedText = useRenderedText(raw, search);
+  const renderedLines = useRenderedLines(rawLines, search, isLargeJson);
 
   const ref = useRef<HTMLDivElement>(null);
 
@@ -78,7 +89,36 @@ export function RawViewer({
       spellCheck={false}
       onKeyDown={handleSelectAll}
     >
-      {renderedText}
+      {renderedLines}
     </div>
+  );
+}
+
+function useRenderedLines(
+  rawlines: string[],
+  search: Nullable<Search>,
+  isLargeJson: boolean,
+): ReactNode {
+  const { linkifyUrls: linkifyUrlsSettings } = useContext(SettingsContext);
+
+  // linkifyUrls is disabled for large text to improve performance
+  const linkifyUrls = linkifyUrlsSettings && !isLargeJson;
+  useEffect(() => {
+    if (linkifyUrlsSettings && !linkifyUrls) {
+      console.info(
+        "Large amount of text detected: Linkify URL has been disable to improve performance",
+      );
+    }
+  }, [isLargeJson, linkifyUrlsSettings]);
+
+  return useMemo(
+    () =>
+      rawlines
+        .flatMap((text) => [
+          <br key={uid()} />,
+          RenderedText({ text, search, linkifyUrls }),
+        ])
+        .slice(1),
+    [rawlines, search, linkifyUrls],
   );
 }

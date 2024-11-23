@@ -41,13 +41,17 @@ import {
   resolveTextSizeClass,
 } from "./state";
 
+// heuristic: https://media.tenor.com/6PFS7ABeJGEAAAAC/dr-evil-one-billion-dollars.gif
+const LARGE_JSON_LENGTH = 1_000_000;
+
 export type AppProps = {
   jsonText: string;
 };
 
 type ViewerProps = {
-  json: Json.Root;
+  jsonLines: Json.Lines;
   search: Search;
+  isLargeJson: boolean;
 };
 
 export function App({ jsonText }: AppProps): JSX.Element {
@@ -61,26 +65,31 @@ export function App({ jsonText }: AppProps): JSX.Element {
 
   // parse json
   const jsonResult = useMemo(
-    () => Json.tryParse(jsonText, { sortKeys: settings.sortKeys }),
+    () => Json.tryParseLines(jsonText, { sortKeys: settings.sortKeys }),
     [jsonText, settings.sortKeys],
   );
   const [jqEnabled, jqResult] = useJQ(jsonText, state.jqCommand.value);
-  const [json, error] = resolveJson(jsonResult, jqResult);
+  const [jsonLines, error] = resolveJson(jsonResult, jqResult);
 
   // defer the actual rendering in order to show loading placeholder
   // Note: viewerMode dependency is important to trigger transition between modes!
-  const targetViewerProps = useMemo(
-    () => ({
-      json: json,
+  const targetViewerProps = useMemo(() => {
+    if (jsonLines === null) {
+      return null;
+    }
+
+    return {
+      jsonLines,
       search: state.search.value,
-    }),
-    [state.viewerMode.value, json, state.search.value],
-  );
+      isLargeJson: jsonText.length > LARGE_JSON_LENGTH,
+    };
+  }, [state.viewerMode.value, jsonLines, jsonText, state.search.value]);
 
   const [nextViewerProps, setNextViewerProps] =
     useState<Nullable<ViewerProps>>(null);
   const viewerProps = useDeferredValue<Nullable<ViewerProps>>(nextViewerProps);
-  const isTransition = viewerProps !== targetViewerProps;
+  const isTransition =
+    viewerProps === null || viewerProps !== targetViewerProps;
 
   useEffect(() => {
     const updateTask = setTimeout(
@@ -101,17 +110,17 @@ export function App({ jsonText }: AppProps): JSX.Element {
   // -- no hooks below -- //
 
   // fatal error page
-  if (jsonResult instanceof Error) {
+  if (jsonLines === null) {
     return (
       <div className="flex flex-col h-full font-mono">
-        <Alert>{jsonResult.message}</Alert>
+        <Alert>{error?.message}</Alert>
         <div className="p-3 whitespace-pre">{jsonText}</div>
       </div>
     );
   }
 
   const toolbarProps = {
-    json: json,
+    jsonLines,
     viewerModeState: state.viewerMode,
     searchState: state.search,
     jqCommandState: jqEnabled ? state.jqCommand : undefined,
@@ -197,9 +206,9 @@ function useApplicationState(settings: Settings): ApplicationState {
 }
 
 function resolveJson(
-  jsonResult: Result<Json.Root>,
+  jsonResult: Result<Json.Lines>,
   jqResult: JQResult,
-): [Json.Root, Nullable<Error>] {
+): [Nullable<Json.Lines>, Nullable<Error>] {
   if (jsonResult instanceof Error) {
     return [null, jsonResult];
   }
@@ -215,28 +224,11 @@ function resolveJson(
   return [jqResult, null];
 }
 
-type JQErrorTitleProps = Props<{
+type JqErrorTitleProps = Props<{
   error: Error;
 }>;
 
-function JqErrorTitle({ error }: JQErrorTitleProps): JSX.Element {
+function JqErrorTitle(_props: JqErrorTitleProps): JSX.Element {
   const t = useContext(TranslationContext);
-
-  if (error instanceof SyntaxError) {
-    return (
-      <div className={"font-bold"}>
-        {t.toolbar.jq.syntaxError}{" "}
-        <a
-          className={"underline text-blue-800"}
-          href="https://github.com/paolosimone/virtual-json-viewer#why-this-valid-jq-command-doesnt-work"
-          target="_blank"
-          rel="noreferrer"
-        >
-          [?]
-        </a>
-      </div>
-    );
-  }
-
   return <div className={"font-bold"}>{t.toolbar.jq.genericError}</div>;
 }

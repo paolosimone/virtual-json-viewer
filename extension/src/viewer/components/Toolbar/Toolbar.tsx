@@ -9,14 +9,14 @@ import { SearchBox } from "./SearchBox";
 import { ViewerModeToggle } from "./ViewerModeToggle";
 
 export type ToolbarProps = Props<{
-  json: Json.Root;
+  jsonLines: Json.Lines;
   viewerModeState: StateObject<ViewerMode>;
   searchState: StateObject<Search>;
   jqCommandState?: StateObject<JQCommand>;
 }>;
 
 export function Toolbar({
-  json,
+  jsonLines,
   viewerModeState,
   searchState,
   jqCommandState,
@@ -44,7 +44,7 @@ export function Toolbar({
 
         <Separator />
 
-        <SaveButton className="w-6 h-6 px-px" json={json} />
+        <SaveButton className="w-6 h-6 px-px" jsonLines={jsonLines} />
 
         <SearchBox
           className="flex-1 ml-2"

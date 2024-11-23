@@ -43,7 +43,12 @@ function JsonPicker({ onFileRead }: JsonPickerProps): JSX.Element {
 
   return (
     <form>
-      <input type="file" accept=".json" multiple={false} onChange={onChange} />
+      <input
+        type="file"
+        accept=".json,.jsonl"
+        multiple={false}
+        onChange={onChange}
+      />
     </form>
   );
 }
