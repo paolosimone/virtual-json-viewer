@@ -7,15 +7,18 @@ import { TranslationContext } from "viewer/localization";
 import { SettingsContext } from "viewer/state";
 
 export type SaveButtonProps = Props<{
-  json: Json.Root;
+  jsonLines: Json.Lines;
 }>;
 
-export function SaveButton({ json, className }: SaveButtonProps): JSX.Element {
+export function SaveButton({
+  jsonLines,
+  className,
+}: SaveButtonProps): JSX.Element {
   const t = useContext(TranslationContext);
   const { sortKeys, indentation } = useContext(SettingsContext);
   const save = useCallback(
-    () => saveJson(json, { sortKeys, space: indentation }),
-    [json, sortKeys, indentation],
+    () => saveJson(jsonLines, { sortKeys, space: indentation }),
+    [jsonLines, sortKeys, indentation],
   );
 
   // register global shortcut
@@ -43,13 +46,15 @@ export function SaveButton({ json, className }: SaveButtonProps): JSX.Element {
   );
 }
 
-function saveJson(json: Json.Root, opts: Json.ToStringOptions) {
+function saveJson(jsonLines: Json.Lines, opts: Json.ToStringOptions) {
+  const extension = jsonLines.length > 1 ? ".jsonl" : "json";
+
   let filename = document.title;
-  if (!filename.endsWith(".json")) {
-    filename += ".json";
+  if (!filename.endsWith(extension)) {
+    filename += extension;
   }
 
-  const text = Json.toString(json, opts);
+  const text = Json.linesToString(jsonLines, opts);
 
   const element = document.createElement("a");
   element.setAttribute(

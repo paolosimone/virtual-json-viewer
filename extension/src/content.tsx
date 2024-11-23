@@ -10,7 +10,8 @@ function isJson(): boolean {
   // see: https://www.iana.org/assignments/media-types/media-types.xhtml
   return (
     document.contentType.startsWith("application/") &&
-    document.contentType.endsWith("json")
+    (document.contentType.endsWith("json") ||
+      document.contentType.endsWith("json-seq"))
   );
 }
 

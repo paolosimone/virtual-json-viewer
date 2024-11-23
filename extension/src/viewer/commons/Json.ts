@@ -99,15 +99,34 @@ export function isLeaf(json: Root): boolean {
 
 /* Parsing / Serialization */
 
+// see: https://jsonlines.org/
+export type Lines = Root[];
+
 export type TryParseOptions = {
   sortKeys?: boolean;
 };
 
-export function tryParse(text: string, opts?: TryParseOptions): Result<Root> {
+export function tryParseLines(
+  text: string,
+  opts?: TryParseOptions,
+): Result<Lines> {
+  const reviver = buildReviver(opts?.sortKeys || false);
+
+  // try parsing the whole file as a single json...
   try {
-    const reviver = buildReviver(opts?.sortKeys || false);
-    return JSON.parse(text, reviver);
+    return [JSON.parse(text, reviver)];
   } catch (e) {
+    // ...check if it's a newline-delimited json...
+    try {
+      return text
+        .trim()
+        .split("\n")
+        .map((line) => JSON.parse(line, reviver));
+    } catch {
+      // nope
+    }
+
+    // ...return the original error
     return e as Error;
   }
 }
@@ -116,6 +135,10 @@ export type ToStringOptions = {
   sortKeys?: boolean;
   space?: number;
 };
+
+export function linesToString(lines: Lines, opts?: ToStringOptions): string {
+  return lines.map((line) => toString(line, opts)).join("\n");
+}
 
 export function toString(value: Root, opts?: ToStringOptions): string {
   return opts?.sortKeys

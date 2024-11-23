@@ -90,7 +90,6 @@
       "clear": "Clear",
       "manual": "JQ Manual",
       "run": "Run command",
-      "syntaxError": "JQ command must return a valid JSON",
       "genericError": "JQ command failed"
     }
   }

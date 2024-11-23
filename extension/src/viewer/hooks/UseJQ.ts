@@ -5,7 +5,7 @@ import { getURL, JQCommand } from "viewer/state";
 import { Mutex, useEffectAsync, useSettings } from ".";
 
 export type JQEnabled = boolean;
-export type JQResult = Json.Root | Error | undefined;
+export type JQResult = Json.Lines | Error | undefined;
 
 export function useJQ(
   jsonText: string,
@@ -55,8 +55,8 @@ export function useJQ(
 
       try {
         const jq = await loadJQ();
-        const output = await jq.invoke(jsonText, filter);
-        const result = Json.tryParse(output, { sortKeys });
+        const output = await jq.invoke(jsonText, filter, ["--compact-output"]);
+        const result = Json.tryParseLines(output, { sortKeys });
         if (mutex.hasLock()) setResult(result);
       } catch (e) {
         if (mutex.hasLock()) setResult(e as Error);

@@ -46,6 +46,7 @@ built-in search, JQ filtering and many other features... but no strawberries, so
 - [X] JQ filtering
 - [X] Raw JSON viewer
     - [X] Prettify/minify 
+- [X] Support [JSON Lines](https://jsonlines.org/)
 - [X] Download JSON
 - [X] Keyboard shortcuts
 - [X] Appearance
@@ -125,37 +126,11 @@ See also [Issue #15](https://github.com/paolosimone/virtual-json-viewer/issues/1
 
 ### Why this valid JQ command doesn't work?
 
-[JQ](https://stedolan.github.io/jq) commands in Virtual Json Viewer must return valid json, otherwise the parsing of the result will fail with an error e.g.
+[JQ](https://stedolan.github.io/jq) commands in Virtual Json Viewer must return (a list of) valid json, otherwise the parsing of the result will fail with an error e.g.
 
 > Unexpected token { in JSON at position 337
 
 Why? The core feature of Virtual Json Viewer is the navigation of (possibly large) json thanks to virtual DOM that allows on-demand rendering. JQ filtering has been added on top of that, just as handy utilities to further improve the user experience.
-
-_Example_
-
-Let's say we want to extract all the page titles from this [Wikipedia search](https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=pizza&utf8=&format=json).
-
-`.query.search[].title` will fail because a sequence of strings is not a valid json:
-```text
-"Pizza"
-"Hawaiian pizza 😱"
-"History of pizza"
-"Pizza Margherita"
-...
-```
-
-We should use `[.query.search[].title]` instead to obtain a json array:
-```json
-[
-  "Pizza",
-  "Hawaiian pizza 😱",
-  "History of pizza",
-  "Pizza Margherita",
-  ...
-]
-```
-
-ok ok, I added the scream emoji
 
 ### Why the content shown by the extension is different from the actual JSON?
 

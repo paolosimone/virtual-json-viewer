@@ -25,15 +25,23 @@ import { JsonNodeData } from "./model/JsonNode";
 import { buildId, getRootNodes, jsonTreeWalker } from "./model/JsonTreeWalker";
 
 export type TreeViewerProps = Props<{
-  json: Json.Root;
+  jsonLines: Json.Lines;
   search: Search;
+  isLargeJson: boolean;
 }>;
 
 export function TreeViewer({
-  json,
+  jsonLines,
   search,
   className,
 }: TreeViewerProps): JSX.Element {
+  // single line -> shown on its own
+  // multiple lines -> shown as an array
+  const json = useMemo(
+    () => (jsonLines.length == 1 ? jsonLines[0] : jsonLines),
+    [jsonLines],
+  );
+
   const { expandNodes } = useContext(SettingsContext);
   const tree = useRef<Tree<JsonNodeData>>(null);
 
