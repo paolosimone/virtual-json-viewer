@@ -71,33 +71,7 @@ export function App({ jsonText }: AppProps): JSX.Element {
   const [jqEnabled, jqResult] = useJQ(jsonText, state.jqCommand.value);
   const [jsonLines, error] = resolveJson(jsonResult, jqResult);
 
-  // defer the actual rendering in order to show loading placeholder
-  // Note: viewerMode dependency is important to trigger transition between modes!
-  const targetViewerProps = useMemo(() => {
-    if (jsonLines === null) {
-      return null;
-    }
-
-    return {
-      jsonLines,
-      search: state.search.value,
-      isLargeJson: jsonText.length > LARGE_JSON_LENGTH,
-    };
-  }, [state.viewerMode.value, jsonLines, jsonText, state.search.value]);
-
-  const [nextViewerProps, setNextViewerProps] =
-    useState<Nullable<ViewerProps>>(null);
-  const viewerProps = useDeferredValue<Nullable<ViewerProps>>(nextViewerProps);
-  const isTransition =
-    viewerProps === null || viewerProps !== targetViewerProps;
-
-  useEffect(() => {
-    const updateTask = setTimeout(
-      () => setNextViewerProps(targetViewerProps),
-      1,
-    );
-    return () => clearTimeout(updateTask);
-  }, [setNextViewerProps, targetViewerProps]);
+  const viewerProps = useTransitionViewerProps(state, jsonText, jsonLines);
 
   // disable "select all" shortcut
   const handleNavigation = useCallback((e: KeydownEvent) => {
@@ -146,7 +120,7 @@ export function App({ jsonText }: AppProps): JSX.Element {
           </Alert>
         )}
 
-        {isTransition ? (
+        {viewerProps === null ? (
           <ViewerPlaceholder className="flex-auto" />
         ) : (
           <Viewer
@@ -203,6 +177,41 @@ function useApplicationState(settings: Settings): ApplicationState {
     search: useStateObjectAdapter([search, setSearch]),
     jqCommand: useStateObjectAdapter([jq, setJQ]),
   };
+}
+
+// Defer state transition in case of large JSON in order to show loading placeholder
+function useTransitionViewerProps(
+  state: ApplicationState,
+  jsonText: string,
+  jsonLines: Nullable<Json.Lines>,
+): Nullable<ViewerProps> {
+  const [nextProps, setNextProps] = useState<Nullable<ViewerProps>>(null);
+  const props = useDeferredValue<Nullable<ViewerProps>>(nextProps);
+
+  const isLargeJson = jsonText.length > LARGE_JSON_LENGTH;
+
+  // Note: viewerMode dependency is important to trigger transition between modes!
+  const targetProps = useMemo(() => {
+    if (jsonLines === null) {
+      // nothing to show
+      return null;
+    }
+
+    return {
+      jsonLines,
+      search: state.search.value,
+      isLargeJson,
+    };
+  }, [state.viewerMode.value, jsonLines, isLargeJson, state.search.value]);
+
+  useEffect(() => {
+    const updateTask = setTimeout(() => setNextProps(targetProps), 1);
+    return () => clearTimeout(updateTask);
+  }, [setNextProps, targetProps]);
+
+  const isTransition = props !== targetProps;
+  const deferredProps = isTransition ? null : props;
+  return isLargeJson ? deferredProps : targetProps;
 }
 
 function resolveJson(
