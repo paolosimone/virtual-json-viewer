@@ -18,6 +18,7 @@ import {
   ThemeSelect,
 } from "./components";
 import { NodeStateSelect } from "./components/NodeStateSelect";
+import { ForceActivationSelect } from "./components/ForceActivationSelect";
 
 export type MainOptionsProps = BaseProps;
 
@@ -51,6 +52,14 @@ export function MainOptions({ className }: MainOptionsProps): JSX.Element {
           updateSettings({ textSize: newValue })
         }
         labels={t.settings.textSize}
+      />
+
+      <label>{t.settings.labels.forceActivation}</label>
+      <ForceActivationSelect
+        urlRegex={settings.activationUrlRegex}
+        setUrlRegex={(newValue: Nullable<string>) =>
+          updateSettings({ activationUrlRegex: newValue })
+        }
       />
 
       {/* VIEWER */}

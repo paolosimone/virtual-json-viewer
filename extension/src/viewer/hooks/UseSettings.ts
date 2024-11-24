@@ -1,13 +1,14 @@
 import { useMemo } from "react";
-import { DefaultSettings, Settings } from "viewer/state";
+import { DefaultSettings, Settings, SETTINGS_KEY } from "viewer/state";
 import { useStorage } from ".";
-
-const KEY = "settings";
 
 export type DispatchSettings = (newSettings: Partial<Settings>) => void;
 
 export function useSettings(): [Settings, DispatchSettings] {
-  const [settings, setSettings] = useStorage<Settings>(KEY, DefaultSettings);
+  const [settings, setSettings] = useStorage<Settings>(
+    SETTINGS_KEY,
+    DefaultSettings,
+  );
 
   const upgraded = maybeUpgrade(settings);
   if (upgraded) {

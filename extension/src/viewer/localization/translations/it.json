@@ -11,6 +11,7 @@
     },
     "labels": {
       "enableJQ": "Abilita JQ",
+      "forceActivation": "Forza l'attivazione del plugin",
       "indentation": "Indentazione",
       "language": "Lingua",
       "linkifyUrls": "Trasforma URLs in links",
@@ -37,6 +38,10 @@
       "M": "Medio",
       "L": "Grande",
       "XL": "Molto grande"
+    },
+    "forceActivation": {
+      "no": "No",
+      "custom": "Custom URL regex"
     },
     "nodeState": {
       "expanded": "Aperto",

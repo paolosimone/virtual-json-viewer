@@ -2,9 +2,12 @@ import { createContext } from "react";
 import { ViewerMode } from "./ViewerMode";
 import { EmptySearch, SearchVisibility } from "./Search";
 
+export const SETTINGS_KEY = "settings";
+
 export type Settings = {
   version: number;
 
+  activationUrlRegex: Nullable<string>;
   enableJQ: boolean;
   expandNodes: boolean;
   indentation: number;
@@ -43,6 +46,7 @@ const textSizeClasses: Record<TextSize, string> = {
 export const DefaultSettings: Settings = {
   version: 1,
 
+  activationUrlRegex: null,
   enableJQ: true,
   expandNodes: false,
   indentation: 4,
