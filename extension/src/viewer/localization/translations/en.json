@@ -11,6 +11,7 @@
     },
     "labels": {
       "enableJQ": "Enable JQ",
+      "forceActivation": "Force extension activation",
       "indentation": "Indentation",
       "language": "Language",
       "linkifyUrls": "Clickable URLs",
@@ -37,6 +38,10 @@
       "M": "Medium",
       "L": "Large",
       "XL": "Extra large"
+    },
+    "forceActivation": {
+      "no": "No",
+      "custom": "Custom URL regex"
     },
     "nodeState": {
       "expanded": "Expanded",
