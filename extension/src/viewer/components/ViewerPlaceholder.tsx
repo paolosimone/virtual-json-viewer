@@ -1,4 +1,5 @@
 import classNames from "classnames";
+import { JSX } from "react";
 import { getURL } from "viewer/state";
 
 // The placeholder is a GIF instead of an animated SVG

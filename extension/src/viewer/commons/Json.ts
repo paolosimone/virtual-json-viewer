@@ -142,7 +142,7 @@ export function linesToString(lines: Lines, opts?: ToStringOptions): string {
 
 export function toString(value: Root, opts?: ToStringOptions): string {
   return opts?.sortKeys
-    ? stableStringify(value, { replacer: replacer, space: opts?.space })
+    ? stableStringify(value, { replacer, space: opts?.space })!
     : JSON.stringify(value, replacer, opts?.space);
 }
 
@@ -173,10 +173,10 @@ function isObjectContent(json: ReviverInputValue): json is ObjectContent {
   return typeof json === "object" && json !== null && !Array.isArray(json);
 }
 
-type Json = Exclude<Root, JObject> | ObjectContent;
-
-function replacer(_key: string, value: Root): Json {
-  return isObject(value) ? value.content : value;
+// json-stable-stringify typing is useless
+function replacer(_key: stableStringify.Key, value: unknown): unknown {
+  const root = value as Root;
+  return isObject(root) ? root.content : value;
 }
 
 /* Iteration */

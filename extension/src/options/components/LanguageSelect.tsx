@@ -1,5 +1,5 @@
 import { GlobalOptionsContext } from "options/Context";
-import { useContext } from "react";
+import { JSX, useContext } from "react";
 import { Select } from "viewer/components";
 import {
   Language,

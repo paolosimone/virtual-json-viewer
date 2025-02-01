@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { useCallback, useContext } from "react";
+import { JSX, useCallback, useContext } from "react";
 import * as Json from "viewer/commons/Json";
 import { Icon, IconButton } from "viewer/components";
 import { CHORD_KEY, KeydownEvent, useGlobalKeydownEvent } from "viewer/hooks";

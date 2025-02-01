@@ -1,4 +1,4 @@
-import { Dispatch } from "react";
+import { Dispatch, JSX } from "react";
 import { Select } from "viewer/components";
 
 export type EnumType = { [key: string]: string };

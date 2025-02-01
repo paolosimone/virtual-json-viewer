@@ -1,4 +1,5 @@
 import classNames from "classnames";
+import { JSX } from "react";
 
 export type AlertProps = BaseProps;
 

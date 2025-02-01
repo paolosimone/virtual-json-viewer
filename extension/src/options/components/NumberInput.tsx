@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { Dispatch, FormEvent } from "react";
+import { Dispatch, FormEvent, JSX } from "react";
 
 export type NumberInputProps = Props<{
   setValue: Dispatch<number>;

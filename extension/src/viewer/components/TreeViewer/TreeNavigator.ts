@@ -13,13 +13,13 @@ export type NavigationOffset = {
 };
 
 export class TreeNavigator {
-  private tree: RefObject<JsonTree>;
+  private tree: RefObject<Nullable<JsonTree>>;
   private treeElem: RefCurrent<HTMLElement>;
   private elemById: Map<string, HTMLElement> = new Map();
   private lastFocused?: string;
 
   constructor(
-    tree: RefObject<Tree<JsonNodeData>>,
+    tree: RefObject<Nullable<JsonTree>>,
     treeElem: RefCurrent<HTMLElement>,
   ) {
     this.tree = tree;

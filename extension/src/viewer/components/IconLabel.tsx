@@ -1,5 +1,6 @@
 import classNames from "classnames";
 import { Icon } from "./Icon";
+import { JSX } from "react";
 
 export type IconLabelProps = Props<{
   icon: Icon;
