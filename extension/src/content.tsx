@@ -2,7 +2,7 @@ import * as DomEvents from "content/DomEvents";
 import * as Loader from "content/Loader";
 import * as Activator from "content/Activator";
 
-if (Activator.isJsonContentType()) {
+if (Activator.isJson()) {
   DomEvents.afterHeadAvailable(Loader.setupResources);
   DomEvents.afterDocumentLoaded(Loader.loadViewer);
 } else {
