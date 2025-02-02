@@ -47,7 +47,7 @@ export function SaveButton({
 }
 
 function saveJson(jsonLines: Json.Lines, opts: Json.ToStringOptions) {
-  const extension = jsonLines.length > 1 ? ".jsonl" : "json";
+  const extension = jsonLines.length > 1 ? ".jsonl" : ".json";
 
   let filename = document.title;
   if (!filename.endsWith(extension)) {
