@@ -127,7 +127,8 @@ export function App({ jsonText }: AppProps): JSX.Element {
           <Viewer
             {...viewerProps}
             className={classNames(
-              "flex-auto pt-1.5 pl-1.5 text-viewer-foreground selection:bg-amber-200 selection:text-black",
+              // min-h-0 prevents overflow when showing an error banner (https://stackoverflow.com/a/66689926)
+              "flex-auto min-h-0 pt-1.5 pl-1.5 text-viewer-foreground selection:bg-amber-200 selection:text-black",
               resolveTextSizeClass(settings.textSize),
             )}
           />
