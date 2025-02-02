@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { useContext } from "react";
+import { JSX, useContext } from "react";
 import { SystemLanguage } from "viewer/localization";
 import {
   DefaultSettings,

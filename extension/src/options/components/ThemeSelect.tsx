@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { GlobalOptionsContext } from "options/Context";
-import { useContext } from "react";
+import { JSX, useContext } from "react";
 import { Icon, IconButton, Select } from "viewer/components";
 import { ThemeName } from "viewer/state";
 

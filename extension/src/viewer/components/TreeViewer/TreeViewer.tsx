@@ -1,5 +1,12 @@
 import classNames from "classnames";
-import { RefObject, useCallback, useContext, useMemo, useRef } from "react";
+import {
+  RefObject,
+  useCallback,
+  useContext,
+  useMemo,
+  useRef,
+  JSX,
+} from "react";
 import {
   VariableSizeNodePublicState as NodeState,
   VariableSizeTree as Tree,
@@ -43,7 +50,7 @@ export function TreeViewer({
   );
 
   const { expandNodes } = useContext(SettingsContext);
-  const tree = useRef<Tree<JsonNodeData>>(null);
+  const tree = useRef<Nullable<Tree<JsonNodeData>>>(null);
 
   // for some obscure reason AutoSizer doesn't work on Firefox when loaded as extension
   const [parent, parentRef] = useReactiveRef<HTMLDivElement>();
@@ -101,6 +108,7 @@ export function TreeViewer({
       tabIndex={0}
       onKeyDown={onKeydown}
     >
+      {/* @ts-expect-error react-vtree signature not compatible with React 19 */}
       <Tree
         ref={tree}
         treeWalker={treeWalker}
@@ -117,7 +125,7 @@ export function TreeViewer({
 
 function setOpen(
   json: Json.Root,
-  tree: RefObject<Tree<JsonNodeData>>,
+  tree: RefObject<Nullable<Tree<JsonNodeData>>>,
   isOpen: boolean,
 ) {
   function subtreeCallback(

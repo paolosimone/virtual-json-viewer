@@ -1,5 +1,5 @@
 import { GlobalOptionsContext } from "options/Context";
-import { Dispatch, useContext } from "react";
+import { Dispatch, JSX, useContext } from "react";
 import { Select } from "viewer/components";
 
 export type NodeStateSelectProps = Props<{

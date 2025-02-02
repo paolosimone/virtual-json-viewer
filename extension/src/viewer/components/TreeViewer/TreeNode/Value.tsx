@@ -1,5 +1,11 @@
 import classNames from "classnames";
-import { ForwardedRef, forwardRef, useImperativeHandle, useRef } from "react";
+import {
+  ForwardedRef,
+  forwardRef,
+  JSX,
+  useImperativeHandle,
+  useRef,
+} from "react";
 import * as DOM from "viewer/commons/Dom";
 import * as Json from "viewer/commons/Json";
 import { useRenderedText } from "viewer/hooks";

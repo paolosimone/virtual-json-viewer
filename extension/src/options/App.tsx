@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { useState } from "react";
+import { JSX, useState } from "react";
 import { useSettings, useTheme } from "viewer/hooks";
 import { useLocalization } from "viewer/localization";
 import { resolveTextSizeClass } from "viewer/state";

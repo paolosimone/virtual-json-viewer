@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { Dispatch, FormEvent } from "react";
+import { Dispatch, FormEvent, JSX } from "react";
 
 export type Option<T extends string> = {
   value: T;

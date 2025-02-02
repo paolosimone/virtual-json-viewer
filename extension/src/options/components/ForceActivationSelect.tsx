@@ -1,6 +1,13 @@
 import classNames from "classnames";
 import { GlobalOptionsContext } from "options/Context";
-import { Dispatch, FormEvent, useContext, useEffect, useState } from "react";
+import {
+  Dispatch,
+  FormEvent,
+  JSX,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { Icon, IconLabel, Select } from "viewer/components";
 
 export type ForceActivationSelectProps = Props<{

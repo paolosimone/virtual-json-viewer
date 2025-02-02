@@ -1,5 +1,6 @@
 import classNames from "classnames";
 import {
+  JSX,
   ReactNode,
   useCallback,
   useContext,
@@ -51,7 +52,7 @@ export function RawViewer({
 
   const renderedLines = useRenderedLines(rawLines, search, isLargeJson);
 
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<Nullable<HTMLDivElement>>(null);
 
   // register shortcuts
   const handleNavigation = useCallback(

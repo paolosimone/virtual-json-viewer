@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { useEffect, useLayoutEffect } from "react";
+import { JSX, useEffect, useLayoutEffect } from "react";
 import { VariableSizeNodePublicState as NodeState } from "react-vtree";
 import { NodeComponentProps } from "react-vtree/dist/es/Tree";
 import * as DOM from "viewer/commons/Dom";

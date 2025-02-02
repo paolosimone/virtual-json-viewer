@@ -3,6 +3,7 @@ import "../global.css";
 import { useTheme } from "../viewer/hooks";
 import { OptionsWrapper } from "./OptionsWrapper";
 import { ViewerWrapper } from "./ViewerWrapper";
+import { JSX } from "react";
 
 export function App(): JSX.Element {
   const [_colors] = useTheme();

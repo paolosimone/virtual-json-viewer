@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { JSX, useState } from "react";
 import { App as ViewerApp } from "viewer/App";
 
 export function ViewerWrapper(): JSX.Element {

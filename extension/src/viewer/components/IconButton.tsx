@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { ButtonHTMLAttributes } from "react";
+import { ButtonHTMLAttributes, JSX } from "react";
 import { Icon } from "./Icon";
 
 export type IconButtonProps = Props<{

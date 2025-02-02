@@ -1,3 +1,5 @@
+import { JSX } from "react";
+
 type MultiContextProviderProps = Props<{
   contexts: [React.Context<any>, any][];
 }>;

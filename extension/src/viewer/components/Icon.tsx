@@ -1,5 +1,7 @@
 // Credits: https://github.com/microsoft/vscode-icons
 
+import { JSX } from "react";
+
 // It's easier to render svg icons as JSX elements than
 // list all of them as a "web_accessible_resources" in manifest
 

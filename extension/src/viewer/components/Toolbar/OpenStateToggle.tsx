@@ -1,4 +1,4 @@
-import { useCallback, useContext } from "react";
+import { JSX, useCallback, useContext } from "react";
 import { EventType, dispatch } from "viewer/commons/EventBus";
 import { Icon, IconButton } from "viewer/components";
 import {

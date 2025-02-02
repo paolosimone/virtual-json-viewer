@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { Dispatch, useContext, useState } from "react";
+import { Dispatch, JSX, useContext, useState } from "react";
 import { ChromePicker } from "react-color";
 import { Icon, IconButton } from "viewer/components";
 import { FallbackTranslation } from "viewer/localization";

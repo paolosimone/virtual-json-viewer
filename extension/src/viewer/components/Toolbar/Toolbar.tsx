@@ -7,6 +7,7 @@ import { OpenStateToggle } from "./OpenStateToggle";
 import { SaveButton } from "./SaveButton";
 import { SearchBox } from "./SearchBox";
 import { ViewerModeToggle } from "./ViewerModeToggle";
+import { JSX } from "react";
 
 export type ToolbarProps = Props<{
   jsonLines: Json.Lines;

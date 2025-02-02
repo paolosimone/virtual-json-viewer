@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { Dispatch, SetStateAction, useCallback, useContext } from "react";
+import { Dispatch, JSX, SetStateAction, useCallback, useContext } from "react";
 import { Icon, IconButton } from "viewer/components";
 import { CHORD_KEY, KeydownEvent, useGlobalKeydownEvent } from "viewer/hooks";
 import { TranslationContext } from "viewer/localization";
