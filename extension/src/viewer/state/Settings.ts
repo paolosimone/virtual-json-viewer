@@ -44,9 +44,10 @@ const textSizeClasses: Record<TextSize, string> = {
 /* Context */
 
 export const DefaultSettings: Settings = {
-  version: 1,
+  version: 2,
 
-  activationUrlRegex: null,
+  // all URL paths ending with a json file extension
+  activationUrlRegex: "^.*(\\.jsonl?)$",
   enableJQ: true,
   expandNodes: false,
   indentation: 4,

@@ -11,7 +11,7 @@ export function useSettings(): [Settings, DispatchSettings] {
   );
 
   const upgraded = maybeUpgrade(settings);
-  if (upgraded) {
+  if (!Object.is(settings, upgraded)) {
     setSettings(upgraded);
   }
 
@@ -25,22 +25,31 @@ export function useSettings(): [Settings, DispatchSettings] {
   return [settings, updateSettings];
 }
 
-function maybeUpgrade(settings: Settings): Nullable<Settings> {
-  // changes in the same version are backward compatible
-  if (isLatestVersion(settings) && hasMissingKeys(settings)) {
-    return { ...DefaultSettings, ...settings };
+// returns a different Settings object in case of upgrade
+function maybeUpgrade(settings: Settings): Settings {
+  settings = addMissingKeys(settings);
+  settings = upgradeV1toV2(settings);
+  return settings;
+}
+
+// adding keys is always backward compatible
+function addMissingKeys(settings: Settings): Settings {
+  const hasMissingKeys = Object.keys(DefaultSettings).some(
+    (key: string) => !(key in settings),
+  );
+  return hasMissingKeys ? { ...DefaultSettings, ...settings } : settings;
+}
+
+// V2: changed default value for activationUrlRegex
+export function upgradeV1toV2(settings: Settings): Settings {
+  if (settings.version > 1) {
+    return settings;
   }
 
-  // ...handle breaking changes
+  settings = { ...settings, version: 2 };
 
-  // nothing to do
-  return null;
-}
+  // don't overwrite regex if user already set a custom one
+  settings.activationUrlRegex ??= "^.*(\\.jsonl?)$";
 
-function isLatestVersion(settings: Settings): boolean {
-  return settings.version == DefaultSettings.version;
-}
-
-function hasMissingKeys(settings: Settings): boolean {
-  return Object.keys(DefaultSettings).some((key: string) => !(key in settings));
+  return settings;
 }

@@ -22,7 +22,7 @@ export function forceSetupAndLoadViewer() {
   const jsonText = tryFindJsonText();
   if (!jsonText) {
     console.warn(
-      "Virtual Json Viewer forceful activation failed: JSON not found",
+      "Virtual Json Viewer activation failed: JSON expected but not found",
     );
     return;
   }

@@ -1,12 +1,8 @@
 import { STORAGE } from "viewer/commons/Storage";
 import { Settings, SETTINGS_KEY } from "viewer/state";
 
-export function isJson(): boolean {
-  return isJsonContentType() || isJsonFileExtension();
-}
-
 // see: https://www.iana.org/assignments/media-types/media-types.xhtml
-function isJsonContentType(): boolean {
+export function isJsonContentType(): boolean {
   return (
     document.contentType.startsWith("application/") &&
     (document.contentType.endsWith("json") ||
@@ -14,12 +10,7 @@ function isJsonContentType(): boolean {
   );
 }
 
-function isJsonFileExtension(): boolean {
-  const path = window.location.pathname;
-  return path.endsWith(".json") || path.endsWith(".jsonl");
-}
-
-export async function checkSettings(): Promise<boolean> {
+export async function checkActivationSetting(): Promise<boolean> {
   const settings = await STORAGE.get<Settings>(SETTINGS_KEY);
   const activationUrlRegex = settings?.activationUrlRegex || null;
 
@@ -27,10 +18,7 @@ export async function checkSettings(): Promise<boolean> {
     return false;
   }
 
-  if (activationUrlRegex === ".*") {
-    return true;
-  }
-
-  const regex = new RegExp(activationUrlRegex);
-  return regex.test(location.href);
+  const activationRegex = new RegExp(activationUrlRegex);
+  const url = location.origin + location.pathname;
+  return activationRegex.test(url);
 }
