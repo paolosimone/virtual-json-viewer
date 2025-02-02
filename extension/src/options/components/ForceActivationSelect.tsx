@@ -9,6 +9,7 @@ import {
   useState,
 } from "react";
 import { Icon, IconLabel, Select } from "viewer/components";
+import { DefaultSettings } from "viewer/state";
 
 export type ForceActivationSelectProps = Props<{
   urlRegex: Nullable<string>;
@@ -54,7 +55,7 @@ function regexToOption(urlRegex: Nullable<string>): Option {
 }
 
 function optionToDefaultRegex(option: Option): Nullable<string> {
-  return option === "custom" ? ".*" : null;
+  return option === "custom" ? DefaultSettings.activationUrlRegex : null;
 }
 
 type UrlRegexInputProps = Props<{

@@ -10,7 +10,7 @@ export function isJsonContentType(): boolean {
   );
 }
 
-export async function checkSettings(): Promise<boolean> {
+export async function checkActivationSetting(): Promise<boolean> {
   const settings = await STORAGE.get<Settings>(SETTINGS_KEY);
   const activationUrlRegex = settings?.activationUrlRegex || null;
 
@@ -18,10 +18,7 @@ export async function checkSettings(): Promise<boolean> {
     return false;
   }
 
-  if (activationUrlRegex === ".*") {
-    return true;
-  }
-
-  const regex = new RegExp(activationUrlRegex);
-  return regex.test(location.href);
+  const activationRegex = new RegExp(activationUrlRegex);
+  const url = location.origin + location.pathname;
+  return activationRegex.test(url);
 }

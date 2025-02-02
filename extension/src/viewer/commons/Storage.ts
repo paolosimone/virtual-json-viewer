@@ -9,11 +9,11 @@ export interface Storage {
   addListener<T>(key: string, onChange: OnItemChange<T>): RemoveListener;
 }
 
-class LocalStorage implements Storage {
+class SessionStorage implements Storage {
   get<T>(key: string): Promise<Nullable<T>> {
     return new Promise((resolve, reject) => {
       try {
-        const value = localStorage.getItem(key);
+        const value = sessionStorage.getItem(key);
         resolve(value !== null ? JSON.parse(value) : null);
       } catch (e) {
         reject(e);
@@ -24,7 +24,7 @@ class LocalStorage implements Storage {
   set<T>(key: string, item: T): Promise<void> {
     return new Promise((resolve, reject) => {
       try {
-        localStorage.setItem(key, JSON.stringify(item));
+        sessionStorage.setItem(key, JSON.stringify(item));
         resolve();
       } catch (e) {
         reject(e);
@@ -79,4 +79,4 @@ class SyncStorage implements Storage {
 }
 
 export const STORAGE =
-  RUNTIME === Runtime.Extension ? new SyncStorage() : new LocalStorage();
+  RUNTIME === Runtime.Extension ? new SyncStorage() : new SessionStorage();

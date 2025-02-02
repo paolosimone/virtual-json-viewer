@@ -6,8 +6,8 @@ if (Activator.isJsonContentType()) {
   DomEvents.afterHeadAvailable(Loader.setupResources);
   DomEvents.afterDocumentLoaded(Loader.loadViewer);
 } else {
-  Activator.checkSettings()
-    .then((forceActivation) => {
+  Activator.checkActivationSetting()
+    .then((forceActivation: boolean) => {
       if (forceActivation) {
         DomEvents.afterDocumentLoaded(Loader.forceSetupAndLoadViewer);
       }
