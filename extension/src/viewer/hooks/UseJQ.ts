@@ -68,7 +68,7 @@ export function useJQ(
   return [jqEnabled, result];
 }
 
-const JQ_WASM_FILE = getURL("jq.wasm");
+const JQ_WASM_FILE = getURL("assets/jq.wasm");
 
 function loadJQ(): Promise<JQ> {
   return newJQ({

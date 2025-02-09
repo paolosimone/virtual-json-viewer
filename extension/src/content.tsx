@@ -1,15 +1,13 @@
-import * as DomEvents from "content/DomEvents";
 import * as Loader from "content/Loader";
 import * as Activator from "content/Activator";
 
 if (Activator.isJsonContentType()) {
-  DomEvents.afterHeadAvailable(Loader.setupResources);
-  DomEvents.afterDocumentLoaded(Loader.loadViewer);
+  Loader.loadIncrementally();
 } else {
   Activator.checkActivationSetting()
     .then((forceActivation: boolean) => {
       if (forceActivation) {
-        DomEvents.afterDocumentLoaded(Loader.forceSetupAndLoadViewer);
+        Loader.tryLoadAfterDocumentLoaded();
       }
     })
     .catch((reason) => console.error(reason));

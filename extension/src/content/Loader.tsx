@@ -1,34 +1,61 @@
 import { createRoot, Root } from "react-dom/client";
 import { App as ViewerApp } from "viewer/App";
 import * as Json from "viewer/commons/Json";
+import * as DomEvents from "./DomEvents";
 
-export function setupResources() {
+const FAVICON_URL = chrome.runtime.getURL("assets/logo/16.png");
+const CONTENT_CSS_URL = chrome.runtime.getURL("static/css/content.css");
+
+export function loadIncrementally() {
+  DomEvents.headAvailable().then(setupResources);
+  DomEvents.documentLoaded().then(loadViewer);
+}
+
+export function tryLoadAfterDocumentLoaded() {
+  DomEvents.documentLoaded()
+    .then(checkResourcesAccess)
+    .then(forceSetupAndLoadViewer)
+    .catch((error) => {
+      console.warn(`Virtual Json Viewer activation failed: ${error.message}`);
+    });
+}
+
+function setupResources() {
   if (document.readyState === "loading") {
     setLoading(true);
   }
 
-  addFavicon(chrome.runtime.getURL("logo/16.png"));
+  addFavicon(FAVICON_URL);
   updateTitle();
 
-  addCSSRef(chrome.runtime.getURL("static/css/content.css"));
+  addCSSRef(CONTENT_CSS_URL);
 }
 
-export function loadViewer() {
+function loadViewer() {
   const jsonElement = document.getElementsByTagName("pre")[0];
   renderViewer(jsonElement.innerText);
 }
 
-export function forceSetupAndLoadViewer() {
+function forceSetupAndLoadViewer() {
   const jsonText = tryFindJsonText();
   if (!jsonText) {
-    console.warn(
-      "Virtual Json Viewer activation failed: JSON expected but not found",
-    );
-    return;
+    throw new Error("JSON expected but not found");
   }
 
   setupResources();
   renderViewer(jsonText);
+}
+
+// For some URLs Firefox blocks access to extension assets
+// despite having them listed in manifest's web_accessible_resources.
+// See https://github.com/paolosimone/virtual-json-viewer/issues/61
+async function checkResourcesAccess(): Promise<void> {
+  const response = await fetch(CONTENT_CSS_URL);
+  if (!response.ok) {
+    throw new Error(
+      `GET ${CONTENT_CSS_URL} - ${response.status} ${response.statusText}`,
+    );
+  }
 }
 
 function setLoading(isLoading: boolean) {

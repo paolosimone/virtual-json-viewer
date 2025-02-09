@@ -5,7 +5,7 @@ import { getURL } from "viewer/state";
 // The placeholder is a GIF instead of an animated SVG
 // so that it doesn't freeze with the rest of the UI.
 // Not my proudest achievement.
-const LOADING_GIF = getURL("loading.gif");
+const LOADING_GIF = getURL("assets/images/loading.gif");
 
 export type ViewerPlaceholderProps = BaseProps;
 
