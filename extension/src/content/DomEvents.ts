@@ -1,23 +1,27 @@
-export function afterHeadAvailable(callback: () => void) {
-  if (document.head) {
-    callback();
-    return;
-  }
-
-  const observer = new MutationObserver((_mutations, observer) => {
+export function headAvailable(): Promise<void> {
+  return new Promise((resolve) => {
     if (document.head) {
-      observer.disconnect();
-      callback();
+      resolve();
+      return;
     }
+
+    const observer = new MutationObserver((_mutations, observer) => {
+      if (document.head) {
+        observer.disconnect();
+        resolve();
+      }
+    });
+    observer.observe(document, { childList: true, subtree: true });
   });
-  observer.observe(document, { childList: true, subtree: true });
 }
 
-export function afterDocumentLoaded(callback: () => void) {
-  if (document.readyState === "complete") {
-    callback();
-    return;
-  }
+export function documentLoaded(): Promise<void> {
+  return new Promise((resolve) => {
+    if (document.readyState === "complete") {
+      resolve();
+      return;
+    }
 
-  window.addEventListener("load", callback);
+    window.addEventListener("load", resolve as () => void);
+  });
 }

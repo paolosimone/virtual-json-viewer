@@ -12,7 +12,6 @@ const {
 // Make the build output compatible with chrome extension structure
 function convertToChromeExtension(config) {
   const isEnvProduction = process.env.NODE_ENV === "production";
-  const manifestVersion = process.env.MANIFEST_VERSION ?? "3";
   const browser = process.env.BROWSER ?? "chrome";
   const appVersion = process.env.npm_package_version;
 
@@ -87,7 +86,7 @@ function convertToChromeExtension(config) {
       inject: true,
       chunks: ["dev"],
       template: paths.appHtml,
-      favicon: paths.appPublic + "/logo/16.png",
+      favicon: paths.appPublic + "assets/logo/16.png",
     });
     config.plugins.push(indexHtmlPlugin);
   }
@@ -119,13 +118,16 @@ function convertToChromeExtension(config) {
   const copyManifest = new CopyPlugin({
     patterns: [
       {
-        from: paths.appPath + `/manifest-v${manifestVersion}.json`,
+        from: paths.appPath + `/manifest.json`,
         to: "manifest.json",
         transform: (content) => {
           const manifest = JSON.parse(content.toString());
-          manifest["version"] = appVersion;
+          manifest.version = appVersion;
           if (browser == "firefox") {
-            manifest["browser_specific_settings"] = {
+            manifest.background = {
+              scripts: [manifest.background.service_worker],
+            };
+            manifest.browser_specific_settings = {
               gecko: {
                 id: "{bb475b2b-f49c-4f3c-ae36-0fe15a6017e9}",
               },

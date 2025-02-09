@@ -10,12 +10,6 @@ Browser plugin that uses [virtual DOM](https://github.com/Lodin/react-vtree) to 
 
 [![chrome](assets/badge-chrome.png)](https://chrome.google.com/webstore/detail/virtual-json-viewer/cipnpfcceoapeahdgomheoecidglopld) [![firefox](assets/badge-firefox.png)](https://addons.mozilla.org/en-GB/firefox/addon/virtual-json-viewer/)
 
-### Manifest Version
-
-The default build for Chrome relies on the new [Manifest V3](https://developer.chrome.com/docs/extensions/mv3/intro/) and requires Chromium version 106 or higher.  
-If you are running an older version of Chromium because reasons... I got your back!
-Simpy follow the instructions on how to perform a [manual installation](#manual-installation) using a MV2 release.
-
 ## Why?
 
 > "Oh my! There are plenty of json viewers, why making a new one?"
@@ -172,25 +166,9 @@ JSON.parse('{"\u3053\u3093\u306B\u3061\u306F": "\u4E16\u754C"}')
 
 ## Manual Installation
 
-### Get the build
-
-> I'm confused, which manifest version should I get?
-
-| Browser        | Manifest |
-|----------------|:--------:|
-| Chrome 106+    |   V3     |
-| Chrome (older) |   V2     |
-| Firefox        |   V2     |
-
-*Note:* the only differences are in the manifest. The underlying extension code is the same for all builds
-
 #### From Release
 
 Download the latest build from the [release page](https://github.com/paolosimone/virtual-json-viewer/releases) and extract the content
-
-- `virtual-json-viewer-{version}`: Chrome manifest V3
-- `virtual-json-viewer-{version}-mv2`: Chrome manifest V2
-- `virtual-json-viewer-{version}-firefox`: Firefox (manifest V2)
 
 #### From source
 
@@ -198,9 +176,8 @@ Download the latest build from the [release page](https://github.com/paolosimone
 cd extension
 yarn install
 
-yarn build          # Chrome  - Manifest V3
-yarn build-mv2      # Chrome  - Manifest V2
-yarn build-firefox  # Firefox - Manifest V2
+yarn build:chrome   # Chrome
+yarn build:firefox  # Firefox
 ```
 
 ### Install the extension

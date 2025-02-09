@@ -16,24 +16,19 @@
     }
   ],
   "icons": {
-    "16": "logo/16.png",
-    "48": "logo/48.png",
-    "192": "logo/192.png"
+    "16": "assets/logo/16.png",
+    "48": "assets/logo/48.png",
+    "192": "assets/logo/192.png"
   },
   "web_accessible_resources": [
     {
-      "resources": [
-        "jq.wasm",
-        "logo/16.png",
-        "static/css/content.css",
-        "loading.gif"
-      ],
+      "resources": ["assets/*", "static/css/content.css"],
       "matches": ["<all_urls>"]
     }
   ],
   "action": {
     "default_icon": {
-      "192": "logo/192.png"
+      "192": "assets/logo/192.png"
     },
     "default_title": "Virtual Json Viewer"
   },
