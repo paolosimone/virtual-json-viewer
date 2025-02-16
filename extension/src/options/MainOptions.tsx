@@ -148,7 +148,11 @@ export function MainOptions({ className }: MainOptionsProps): JSX.Element {
           emoji="&#11088;"
           label="Github"
         />
-        <LinkButton link="${STORE_LINK}" emoji="&#128172;" label="Review" />
+        <LinkButton
+          link={import.meta.env.VITE_STORE_LINK}
+          emoji="&#128172;"
+          label="Review"
+        />
         <LinkButton
           link="https://github.com/paolosimone/virtual-json-viewer#keyboard-shortcuts"
           emoji="&#9000;"
