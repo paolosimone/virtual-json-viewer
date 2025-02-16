@@ -1,9 +1,9 @@
 import classNames from "classnames";
 import { Dispatch, JSX, useContext, useState } from "react";
 import { ChromePicker } from "react-color";
-import { Icon, IconButton } from "viewer/components";
-import { FallbackTranslation } from "viewer/localization";
-import { ColorKey, HexColor } from "viewer/state";
+import { Icon, IconButton } from "@/viewer/components";
+import { FallbackTranslation } from "@/viewer/localization";
+import { ColorKey, HexColor } from "@/viewer/state";
 import { GlobalOptionsContext, OptionsPage } from "./Context";
 
 export type EditCustomThemeProps = BaseProps;

@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { GlobalOptionsContext } from "options/Context";
+import { GlobalOptionsContext } from "@/options/Context";
 import {
   Dispatch,
   FormEvent,
@@ -8,8 +8,8 @@ import {
   useEffect,
   useState,
 } from "react";
-import { Icon, IconLabel, Select } from "viewer/components";
-import { DefaultSettings } from "viewer/state";
+import { Icon, IconLabel, Select } from "@/viewer/components";
+import { DefaultSettings } from "@/viewer/state";
 
 export type ForceActivationSelectProps = Props<{
   urlRegex: Nullable<string>;

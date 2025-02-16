@@ -1,5 +1,5 @@
-import { STORAGE } from "viewer/commons/Storage";
-import { Settings, SETTINGS_KEY } from "viewer/state";
+import { STORAGE } from "@/viewer/commons/Storage";
+import { Settings, SETTINGS_KEY } from "@/viewer/state";
 
 // see: https://www.iana.org/assignments/media-types/media-types.xhtml
 export function isJsonContentType(): boolean {

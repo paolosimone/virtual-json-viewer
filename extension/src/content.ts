@@ -1,5 +1,5 @@
-import * as Loader from "content/Loader";
-import * as Activator from "content/Activator";
+import * as Loader from "@/content/Loader";
+import * as Activator from "@/content/Activator";
 
 if (Activator.isJsonContentType()) {
   Loader.loadIncrementally();

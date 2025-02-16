@@ -1,9 +1,9 @@
 import classNames from "classnames";
 import { Dispatch, JSX, SetStateAction, useCallback, useContext } from "react";
-import { Icon, IconButton } from "viewer/components";
-import { CHORD_KEY, KeydownEvent, useGlobalKeydownEvent } from "viewer/hooks";
-import { TranslationContext } from "viewer/localization";
-import { ViewerMode } from "viewer/state";
+import { Icon, IconButton } from "@/viewer/components";
+import { CHORD_KEY, KeydownEvent, useGlobalKeydownEvent } from "@/viewer/hooks";
+import { TranslationContext } from "@/viewer/localization";
+import { ViewerMode } from "@/viewer/state";
 
 export type ViewerModeToggleProps = Props<{
   viewerMode: ViewerMode;

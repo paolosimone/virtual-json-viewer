@@ -8,16 +8,16 @@ import {
   useContext,
   useState,
 } from "react";
-import { Icon, IconButton } from "viewer/components";
+import { Icon, IconButton } from "@/viewer/components";
 import {
   CHORD_KEY,
   KeydownEvent,
   isUpperCaseKeypress,
   useGlobalKeydownEvent,
   useReactiveRef,
-} from "viewer/hooks";
-import { TranslationContext } from "viewer/localization";
-import { JQCommand } from "viewer/state";
+} from "@/viewer/hooks";
+import { TranslationContext } from "@/viewer/localization";
+import { JQCommand } from "@/viewer/state";
 
 export type JQCommandBoxProps = Props<{
   command: JQCommand;

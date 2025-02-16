@@ -1,5 +1,5 @@
 import { createRoot } from "react-dom/client";
-import { App as OptionsApp } from "@/options/App";
+import { App as LauncherApp } from "@/launcher/App";
 
 const root = document.getElementById("root")!;
-createRoot(root).render(<OptionsApp />);
+createRoot(root).render(<LauncherApp />);

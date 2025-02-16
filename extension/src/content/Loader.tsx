@@ -1,6 +1,6 @@
 import { createRoot, Root } from "react-dom/client";
-import { App as ViewerApp } from "viewer/App";
-import * as Json from "viewer/commons/Json";
+import { App as ViewerApp } from "@/viewer/App";
+import * as Json from "@/viewer/commons/Json";
 import * as DomEvents from "./DomEvents";
 
 const FAVICON_URL = chrome.runtime.getURL("assets/logo/16.png");

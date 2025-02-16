@@ -1,5 +1,5 @@
-import * as Json from "viewer/commons/Json";
-import { Search } from "viewer/state";
+import * as Json from "@/viewer/commons/Json";
+import { Search } from "@/viewer/state";
 
 export type JsonNode = {
   key: Nullable<Json.Key>;

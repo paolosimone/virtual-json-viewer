@@ -1,14 +1,14 @@
 import classNames from "classnames";
 import { JSX, useContext } from "react";
-import { SystemLanguage } from "viewer/localization";
+import { SystemLanguage } from "@/viewer/localization";
 import {
   DefaultSettings,
   DefaultTheme,
   SearchVisibility,
   TextSize,
   ViewerMode,
-} from "viewer/state";
-import "../global.css";
+} from "@/viewer/state";
+import "@/global.css";
 import { GlobalOptionsContext, OptionsPage } from "./Context";
 import {
   Checkbox,

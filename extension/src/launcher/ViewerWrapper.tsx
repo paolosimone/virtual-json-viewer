@@ -1,5 +1,5 @@
 import { JSX, useState } from "react";
-import { App as ViewerApp } from "viewer/App";
+import { App as ViewerApp } from "@/viewer/App";
 
 export function ViewerWrapper(): JSX.Element {
   const [jsonText, setJsonText] = useState("");

@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { DefaultSettings, Settings, SETTINGS_KEY } from "viewer/state";
+import { DefaultSettings, Settings, SETTINGS_KEY } from "@/viewer/state";
 import { useStorage } from ".";
 
 export type DispatchSettings = (newSettings: Partial<Settings>) => void;

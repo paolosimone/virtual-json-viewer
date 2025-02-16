@@ -1,12 +1,12 @@
-import { GlobalOptionsContext } from "options/Context";
+import { GlobalOptionsContext } from "@/options/Context";
 import { JSX, useContext } from "react";
-import { Select } from "viewer/components";
+import { Select } from "@/viewer/components";
 import {
   Language,
   languageLabels,
   LanguageSetting,
   SystemLanguage,
-} from "viewer/localization";
+} from "@/viewer/localization";
 
 export type LanguageSelectProps = BaseProps;
 

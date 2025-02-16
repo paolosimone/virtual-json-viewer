@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { JSX } from "react";
-import { getURL } from "viewer/state";
+import { getURL } from "@/viewer/state";
 
 // The placeholder is a GIF instead of an animated SVG
 // so that it doesn't freeze with the rest of the UI.

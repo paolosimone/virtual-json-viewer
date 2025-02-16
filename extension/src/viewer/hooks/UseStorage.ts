@@ -1,5 +1,5 @@
 import { Dispatch, useEffect, useMemo, useState } from "react";
-import { STORAGE } from "viewer/commons/Storage";
+import { STORAGE } from "@/viewer/commons/Storage";
 import { Mutex, useEffectAsync } from ".";
 
 export function useStorage<T>(key: string, defaultValue: T): [T, Dispatch<T>] {

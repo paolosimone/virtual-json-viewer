@@ -1,13 +1,13 @@
 import { createContext, Dispatch } from "react";
-import { DispatchSettings } from "viewer/hooks";
+import { DispatchSettings } from "@/viewer/hooks";
 import {
   FallbackLanguage,
   LanguageSetting,
   languageTranslations,
   SystemLanguage,
   Translation,
-} from "viewer/localization";
-import { DefaultSettings, DefaultTheme, Settings, Theme } from "viewer/state";
+} from "@/viewer/localization";
+import { DefaultSettings, DefaultTheme, Settings, Theme } from "@/viewer/state";
 
 // navigation
 export enum OptionsPage {

@@ -1,8 +1,8 @@
 import classNames from "classnames";
-import { GlobalOptionsContext } from "options/Context";
+import { GlobalOptionsContext } from "@/options/Context";
 import { JSX, useContext } from "react";
-import { Icon, IconButton, Select } from "viewer/components";
-import { ThemeName } from "viewer/state";
+import { Icon, IconButton, Select } from "@/viewer/components";
+import { ThemeName } from "@/viewer/state";
 
 export type ThemeSelectProps = Props<{
   onEdit: () => void;

@@ -1,3 +1,7 @@
+# Dependencies
 /node_modules
+
+# Output
 /build
+/dist_*
 *.zip

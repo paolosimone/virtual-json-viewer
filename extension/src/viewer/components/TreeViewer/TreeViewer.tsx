@@ -11,9 +11,9 @@ import {
   VariableSizeNodePublicState as NodeState,
   VariableSizeTree as Tree,
 } from "react-vtree";
-import * as DOM from "viewer/commons/Dom";
-import { EventType } from "viewer/commons/EventBus";
-import * as Json from "viewer/commons/Json";
+import * as DOM from "@/viewer/commons/Dom";
+import { EventType } from "@/viewer/commons/EventBus";
+import * as Json from "@/viewer/commons/Json";
 import {
   CHORD_KEY,
   KeydownBufferEvent,
@@ -24,8 +24,8 @@ import {
   useGlobalKeydownEvent,
   useKeydownBuffer,
   useReactiveRef,
-} from "viewer/hooks";
-import { Search, SettingsContext } from "viewer/state";
+} from "@/viewer/hooks";
+import { Search, SettingsContext } from "@/viewer/state";
 import { TreeNavigator } from "./TreeNavigator";
 import { TreeNode } from "./TreeNode";
 import { JsonNodeData } from "./model/JsonNode";
