@@ -176,8 +176,8 @@ Download the latest build from the [release page](https://github.com/paolosimone
 cd extension
 yarn install
 
-yarn build:chrome   # Chrome
-yarn build:firefox  # Firefox
+yarn build:chrome   # writes to dist_chrome
+yarn build:firefox  # writed to dist_firefox
 ```
 
 ### Install the extension
@@ -186,7 +186,7 @@ yarn build:firefox  # Firefox
 
 1. Open the Extension Management page by navigating to `chrome://extensions`
 1. Enable Developer Mode by clicking the toggle switch next to Developer mode
-1. Click the load unpacked button and select the `build` directory
+1. Click the load unpacked button and select the `dist_chrome` directory
 
 #### Firefox
 
@@ -200,7 +200,7 @@ Load extension
 
 1. Go to `about:debugging`
 1. Click "This Firefox"
-1. Click "Load Temporary Add-on" and select the `build` directory
+1. Click "Load Temporary Add-on" and select the `manifest.json` file inside `dist_firefox` directory
 
 *Note:* The extension is automatically removed when Firefox is closed and must be manually loaded on next start.
 
@@ -232,7 +232,7 @@ To add a new language:
 
 ## Local development
 
-Run `yarn start` to serve the extension as a web app with hot reload.
+Run `yarn dev` to serve the extension as a web app with hot reload.
 
 Always `yarn format` before creating a commit.
 
@@ -262,20 +262,19 @@ Always `yarn format` before creating a commit.
 
 ## References
 
-|Tool                                                                                                                       |Usage                                          |
-|---------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------|
-|[anchorme](https://github.com/alexcorvi/anchorme.js)                                                                       |Convert URLs to clickable HTML links           |
-|[cra-template-complex-browserext-typescript](https://github.com/hindmost/cra-template-complex-browserext-typescript)       |Project scaffolding, huge help!                |
-|[customize-cra](https://github.com/arackaf/customize-cra)                                                                  |Break webpack config, then fix it              |
-|[jq-wasm](https://github.com/paolosimone/jq-wasm)                                                                          |JQ in the browser                              |
-|[json-stable-stringify](https://github.com/substack/json-stable-stringify)                                                 |Sort keys on JSON serialization apparently is rocket science|
-|[React](https://reactjs.org/)                                                                                              |Learn how to write a frontend application without jQuery and bootstrap|
-|[react-color](https://github.com/casesandberg/react-color)                                                                 |Easily edit the custom theme and, more importantly, looking professional while doing it|
-|[react-vtree](https://github.com/Lodin/react-vtree)                                                                        |Render the JSON. I'd say it's a pretty important role|
-|[TailwindCSS](https://tailwindcss.com/)                                                                                    |Prevent me from touching CSS files|
-|[Typescript](https://www.typescriptlang.org/)                                                                              |Try to forget I'm actually writing JS 🤢|
-|[uid](https://github.com/lukeed/uid)                                                                                       |Fast generation of unique keys for [React lists](https://reactjs.org/docs/lists-and-keys.html#keys) |
-|[vscode-icons](https://github.com/microsoft/vscode-icons)                                                                  |Keep UI buttons clean and intuitive|
+|Tool                                                                           |Usage                                          |
+|-------------------------------------------------------------------------------|-----------------------------------------------|
+|[anchorme](https://github.com/alexcorvi/anchorme.js)                           |Convert URLs to clickable HTML links|
+|[vite](https://vite.dev/)                                                      |Because Webpack is sooo 2023|
+|[jq-wasm](https://github.com/paolosimone/jq-wasm)                              |JQ in the browser|
+|[json-stable-stringify](https://github.com/substack/json-stable-stringify)     |Sort keys on JSON serialization apparently is rocket science|
+|[React](https://reactjs.org/)                                                  |Learn how to write a frontend application without jQuery and bootstrap|
+|[react-color](https://github.com/casesandberg/react-color)                     |Easily edit the custom theme and, more importantly, looking professional while doing it|
+|[react-vtree](https://github.com/Lodin/react-vtree)                            |Render the JSON. I'd say it's a pretty important role|
+|[TailwindCSS](https://tailwindcss.com/)                                        |Prevent me from touching CSS files|
+|[Typescript](https://www.typescriptlang.org/)                                  |Try to forget I'm actually writing JS 🤢|
+|[uid](https://github.com/lukeed/uid)                                           |Fast generation of unique keys for [React lists](https://reactjs.org/docs/lists-and-keys.html#keys) |
+|[vscode-icons](https://github.com/microsoft/vscode-icons)                      |Keep UI buttons clean and intuitive|
 
 ## License
 
