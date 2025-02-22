@@ -1,15 +1,6 @@
 @import "tailwindcss";
 
-@config '../tailwind.config.js';
-
-/*
-  The default border color has changed to `currentColor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
-
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
-*/
+/* The default border color has changed to `currentColor` in Tailwind CSS v4 */
 @layer base {
   *,
   ::after,
@@ -18,14 +9,6 @@
   ::file-selector-button {
     border-color: var(--color-gray-200, currentColor);
   }
-}
-
-@utility absolute-center {
-  @apply absolute right-1/2 bottom-1/2 translate-x-1/2 translate-y-1/2;
-}
-
-@utility red-alert {
-  @apply border border-red-900 bg-red-200 text-red-900;
 }
 
 @layer base {
@@ -43,6 +26,29 @@
     --viewer-focus: 0 0 0;
     --viewer-foreground: 0 0 0;
   }
+}
+
+@theme inline {
+  --color-input-background: rgb(var(--input-background));
+  --color-input-focus: rgb(var(--input-focus));
+  --color-input-foreground: rgb(var(--input-foreground));
+  --color-json-key: rgb(var(--json-key));
+  --color-json-string: rgb(var(--json-string));
+  --color-json-value: rgb(var(--json-value));
+  --color-toolbar-background: rgb(var(--toolbar-background));
+  --color-toolbar-focus: rgb(var(--toolbar-focus));
+  --color-toolbar-foreground: rgb(var(--toolbar-foreground));
+  --color-viewer-background: rgb(var(--viewer-background));
+  --color-viewer-focus: rgb(var(--viewer-focus));
+  --color-viewer-foreground: rgb(var(--viewer-foreground));
+}
+
+@utility absolute-center {
+  @apply absolute right-1/2 bottom-1/2 translate-x-1/2 translate-y-1/2;
+}
+
+@utility red-alert {
+  @apply border border-red-900 bg-red-200 text-red-900;
 }
 
 @keyframes fadeIn {
