@@ -176,8 +176,8 @@ Download the latest build from the [release page](https://github.com/paolosimone
 cd extension
 yarn install
 
-yarn build:chrome   # writes to dist_chrome
-yarn build:firefox  # writed to dist_firefox
+yarn build:chrome   # -> dist/chrome
+yarn build:firefox  # -> dist/firefox
 ```
 
 ### Install the extension
@@ -186,7 +186,7 @@ yarn build:firefox  # writed to dist_firefox
 
 1. Open the Extension Management page by navigating to `chrome://extensions`
 1. Enable Developer Mode by clicking the toggle switch next to Developer mode
-1. Click the load unpacked button and select the `dist_chrome` directory
+1. Click the load unpacked button and select the `dist/chrome` directory
 
 #### Firefox
 
@@ -200,7 +200,7 @@ Load extension
 
 1. Go to `about:debugging`
 1. Click "This Firefox"
-1. Click "Load Temporary Add-on" and select the `manifest.json` file inside `dist_firefox` directory
+1. Click "Load Temporary Add-on" and select the `manifest.json` file inside `dist/firefox` directory
 
 *Note:* The extension is automatically removed when Firefox is closed and must be manually loaded on next start.
 

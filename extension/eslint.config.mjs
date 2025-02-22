@@ -8,7 +8,7 @@ const BASE_CONFIG = {
   languageOptions: { globals: globals.browser },
 };
 
-const IGNORES = { ignores: ["src/vendor/", "dist_*"] };
+const IGNORES = { ignores: ["src/vendor/", "dist/"] };
 
 const TS_CONFIGS = [
   ...pluginTs.configs.recommended,

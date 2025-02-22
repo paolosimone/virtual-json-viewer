@@ -10,7 +10,7 @@ const BROWSER = process.argv[2] as Browser;
 
 const SRC = resolve(import.meta.dirname, "src");
 const PAGES = resolve(import.meta.dirname, "pages");
-const DIST = resolve(import.meta.dirname, `dist_${BROWSER}`);
+const DIST = resolve(import.meta.dirname, "dist", BROWSER);
 
 function pageConfig(entrypoint: string, path: string): InlineConfig {
   return {
