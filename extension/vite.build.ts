@@ -4,11 +4,6 @@ import fs from "fs/promises";
 import { InlineConfig, build } from "vite";
 import { exit } from "process";
 
-// TODO
-// remove CRA
-// README
-// ESLint?
-
 type Browser = "chrome" | "firefox";
 const BROWSER = process.argv[2] as Browser;
 
