@@ -13,7 +13,8 @@
     "package:chrome": "yarn build:chrome && cd dist_chrome && zip ../virtual-json-viewer-v$npm_package_version-chrome.zip -r .",
     "package:firefox": "yarn build:firefox && cd dist_firefox && zip ../virtual-json-viewer-v$npm_package_version-firefox.zip -r .",
     "package:src": "cd .. && git archive -o extension/virtual-json-viewer-v$npm_package_version-src.zip HEAD README.md extension",
-    "package:all": "yarn package:chrome && yarn package:firefox && yarn package:src"
+    "package:all": "yarn package:chrome && yarn package:firefox && yarn package:src",
+    "clean": "rm -rf dist_* virtual-*.zip"
   },
   "dependencies": {
     "anchorme": "^3.0.8",
