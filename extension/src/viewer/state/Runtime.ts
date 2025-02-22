@@ -6,7 +6,7 @@ export enum Runtime {
 function detectRuntime(): Runtime {
   try {
     return chrome.runtime.id ? Runtime.Extension : Runtime.Web;
-  } catch (_e) {
+  } catch {
     return Runtime.Web;
   }
 }

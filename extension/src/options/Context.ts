@@ -38,5 +38,4 @@ export const GlobalOptionsContext = createContext<OptionsContext>({
   updateSettings: doNothing,
 });
 
-// eslint-disable-next-line
 function doNothing(_input: any) {}
