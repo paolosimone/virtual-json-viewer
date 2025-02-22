@@ -4,7 +4,7 @@ import * as Json from "@/viewer/commons/Json";
 import * as DomEvents from "./DomEvents";
 
 const FAVICON_URL = chrome.runtime.getURL("assets/logo/16.png");
-const CONTENT_CSS_URL = chrome.runtime.getURL("static/css/content.css");
+const CONTENT_CSS_URL = chrome.runtime.getURL("assets/content.css");
 
 export function loadIncrementally() {
   DomEvents.headAvailable().then(setupResources);

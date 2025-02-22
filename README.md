@@ -1,6 +1,6 @@
 [![mentioned in awesome jq](https://awesome.re/mentioned-badge.svg)](https://github.com/fiatjaf/awesome-jq)
 
-# ![logo](extension/public/logo/48.png) Virtual Json Viewer
+# ![logo](assets/logo_48.png) Virtual Json Viewer
 
 Browser plugin that uses [virtual DOM](https://github.com/Lodin/react-vtree) to render JSONs with built-in search, JQ filtering and many other [features](#features).
 
