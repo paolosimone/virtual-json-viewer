@@ -1,8 +1,8 @@
 import classNames from "classnames";
 import { JSX, useState } from "react";
-import { useSettings, useTheme } from "viewer/hooks";
-import { useLocalization } from "viewer/localization";
-import { resolveTextSizeClass } from "viewer/state";
+import { useSettings, useTheme } from "@/viewer/hooks";
+import { useLocalization } from "@/viewer/localization";
+import { resolveTextSizeClass } from "@/viewer/state";
 import { GlobalOptionsContext, OptionsPage } from "./Context";
 import { EditCustomTheme } from "./EditCustomTheme";
 import { MainOptions } from "./MainOptions";

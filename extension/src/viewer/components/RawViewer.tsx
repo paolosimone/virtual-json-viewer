@@ -9,17 +9,17 @@ import {
   useRef,
   useState,
 } from "react";
-import * as DOM from "viewer/commons/Dom";
-import { EventType } from "viewer/commons/EventBus";
-import * as Json from "viewer/commons/Json";
-import { RenderedText } from "viewer/components";
+import * as DOM from "@/viewer/commons/Dom";
+import { EventType } from "@/viewer/commons/EventBus";
+import * as Json from "@/viewer/commons/Json";
+import { RenderedText } from "@/viewer/components";
 import {
   CHORD_KEY,
   KeydownEvent,
   useEventBusListener,
   useGlobalKeydownEvent,
-} from "viewer/hooks";
-import { Search, SettingsContext } from "viewer/state";
+} from "@/viewer/hooks";
+import { Search, SettingsContext } from "@/viewer/state";
 import { uid } from "uid";
 
 export type RawViewerProps = Props<{

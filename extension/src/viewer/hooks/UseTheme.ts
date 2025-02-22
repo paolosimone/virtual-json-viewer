@@ -9,7 +9,7 @@ import {
   Theme,
   ThemeColors,
   ThemeName,
-} from "viewer/state";
+} from "@/viewer/state";
 import { useMediaQuery, useStorage } from ".";
 
 const KEY = "settings-theme";

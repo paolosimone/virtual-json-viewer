@@ -4368,9 +4368,7 @@ run();
 }
 );
 })();
-if (typeof exports === 'object' && typeof module === 'object')
-  module.exports = newJQ;
-else if (typeof define === 'function' && define['amd'])
-  define([], function() { return newJQ; });
-else if (typeof exports === 'object')
-  exports["newJQ"] = newJQ;
+
+
+// WARN: added manually because vite does not support CommonJS exports
+export default newJQ;

@@ -1,7 +1,7 @@
 import classNames from "classnames";
-import * as Json from "viewer/commons/Json";
-import { StateObject } from "viewer/hooks";
-import { JQCommand, Search, ViewerMode } from "viewer/state";
+import * as Json from "@/viewer/commons/Json";
+import { StateObject } from "@/viewer/hooks";
+import { JQCommand, Search, ViewerMode } from "@/viewer/state";
 import { JQCommandBox } from "./JQCommandBox";
 import { OpenStateToggle } from "./OpenStateToggle";
 import { SaveButton } from "./SaveButton";

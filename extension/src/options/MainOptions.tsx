@@ -1,14 +1,14 @@
 import classNames from "classnames";
 import { JSX, useContext } from "react";
-import { SystemLanguage } from "viewer/localization";
+import { SystemLanguage } from "@/viewer/localization";
 import {
   DefaultSettings,
   DefaultTheme,
   SearchVisibility,
   TextSize,
   ViewerMode,
-} from "viewer/state";
-import "../global.css";
+} from "@/viewer/state";
+import "@/global.css";
 import { GlobalOptionsContext, OptionsPage } from "./Context";
 import {
   Checkbox,
@@ -148,7 +148,11 @@ export function MainOptions({ className }: MainOptionsProps): JSX.Element {
           emoji="&#11088;"
           label="Github"
         />
-        <LinkButton link="${STORE_LINK}" emoji="&#128172;" label="Review" />
+        <LinkButton
+          link={import.meta.env.VITE_STORE_LINK}
+          emoji="&#128172;"
+          label="Review"
+        />
         <LinkButton
           link="https://github.com/paolosimone/virtual-json-viewer#keyboard-shortcuts"
           emoji="&#9000;"

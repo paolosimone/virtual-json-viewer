@@ -8,15 +8,15 @@ import {
   useContext,
   useEffect,
 } from "react";
-import { Icon, IconButton, IconLabel } from "viewer/components";
+import { Icon, IconButton, IconLabel } from "@/viewer/components";
 import {
   CHORD_KEY,
   KeydownEvent,
   useGlobalKeydownEvent,
   useReactiveRef,
-} from "viewer/hooks";
-import { TranslationContext } from "viewer/localization";
-import { Search, SearchVisibility, SettingsContext } from "viewer/state";
+} from "@/viewer/hooks";
+import { TranslationContext } from "@/viewer/localization";
+import { Search, SearchVisibility, SettingsContext } from "@/viewer/state";
 
 export type SearchBoxProps = Props<{
   search: Search;

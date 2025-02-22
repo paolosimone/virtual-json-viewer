@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { Icon, IconButton } from "viewer/components";
+import { Icon, IconButton } from "@/viewer/components";
 import { TreeNavigator } from "../TreeNavigator";
 import { JsonNodeData } from "../model/JsonNode";
 import { JSX } from "react";

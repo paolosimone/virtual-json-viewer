@@ -1,13 +1,13 @@
 import { JSX, useCallback, useContext } from "react";
-import { EventType, dispatch } from "viewer/commons/EventBus";
-import { Icon, IconButton } from "viewer/components";
+import { EventType, dispatch } from "@/viewer/commons/EventBus";
+import { Icon, IconButton } from "@/viewer/components";
 import {
   CHORD_KEY,
   KeydownEvent,
   isUpperCaseKeypress,
   useGlobalKeydownEvent,
-} from "viewer/hooks";
-import { TranslationContext } from "viewer/localization";
+} from "@/viewer/hooks";
+import { TranslationContext } from "@/viewer/localization";
 
 export type OpenStateToggleProps = BaseProps;
 

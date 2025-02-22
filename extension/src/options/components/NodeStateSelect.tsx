@@ -1,6 +1,6 @@
-import { GlobalOptionsContext } from "options/Context";
+import { GlobalOptionsContext } from "@/options/Context";
 import { Dispatch, JSX, useContext } from "react";
-import { Select } from "viewer/components";
+import { Select } from "@/viewer/components";
 
 export type NodeStateSelectProps = Props<{
   expandNodes: boolean;

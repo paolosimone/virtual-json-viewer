@@ -4,22 +4,18 @@ export function useEffectAsync(
   effectAsync: SynchronizedEffect,
   deps?: DependencyList,
 ): void {
-  useEffect(
-    () => {
-      // acquire lock
-      const mutex = new Mutex();
+  useEffect(() => {
+    // acquire lock
+    const mutex = new Mutex();
 
-      // apply effects only if mutex.hasLock()
-      effectAsync(mutex);
+    // apply effects only if mutex.hasLock()
+    effectAsync(mutex);
 
-      // release lock when deps change
-      return () => {
-        mutex.release();
-      };
-    },
-    // eslint-disable-next-line
-    deps ?? [],
-  );
+    // release lock when deps change
+    return () => {
+      mutex.release();
+    };
+  }, deps ?? []);
 }
 
 export type SynchronizedEffect = (mutex: Mutex) => Promise<void>;

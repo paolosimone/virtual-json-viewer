@@ -1,5 +1,5 @@
 import { Dispatch } from "react";
-import { useStorage } from "viewer/hooks";
+import { useStorage } from "@/viewer/hooks";
 import {
   FallbackLanguage,
   Language,

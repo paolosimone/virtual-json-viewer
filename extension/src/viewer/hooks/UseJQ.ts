@@ -1,7 +1,7 @@
 import { useState } from "react";
-import newJQ, { JQ } from "vendor/jq.wasm";
-import * as Json from "viewer/commons/Json";
-import { getURL, JQCommand } from "viewer/state";
+import newJQ, { JQ } from "@/vendor/jq.wasm";
+import * as Json from "@/viewer/commons/Json";
+import { getURL, JQCommand } from "@/viewer/state";
 import { Mutex, useEffectAsync, useSettings } from ".";
 
 export type JQEnabled = boolean;
@@ -27,7 +27,7 @@ export function useJQ(
       try {
         await loadJQ();
         if (mutex.hasLock()) setJQEnabled(true);
-      } catch (e) {
+      } catch {
         if (mutex.hasLock()) {
           console.warn(
             "Unable to load JQ, Wasm is probably disabled due to CSP. For additional info: https://github.com/WebAssembly/content-security-policy/blob/main/proposals/CSP.md",

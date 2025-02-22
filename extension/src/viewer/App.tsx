@@ -8,8 +8,8 @@ import {
   useMemo,
   useState,
 } from "react";
-import * as Json from "viewer/commons/Json";
-import "../global.css";
+import * as Json from "@/viewer/commons/Json";
+import "@/global.css";
 import {
   Alert,
   RawViewer,

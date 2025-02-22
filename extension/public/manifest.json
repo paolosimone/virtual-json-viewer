@@ -6,11 +6,11 @@
   "permissions": ["storage"],
   "host_permissions": ["<all_urls>"],
   "background": {
-    "service_worker": "static/js/background.js"
+    "service_worker": "pages/background.js"
   },
   "content_scripts": [
     {
-      "js": ["static/js/content.js"],
+      "js": ["pages/content.js"],
       "run_at": "document_start",
       "matches": ["<all_urls>"]
     }
@@ -22,7 +22,7 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["assets/*", "static/css/content.css"],
+      "resources": ["assets/*"],
       "matches": ["<all_urls>"]
     }
   ],
@@ -33,6 +33,6 @@
     "default_title": "Virtual Json Viewer"
   },
   "options_ui": {
-    "page": "options.html"
+    "page": "pages/options.html"
   }
 }
