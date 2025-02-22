@@ -265,7 +265,6 @@ Always `yarn format` before creating a commit.
 |Tool                                                                           |Usage                                          |
 |-------------------------------------------------------------------------------|-----------------------------------------------|
 |[anchorme](https://github.com/alexcorvi/anchorme.js)                           |Convert URLs to clickable HTML links|
-|[vite](https://vite.dev/)                                                      |Because Webpack is sooo 2023|
 |[jq-wasm](https://github.com/paolosimone/jq-wasm)                              |JQ in the browser|
 |[json-stable-stringify](https://github.com/substack/json-stable-stringify)     |Sort keys on JSON serialization apparently is rocket science|
 |[React](https://reactjs.org/)                                                  |Learn how to write a frontend application without jQuery and bootstrap|
@@ -274,6 +273,7 @@ Always `yarn format` before creating a commit.
 |[TailwindCSS](https://tailwindcss.com/)                                        |Prevent me from touching CSS files|
 |[Typescript](https://www.typescriptlang.org/)                                  |Try to forget I'm actually writing JS 🤢|
 |[uid](https://github.com/lukeed/uid)                                           |Fast generation of unique keys for [React lists](https://reactjs.org/docs/lists-and-keys.html#keys) |
+|[vite](https://vite.dev/)                                                      |Because Webpack is sooo 2023|
 |[vscode-icons](https://github.com/microsoft/vscode-icons)                      |Keep UI buttons clean and intuitive|
 
 ## License
