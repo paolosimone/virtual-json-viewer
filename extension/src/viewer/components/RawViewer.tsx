@@ -1,14 +1,3 @@
-import classNames from "classnames";
-import {
-  JSX,
-  ReactNode,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
 import * as DOM from "@/viewer/commons/Dom";
 import { EventType } from "@/viewer/commons/EventBus";
 import * as Json from "@/viewer/commons/Json";
@@ -20,6 +9,17 @@ import {
   useGlobalKeydownEvent,
 } from "@/viewer/hooks";
 import { Search, SettingsContext } from "@/viewer/state";
+import classNames from "classnames";
+import {
+  JSX,
+  ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { uid } from "uid";
 
 export type RawViewerProps = Props<{

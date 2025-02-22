@@ -1,5 +1,4 @@
 import { GlobalOptionsContext } from "@/options/Context";
-import { JSX, useContext } from "react";
 import { Select } from "@/viewer/components";
 import {
   Language,
@@ -7,6 +6,7 @@ import {
   LanguageSetting,
   SystemLanguage,
 } from "@/viewer/localization";
+import { JSX, useContext } from "react";
 
 export type LanguageSelectProps = BaseProps;
 

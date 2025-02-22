@@ -1,5 +1,5 @@
-import { Dispatch, JSX } from "react";
 import { Select } from "@/viewer/components";
+import { Dispatch, JSX } from "react";
 
 export type EnumType = { [key: string]: string };
 export type ValueOf<T> = T[keyof T];

@@ -1,3 +1,7 @@
+import * as DOM from "@/viewer/commons/Dom";
+import * as Json from "@/viewer/commons/Json";
+import { useRenderedText } from "@/viewer/hooks";
+import { Search } from "@/viewer/state";
 import classNames from "classnames";
 import {
   ForwardedRef,
@@ -6,10 +10,6 @@ import {
   useImperativeHandle,
   useRef,
 } from "react";
-import * as DOM from "@/viewer/commons/Dom";
-import * as Json from "@/viewer/commons/Json";
-import { useRenderedText } from "@/viewer/hooks";
-import { Search } from "@/viewer/state";
 import { JsonNodeData } from "../model/JsonNode";
 
 export type KeyProps = Props<{
@@ -46,7 +46,7 @@ export const Key = forwardRef(function Key(
     <KeyElement
       ref={keyRef}
       className={classNames(
-        "mr-4 whitespace-pre-wrap text-json-key",
+        "text-json-key mr-4 whitespace-pre-wrap",
         props.className,
       )}
       {...props}

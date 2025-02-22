@@ -1,9 +1,9 @@
-import classNames from "classnames";
-import { Dispatch, JSX, SetStateAction, useCallback, useContext } from "react";
 import { Icon, IconButton } from "@/viewer/components";
 import { CHORD_KEY, KeydownEvent, useGlobalKeydownEvent } from "@/viewer/hooks";
 import { TranslationContext } from "@/viewer/localization";
 import { ViewerMode } from "@/viewer/state";
+import classNames from "classnames";
+import { Dispatch, JSX, SetStateAction, useCallback, useContext } from "react";
 
 export type ViewerModeToggleProps = Props<{
   viewerMode: ViewerMode;
@@ -40,13 +40,13 @@ export function ViewerModeToggle({
   const isTreeView = viewerMode === ViewerMode.Tree;
 
   return (
-    <span className={classNames("flex items-center rounded-sm", className)}>
+    <span className={classNames("flex items-center rounded-xs", className)}>
       <IconButton
         icon={Icon.ListTree}
         onClick={toggleView}
         title={t.toolbar.view.tree}
         disabled={isTreeView}
-        className={classNames("w-1/2 p-0.5 fill-toolbar-foreground", {
+        className={classNames("fill-toolbar-foreground w-1/2 p-0.5", {
           "hover:bg-toolbar-focus": !isTreeView,
           "bg-toolbar-focus": isTreeView,
         })}
@@ -57,7 +57,7 @@ export function ViewerModeToggle({
         onClick={toggleView}
         title={t.toolbar.view.raw}
         disabled={!isTreeView}
-        className={classNames("w-1/2 p-0.5 fill-toolbar-foreground", {
+        className={classNames("fill-toolbar-foreground w-1/2 p-0.5", {
           "hover:bg-toolbar-focus": isTreeView,
           "bg-toolbar-focus": !isTreeView,
         })}

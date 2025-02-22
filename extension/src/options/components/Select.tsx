@@ -26,7 +26,7 @@ export function Select<T extends string>({
   return (
     <select
       className={classNames(
-        "bg-input-background text-input-foreground border border-input-focus focus:outline-none cursor-pointer",
+        "bg-input-background text-input-foreground border-input-focus cursor-pointer border focus:outline-hidden",
         className,
       )}
       onChange={setNewValue}

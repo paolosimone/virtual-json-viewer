@@ -1,5 +1,4 @@
-import classNames from "classnames";
-import { JSX, useContext } from "react";
+import "@/global.css";
 import { SystemLanguage } from "@/viewer/localization";
 import {
   DefaultSettings,
@@ -8,7 +7,8 @@ import {
   TextSize,
   ViewerMode,
 } from "@/viewer/state";
-import "@/global.css";
+import classNames from "classnames";
+import { JSX, useContext } from "react";
 import { GlobalOptionsContext, OptionsPage } from "./Context";
 import {
   Checkbox,
@@ -17,8 +17,8 @@ import {
   NumberInput,
   ThemeSelect,
 } from "./components";
-import { NodeStateSelect } from "./components/NodeStateSelect";
 import { ForceActivationSelect } from "./components/ForceActivationSelect";
+import { NodeStateSelect } from "./components/NodeStateSelect";
 
 export type MainOptionsProps = BaseProps;
 
@@ -29,7 +29,7 @@ export function MainOptions({ className }: MainOptionsProps): JSX.Element {
   return (
     <div
       className={classNames(
-        "grid grid-cols-2 gap-y-2 items-center px-8 py-4",
+        "grid grid-cols-2 items-center gap-y-2 px-8 py-4",
         className,
       )}
     >
@@ -168,7 +168,7 @@ export function MainOptions({ className }: MainOptionsProps): JSX.Element {
       {/* RESET */}
       <div className="col-span-2 mt-4 flex flex-col place-items-center">
         <button
-          className="p-2 red-alert rounded-lg hover:bg-opacity-80"
+          className="red-alert hover:bg-opacity-80 rounded-lg p-2"
           onClick={() => {
             setTheme(DefaultTheme);
             setLanguage(SystemLanguage);
@@ -197,7 +197,7 @@ function LinkButton({
   return (
     <a
       className={classNames(
-        "border border-transparent hover:border-viewer-foreground rounded-lg py-1 px-2",
+        "hover:border-viewer-foreground rounded-lg border border-transparent px-2 py-1",
         className,
       )}
       href={link}

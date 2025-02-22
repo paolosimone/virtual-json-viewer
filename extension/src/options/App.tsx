@@ -1,8 +1,8 @@
-import classNames from "classnames";
-import { JSX, useState } from "react";
 import { useSettings, useTheme } from "@/viewer/hooks";
 import { useLocalization } from "@/viewer/localization";
 import { resolveTextSizeClass } from "@/viewer/state";
+import classNames from "classnames";
+import { JSX, useState } from "react";
 import { GlobalOptionsContext, OptionsPage } from "./Context";
 import { EditCustomTheme } from "./EditCustomTheme";
 import { MainOptions } from "./MainOptions";
@@ -32,7 +32,7 @@ export function App(): JSX.Element {
     <GlobalOptionsContext.Provider value={ctx}>
       <CurrentPage
         className={classNames(
-          "min-w-[500px] min-h-[400px] bg-viewer-background text-viewer-foreground",
+          "bg-viewer-background text-viewer-foreground min-h-[400px] min-w-[500px]",
           resolveTextSizeClass(settings.textSize),
         )}
       />

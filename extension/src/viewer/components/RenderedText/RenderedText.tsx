@@ -1,6 +1,6 @@
+import { Search } from "@/viewer/state";
 import { ReactNode } from "react";
 import { uid } from "uid";
-import { Search } from "@/viewer/state";
 import {
   HighlightedText,
   SEARCH_TYPE,

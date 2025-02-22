@@ -1,6 +1,6 @@
+import { getURL } from "@/viewer/state";
 import classNames from "classnames";
 import { JSX } from "react";
-import { getURL } from "@/viewer/state";
 
 // The placeholder is a GIF instead of an animated SVG
 // so that it doesn't freeze with the rest of the UI.
@@ -14,9 +14,9 @@ export function ViewerPlaceholder({
 }: ViewerPlaceholderProps): JSX.Element {
   // fadeIn delay mitigates flickering on fast transitions
   return (
-    <div className={classNames("flex justify-center mt-8", className)}>
+    <div className={classNames("mt-8 flex justify-center", className)}>
       <img
-        className="w-20 h-20"
+        className="h-20 w-20"
         style={{
           animationName: "fadeIn",
           animationDelay: "10ms",

@@ -6,7 +6,7 @@ export type AlertProps = BaseProps;
 export function Alert({ children, className }: AlertProps): JSX.Element {
   return (
     <div
-      className={classNames("red-alert whitespace-pre-wrap px-3", className)}
+      className={classNames("red-alert px-3 whitespace-pre-wrap", className)}
     >
       {children}
     </div>

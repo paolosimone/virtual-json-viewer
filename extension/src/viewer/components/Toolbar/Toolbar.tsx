@@ -1,13 +1,13 @@
-import classNames from "classnames";
 import * as Json from "@/viewer/commons/Json";
 import { StateObject } from "@/viewer/hooks";
 import { JQCommand, Search, ViewerMode } from "@/viewer/state";
+import classNames from "classnames";
+import { JSX } from "react";
 import { JQCommandBox } from "./JQCommandBox";
 import { OpenStateToggle } from "./OpenStateToggle";
 import { SaveButton } from "./SaveButton";
 import { SearchBox } from "./SearchBox";
 import { ViewerModeToggle } from "./ViewerModeToggle";
-import { JSX } from "react";
 
 export type ToolbarProps = Props<{
   jsonLines: Json.Lines;
@@ -28,27 +28,27 @@ export function Toolbar({
   return (
     <div
       className={classNames(
-        "flex flex-col py-1 px-0.5 bg-toolbar-background",
+        "bg-toolbar-background flex flex-col px-0.5 py-1",
         className,
       )}
     >
       <div className="flex items-center">
         <ViewerModeToggle
-          className="w-14 h-7 ml-1"
+          className="ml-1 h-7 w-14"
           viewerMode={viewerModeState.value}
           setViewerMode={viewerModeState.setValue}
         />
 
         <Separator />
 
-        <OpenStateToggle className="w-14 h-7 px-px" />
+        <OpenStateToggle className="h-7 w-14 px-px" />
 
         <Separator />
 
-        <SaveButton className="w-6 h-6 px-px" jsonLines={jsonLines} />
+        <SaveButton className="h-6 w-6 px-px" jsonLines={jsonLines} />
 
         <SearchBox
-          className="flex-1 ml-2"
+          className="ml-2 flex-1"
           search={searchState.value}
           setSearch={searchState.setValue}
           disableShowMismatch={!isTreeView}
@@ -68,5 +68,5 @@ export function Toolbar({
 }
 
 function Separator(): JSX.Element {
-  return <div className="border-l border-toolbar-foreground/75 h-3/4 mx-2" />;
+  return <div className="border-toolbar-foreground/75 mx-2 h-3/4 border-l" />;
 }

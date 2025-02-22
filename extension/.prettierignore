@@ -1,4 +1,2 @@
-node_modules
-dist_*
+# also consider .gitignore 
 src/vendor
-public

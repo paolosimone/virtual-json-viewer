@@ -1,3 +1,5 @@
+import "@/global.css";
+import * as Json from "@/viewer/commons/Json";
 import classNames from "classnames";
 import {
   JSX,
@@ -8,8 +10,6 @@ import {
   useMemo,
   useState,
 } from "react";
-import * as Json from "@/viewer/commons/Json";
-import "@/global.css";
 import {
   Alert,
   RawViewer,
@@ -87,7 +87,7 @@ export function App({ jsonText }: AppProps): JSX.Element {
   // fatal error page
   if (jsonLines === null) {
     return (
-      <div className="flex flex-col h-full font-mono">
+      <div className="flex h-full flex-col font-mono">
         <Alert>{error?.message}</Alert>
         <div className="p-3 whitespace-pre">{jsonText}</div>
       </div>
@@ -111,7 +111,7 @@ export function App({ jsonText }: AppProps): JSX.Element {
         [SettingsContext, settings],
       ]}
     >
-      <div className="flex flex-col h-full min-w-[500px] min-h-[500px] overflow-hidden font-mono bg-viewer-background">
+      <div className="bg-viewer-background flex h-full min-h-[500px] min-w-[500px] flex-col overflow-hidden font-mono">
         <Toolbar {...toolbarProps} />
 
         {error && (
@@ -128,7 +128,7 @@ export function App({ jsonText }: AppProps): JSX.Element {
             {...viewerProps}
             className={classNames(
               // min-h-0 prevents overflow when showing an error banner (https://stackoverflow.com/a/66689926)
-              "flex-auto min-h-0 pt-1.5 pl-1.5 text-viewer-foreground selection:bg-amber-200 selection:text-black",
+              "text-viewer-foreground min-h-0 flex-auto pt-1.5 pl-1.5 selection:bg-amber-200 selection:text-black",
               resolveTextSizeClass(settings.textSize),
             )}
           />

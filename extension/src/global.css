@@ -1,6 +1,15 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+/* The default border color has changed to `currentColor` in Tailwind CSS v4 */
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+}
 
 @layer base {
   :root {
@@ -19,13 +28,27 @@
   }
 }
 
-@layer components {
-  .absolute-center {
-    @apply absolute right-1/2 bottom-1/2 translate-x-1/2 translate-y-1/2;
-  }
-  .red-alert {
-    @apply border border-red-900 bg-red-200 text-red-900;
-  }
+@theme inline {
+  --color-input-background: rgb(var(--input-background));
+  --color-input-focus: rgb(var(--input-focus));
+  --color-input-foreground: rgb(var(--input-foreground));
+  --color-json-key: rgb(var(--json-key));
+  --color-json-string: rgb(var(--json-string));
+  --color-json-value: rgb(var(--json-value));
+  --color-toolbar-background: rgb(var(--toolbar-background));
+  --color-toolbar-focus: rgb(var(--toolbar-focus));
+  --color-toolbar-foreground: rgb(var(--toolbar-foreground));
+  --color-viewer-background: rgb(var(--viewer-background));
+  --color-viewer-focus: rgb(var(--viewer-focus));
+  --color-viewer-foreground: rgb(var(--viewer-foreground));
+}
+
+@utility absolute-center {
+  @apply absolute right-1/2 bottom-1/2 translate-x-1/2 translate-y-1/2;
+}
+
+@utility red-alert {
+  @apply border border-red-900 bg-red-200 text-red-900;
 }
 
 @keyframes fadeIn {

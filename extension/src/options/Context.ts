@@ -1,4 +1,3 @@
-import { createContext, Dispatch } from "react";
 import { DispatchSettings } from "@/viewer/hooks";
 import {
   FallbackLanguage,
@@ -8,6 +7,7 @@ import {
   Translation,
 } from "@/viewer/localization";
 import { DefaultSettings, DefaultTheme, Settings, Theme } from "@/viewer/state";
+import { createContext, Dispatch } from "react";
 
 // navigation
 export enum OptionsPage {

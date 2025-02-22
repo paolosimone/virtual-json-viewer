@@ -1,4 +1,3 @@
-import { JSX, useCallback, useContext } from "react";
 import { EventType, dispatch } from "@/viewer/commons/EventBus";
 import { Icon, IconButton } from "@/viewer/components";
 import {
@@ -8,6 +7,7 @@ import {
   useGlobalKeydownEvent,
 } from "@/viewer/hooks";
 import { TranslationContext } from "@/viewer/localization";
+import { JSX, useCallback, useContext } from "react";
 
 export type OpenStateToggleProps = BaseProps;
 
@@ -35,14 +35,14 @@ export function OpenStateToggle({
         title={t.toolbar.expand}
         icon={Icon.ExpandAll}
         onClick={expand}
-        className="w-1/2 fill-toolbar-foreground hover:bg-toolbar-focus"
+        className="fill-toolbar-foreground hover:bg-toolbar-focus w-1/2"
       />
 
       <IconButton
         title={t.toolbar.collapse}
         icon={Icon.CollapseAll}
         onClick={collapse}
-        className="w-1/2 fill-toolbar-foreground hover:bg-toolbar-focus"
+        className="fill-toolbar-foreground hover:bg-toolbar-focus w-1/2"
       />
     </span>
   );

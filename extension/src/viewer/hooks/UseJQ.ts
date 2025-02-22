@@ -1,7 +1,7 @@
-import { useState } from "react";
 import newJQ, { JQ } from "@/vendor/jq.wasm";
 import * as Json from "@/viewer/commons/Json";
 import { getURL, JQCommand } from "@/viewer/state";
+import { useState } from "react";
 import { Mutex, useEffectAsync, useSettings } from ".";
 
 export type JQEnabled = boolean;

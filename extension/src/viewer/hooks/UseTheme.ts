@@ -1,5 +1,3 @@
-import { Dispatch, useLayoutEffect, useMemo } from "react";
-import tinycolor from "tinycolor2";
 import {
   ColorKey,
   DarkColors,
@@ -10,6 +8,8 @@ import {
   ThemeColors,
   ThemeName,
 } from "@/viewer/state";
+import { Dispatch, useLayoutEffect, useMemo } from "react";
+import tinycolor from "tinycolor2";
 import { useMediaQuery, useStorage } from ".";
 
 const KEY = "settings-theme";

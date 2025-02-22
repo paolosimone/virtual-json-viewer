@@ -1,6 +1,6 @@
 import classNames from "classnames";
-import { Icon } from "./Icon";
 import { JSX } from "react";
+import { Icon } from "./Icon";
 
 export type IconLabelProps = Props<{
   icon: Icon;
@@ -13,7 +13,7 @@ export function IconLabel({
   className,
 }: IconLabelProps): JSX.Element {
   return (
-    <label className={classNames("rounded", className)} title={title}>
+    <label className={classNames("rounded-sm", className)} title={title}>
       <CustomIcon />
     </label>
   );
