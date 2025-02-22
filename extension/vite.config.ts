@@ -1,8 +1,9 @@
 import react from "@vitejs/plugin-react";
 import { resolve } from "path";
 import { defineConfig } from "vite";
+import tailwindcss from "@tailwindcss/vite";
 
-const SRC = resolve(__dirname, "src");
+const SRC = resolve(import.meta.dirname, "src");
 
 export default defineConfig(({ command }) => {
   if (command === "build") {
@@ -10,7 +11,7 @@ export default defineConfig(({ command }) => {
   }
 
   return {
-    plugins: [react()],
+    plugins: [react(), tailwindcss()],
     resolve: {
       // must match tsconfig config
       alias: { "@": SRC },

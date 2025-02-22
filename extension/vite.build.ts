@@ -3,17 +3,18 @@ import { resolve } from "path";
 import fs from "fs/promises";
 import { InlineConfig, build } from "vite";
 import { exit } from "process";
+import tailwindcss from "@tailwindcss/vite";
 
 type Browser = "chrome" | "firefox";
 const BROWSER = process.argv[2] as Browser;
 
-const SRC = resolve(__dirname, "src");
-const PAGES = resolve(__dirname, "pages");
-const DIST = resolve(__dirname, `dist_${BROWSER}`);
+const SRC = resolve(import.meta.dirname, "src");
+const PAGES = resolve(import.meta.dirname, "pages");
+const DIST = resolve(import.meta.dirname, `dist_${BROWSER}`);
 
 function pageConfig(entrypoint: string, path: string): InlineConfig {
   return {
-    plugins: [react()],
+    plugins: [react(), tailwindcss()],
     resolve: {
       // must match tsconfig config
       alias: { "@": SRC },
