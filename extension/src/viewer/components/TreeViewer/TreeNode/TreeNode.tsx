@@ -1,10 +1,10 @@
+import * as DOM from "@/viewer/commons/Dom";
+import { CHORD_KEY, RefCurrent, useReactiveRef } from "@/viewer/hooks";
+import { Search } from "@/viewer/state";
 import classNames from "classnames";
 import { JSX, useEffect, useLayoutEffect } from "react";
 import { VariableSizeNodePublicState as NodeState } from "react-vtree";
 import { NodeComponentProps } from "react-vtree/dist/es/Tree";
-import * as DOM from "@/viewer/commons/Dom";
-import { CHORD_KEY, RefCurrent, useReactiveRef } from "@/viewer/hooks";
-import { Search } from "@/viewer/state";
 import { TreeNavigator } from "../TreeNavigator";
 import { JsonNodeData } from "../model/JsonNode";
 import { Key, KeyHandle } from "./Key";
@@ -47,7 +47,7 @@ export function TreeNode({
   return (
     <div
       ref={parentRef}
-      className="focus:outline-hidden focus:bg-viewer-focus"
+      className="focus:bg-viewer-focus focus:outline-hidden"
       style={{ ...style, paddingLeft: `${data.nesting}em` }}
       tabIndex={-1}
       onClick={() => parent?.focus()}

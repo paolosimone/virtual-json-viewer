@@ -1,19 +1,19 @@
-import { JSX, useState } from "react";
 import { App as ViewerApp } from "@/viewer/App";
+import { JSX, useState } from "react";
 
 export function ViewerWrapper(): JSX.Element {
   const [jsonText, setJsonText] = useState("");
 
   if (!jsonText) {
     return (
-      <div className="h-screen grid grid-cols-1 place-items-center">
+      <div className="grid h-screen grid-cols-1 place-items-center">
         <JsonPicker onFileRead={setJsonText} />
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex h-screen flex-col">
       <ViewerApp jsonText={jsonText} />
     </div>
   );

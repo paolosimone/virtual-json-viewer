@@ -17,7 +17,7 @@ export function IconButton({
 }: IconButtonProps): JSX.Element {
   return (
     <button
-      className={classNames("rounded-sm disabled:cursor-normal", className)}
+      className={classNames("disabled:cursor-normal rounded-sm", className)}
       title={title}
       onClick={onClick}
       disabled={disabled}

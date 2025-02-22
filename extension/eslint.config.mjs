@@ -1,7 +1,7 @@
-import globals from "globals";
 import pluginJs from "@eslint/js";
-import pluginTs from "typescript-eslint";
 import pluginReact from "eslint-plugin-react";
+import globals from "globals";
+import pluginTs from "typescript-eslint";
 
 const BASE_CONFIG = {
   files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"],

@@ -1,6 +1,6 @@
 import { createContext } from "react";
-import { ViewerMode } from "./ViewerMode";
 import { EmptySearch, SearchVisibility } from "./Search";
+import { ViewerMode } from "./ViewerMode";
 
 export const SETTINGS_KEY = "settings";
 

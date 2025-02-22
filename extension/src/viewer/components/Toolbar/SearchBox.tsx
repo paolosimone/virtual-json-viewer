@@ -1,3 +1,12 @@
+import { Icon, IconButton, IconLabel } from "@/viewer/components";
+import {
+  CHORD_KEY,
+  KeydownEvent,
+  useGlobalKeydownEvent,
+  useReactiveRef,
+} from "@/viewer/hooks";
+import { TranslationContext } from "@/viewer/localization";
+import { Search, SearchVisibility, SettingsContext } from "@/viewer/state";
 import classNames from "classnames";
 import {
   Dispatch,
@@ -8,15 +17,6 @@ import {
   useContext,
   useEffect,
 } from "react";
-import { Icon, IconButton, IconLabel } from "@/viewer/components";
-import {
-  CHORD_KEY,
-  KeydownEvent,
-  useGlobalKeydownEvent,
-  useReactiveRef,
-} from "@/viewer/hooks";
-import { TranslationContext } from "@/viewer/localization";
-import { Search, SearchVisibility, SettingsContext } from "@/viewer/state";
 
 export type SearchBoxProps = Props<{
   search: Search;
@@ -59,18 +59,18 @@ export function SearchBox({
   return (
     <span
       className={classNames(
-        "flex items-center pr-1 rounded-sm border border-input-background bg-input-background text-input-foreground",
+        "border-input-background bg-input-background text-input-foreground flex items-center rounded-sm border pr-1",
         className,
       )}
     >
       {isEmpty ? (
         <IconLabel
-          className="w-5 h-5 ml-1 mr-2 fill-input-foreground"
+          className="fill-input-foreground mr-2 ml-1 h-5 w-5"
           icon={Icon.Search}
         />
       ) : (
         <IconButton
-          className="w-5 h-5 ml-1 mr-2 fill-input-foreground hover:bg-input-focus"
+          className="fill-input-foreground hover:bg-input-focus mr-2 ml-1 h-5 w-5"
           title={t.toolbar.search.clear}
           icon={Icon.Close}
           onClick={clearSearch}
@@ -78,7 +78,7 @@ export function SearchBox({
       )}
 
       <SearchInput
-        className="flex-1 bg-inherit placeholder-input-foreground/50"
+        className="placeholder-input-foreground/50 flex-1 bg-inherit"
         text={search.text}
         setText={setText}
       />
@@ -86,7 +86,7 @@ export function SearchBox({
       {!disableShowMismatch && (
         <IconButton
           className={classNames(
-            "w-6 h-6 fill-input-foreground hover:bg-input-focus",
+            "fill-input-foreground hover:bg-input-focus h-6 w-6",
           )}
           title={t.toolbar.search.visibility[search.visibility]}
           icon={SEARCH_MISMATCH_ICONS[search.visibility]}
@@ -96,7 +96,7 @@ export function SearchBox({
 
       <IconButton
         className={classNames(
-          "w-6 h-6 ml-1 fill-input-foreground hover:bg-input-focus",
+          "fill-input-foreground hover:bg-input-focus ml-1 h-6 w-6",
         )}
         title={
           t.toolbar.search.case[

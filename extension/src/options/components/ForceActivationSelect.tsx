@@ -1,5 +1,7 @@
-import classNames from "classnames";
 import { GlobalOptionsContext } from "@/options/Context";
+import { Icon, IconLabel, Select } from "@/viewer/components";
+import { DefaultSettings } from "@/viewer/state";
+import classNames from "classnames";
 import {
   Dispatch,
   FormEvent,
@@ -8,8 +10,6 @@ import {
   useEffect,
   useState,
 } from "react";
-import { Icon, IconLabel, Select } from "@/viewer/components";
-import { DefaultSettings } from "@/viewer/state";
 
 export type ForceActivationSelectProps = Props<{
   urlRegex: Nullable<string>;
@@ -85,19 +85,19 @@ function UrlRegexInput({
 
   return (
     <span
-      className={classNames("flex items-center bg-input-background", className)}
+      className={classNames("bg-input-background flex items-center", className)}
     >
       <input
         type="text"
         className={classNames(
-          "grow pl-1 bg-input-background text-input-foreground border border-r-0 border-input-focus focus:outline-hidden",
+          "bg-input-background text-input-foreground border-input-focus grow border border-r-0 pl-1 focus:outline-hidden",
           className,
         )}
         value={inputRegex}
         onChange={onInputRegexChange}
       />
       <IconLabel
-        className={classNames("w-5 h-5 border border-l-0", {
+        className={classNames("h-5 w-5 border border-l-0", {
           "fill-green-800": isValidInputRegex,
           "fill-red-800": !isValidInputRegex,
         })}

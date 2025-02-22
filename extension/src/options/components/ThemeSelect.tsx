@@ -1,8 +1,8 @@
-import classNames from "classnames";
 import { GlobalOptionsContext } from "@/options/Context";
-import { JSX, useContext } from "react";
 import { Icon, IconButton, Select } from "@/viewer/components";
 import { ThemeName } from "@/viewer/state";
+import classNames from "classnames";
+import { JSX, useContext } from "react";
 
 export type ThemeSelectProps = Props<{
   onEdit: () => void;
@@ -30,7 +30,7 @@ export function ThemeSelect({
       {theme.name === ThemeName.Custom && (
         <IconButton
           title={t.settings.edit}
-          className={"h-7 w-7 fill-viewer-foreground hover:bg-viewer-focus"}
+          className={"fill-viewer-foreground hover:bg-viewer-focus h-7 w-7"}
           icon={Icon.Edit}
           onClick={onEdit}
         />

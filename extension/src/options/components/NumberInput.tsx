@@ -30,7 +30,7 @@ export function NumberInput({
     <input
       type="number"
       className={classNames(
-        "pl-1 bg-input-background text-input-foreground border border-input-focus focus:outline-hidden cursor-pointer",
+        "bg-input-background text-input-foreground border-input-focus cursor-pointer border pl-1 focus:outline-hidden",
         className,
       )}
       onChange={setNewValue}

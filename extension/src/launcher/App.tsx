@@ -1,9 +1,9 @@
-import classNames from "classnames";
 import "@/global.css";
 import { useTheme } from "@/viewer/hooks";
+import classNames from "classnames";
+import { Dispatch, JSX, useState } from "react";
 import { OptionsWrapper } from "./OptionsWrapper";
 import { ViewerWrapper } from "./ViewerWrapper";
-import { Dispatch, JSX, useState } from "react";
 
 type Page = "launcher" | "viewer" | "options";
 
@@ -28,7 +28,7 @@ type PagePickerProps = Props<{
 
 function PagePicker({ setPage }: PagePickerProps): JSX.Element {
   return (
-    <div className="h-screen p-4 grid grid-cols-2 gap-4 items-center">
+    <div className="grid h-screen grid-cols-2 items-center gap-4 p-4">
       <LauncherButton
         className="h-1/2"
         title="Viewer"
@@ -52,7 +52,7 @@ function LauncherButton({ title, launch, className }: LauncherButtonProps) {
   return (
     <button
       className={classNames(
-        "rounded-md text-toolbar-foreground bg-toolbar-background hover:bg-toolbar-focus text-4xl",
+        "text-toolbar-foreground bg-toolbar-background hover:bg-toolbar-focus rounded-md text-4xl",
         className,
       )}
       onClick={launch}

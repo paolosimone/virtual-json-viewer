@@ -1,9 +1,9 @@
-import classNames from "classnames";
-import { Dispatch, JSX, useContext, useState } from "react";
-import { ChromePicker } from "react-color";
 import { Icon, IconButton } from "@/viewer/components";
 import { FallbackTranslation } from "@/viewer/localization";
 import { ColorKey, HexColor } from "@/viewer/state";
+import classNames from "classnames";
+import { Dispatch, JSX, useContext, useState } from "react";
+import { ChromePicker } from "react-color";
 import { GlobalOptionsContext, OptionsPage } from "./Context";
 
 export type EditCustomThemeProps = BaseProps;
@@ -39,7 +39,7 @@ export function EditCustomTheme({
 
       <div
         key={`${section}Colors`}
-        className="grid grid-cols-3 gap-2 items-center pb-3"
+        className="grid grid-cols-3 items-center gap-2 pb-3"
       >
         {Object.keys(theme.customColors)
           .filter((key) => key.startsWith(section))
@@ -55,14 +55,14 @@ export function EditCustomTheme({
     <div
       className={classNames(
         className,
-        "relative flex flex-col items-stretch pt-2 px-8 pb-8 bg-viewer-background",
+        "bg-viewer-background relative flex flex-col items-stretch px-8 pt-2 pb-8",
       )}
     >
       {/* back button */}
       <IconButton
         title={t.settings.close}
         className={
-          "self-end w-7 h-7 fill-viewer-foreground hover:bg-viewer-focus"
+          "fill-viewer-foreground hover:bg-viewer-focus h-7 w-7 self-end"
         }
         icon={Icon.Close}
         onClick={() => gotoPage(OptionsPage.Main)}
@@ -112,16 +112,16 @@ export function ColorPreview({
   return (
     <div
       className={classNames(
-        "flex text-black bg-white rounded-sm cursor-pointer p-0.5",
+        "flex cursor-pointer rounded-sm bg-white p-0.5 text-black",
         className,
       )}
       onClick={onClick}
     >
       <div
-        className="basis-1/6 shrink-0 border border-black rounded-sm"
+        className="shrink-0 basis-1/6 rounded-sm border border-black"
         style={{ background: color }}
       />
-      <span className="pl-3 grow">{colorName}</span>
+      <span className="grow pl-3">{colorName}</span>
     </div>
   );
 }

@@ -1,7 +1,7 @@
+import { RefCurrent } from "@/viewer/hooks";
 import { RefObject } from "react";
 import { VariableSizeTree as Tree } from "react-vtree";
 import { NodePublicState, NodeRecord } from "react-vtree/dist/es/Tree";
-import { RefCurrent } from "@/viewer/hooks";
 import { JsonNodeData } from "./model/JsonNode";
 
 export type JsonTree = Tree<JsonNodeData>;

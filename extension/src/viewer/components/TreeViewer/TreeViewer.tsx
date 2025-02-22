@@ -1,16 +1,3 @@
-import classNames from "classnames";
-import {
-  RefObject,
-  useCallback,
-  useContext,
-  useMemo,
-  useRef,
-  JSX,
-} from "react";
-import {
-  VariableSizeNodePublicState as NodeState,
-  VariableSizeTree as Tree,
-} from "react-vtree";
 import * as DOM from "@/viewer/commons/Dom";
 import { EventType } from "@/viewer/commons/EventBus";
 import * as Json from "@/viewer/commons/Json";
@@ -26,6 +13,19 @@ import {
   useReactiveRef,
 } from "@/viewer/hooks";
 import { Search, SettingsContext } from "@/viewer/state";
+import classNames from "classnames";
+import {
+  JSX,
+  RefObject,
+  useCallback,
+  useContext,
+  useMemo,
+  useRef,
+} from "react";
+import {
+  VariableSizeNodePublicState as NodeState,
+  VariableSizeTree as Tree,
+} from "react-vtree";
 import { TreeNavigator } from "./TreeNavigator";
 import { TreeNode } from "./TreeNode";
 import { JsonNodeData } from "./model/JsonNode";

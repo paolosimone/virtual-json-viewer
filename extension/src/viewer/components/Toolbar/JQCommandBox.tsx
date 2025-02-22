@@ -1,13 +1,3 @@
-import classNames from "classnames";
-import {
-  Dispatch,
-  FormEvent,
-  JSX,
-  SetStateAction,
-  useCallback,
-  useContext,
-  useState,
-} from "react";
 import { Icon, IconButton } from "@/viewer/components";
 import {
   CHORD_KEY,
@@ -18,6 +8,16 @@ import {
 } from "@/viewer/hooks";
 import { TranslationContext } from "@/viewer/localization";
 import { JQCommand } from "@/viewer/state";
+import classNames from "classnames";
+import {
+  Dispatch,
+  FormEvent,
+  JSX,
+  SetStateAction,
+  useCallback,
+  useContext,
+  useState,
+} from "react";
 
 export type JQCommandBoxProps = Props<{
   command: JQCommand;
@@ -45,18 +45,18 @@ export function JQCommandBox({
   return (
     <span className="flex items-center">
       <IconButton
-        className="w-5 h-5 mx-2 fill-toolbar-foreground hover:bg-toolbar-focus"
+        className="fill-toolbar-foreground hover:bg-toolbar-focus mx-2 h-5 w-5"
         title={t.toolbar.jq.manual}
         icon={Icon.Question}
         onClick={openJQManual}
       />
 
-      <span className="flex items-center flex-1 pr-1 rounded-sm border border-input-background bg-input-background text-input-foreground">
+      <span className="border-input-background bg-input-background text-input-foreground flex flex-1 items-center rounded-sm border pr-1">
         {isEmpty ? (
           <label className="mx-1 mr-2 select-none">jq</label>
         ) : (
           <IconButton
-            className="w-5 h-5 ml-1 mr-2 fill-input-foreground hover:bg-input-focus"
+            className="fill-input-foreground hover:bg-input-focus mr-2 ml-1 h-5 w-5"
             title={t.toolbar.jq.clear}
             icon={Icon.Close}
             onClick={clearFilter}
@@ -64,14 +64,14 @@ export function JQCommandBox({
         )}
 
         <FilterInput
-          className="flex-1 bg-input-background placeholder-input-foreground/50"
+          className="bg-input-background placeholder-input-foreground/50 flex-1"
           filter={filter}
           setFilter={setFilter}
           onSubmit={applyFilter}
         />
 
         <IconButton
-          className="w-5 h-5 fill-input-foreground hover:bg-input-focus"
+          className="fill-input-foreground hover:bg-input-focus h-5 w-5"
           title={t.toolbar.jq.run}
           icon={Icon.Run}
           onClick={applyFilter}

@@ -1,3 +1,7 @@
+import * as DOM from "@/viewer/commons/Dom";
+import * as Json from "@/viewer/commons/Json";
+import { useRenderedText } from "@/viewer/hooks";
+import { Search } from "@/viewer/state";
 import classNames from "classnames";
 import {
   ForwardedRef,
@@ -6,10 +10,6 @@ import {
   useImperativeHandle,
   useRef,
 } from "react";
-import * as DOM from "@/viewer/commons/Dom";
-import * as Json from "@/viewer/commons/Json";
-import { useRenderedText } from "@/viewer/hooks";
-import { Search } from "@/viewer/state";
 import { TreeNavigator } from "../TreeNavigator";
 import { JsonNodeData } from "../model/JsonNode";
 

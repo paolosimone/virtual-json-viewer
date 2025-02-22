@@ -1,6 +1,6 @@
-import { ReactNode, useContext, useMemo } from "react";
 import { RenderedText } from "@/viewer/components";
 import { Search, SettingsContext } from "@/viewer/state";
+import { ReactNode, useContext, useMemo } from "react";
 
 export function useRenderedText(
   text: string,

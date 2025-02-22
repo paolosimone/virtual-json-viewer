@@ -1,9 +1,9 @@
-import react from "@vitejs/plugin-react";
-import { resolve } from "path";
-import fs from "fs/promises";
-import { InlineConfig, build } from "vite";
-import { exit } from "process";
 import tailwindcss from "@tailwindcss/vite";
+import react from "@vitejs/plugin-react";
+import fs from "fs/promises";
+import { resolve } from "path";
+import { exit } from "process";
+import { InlineConfig, build } from "vite";
 
 type Browser = "chrome" | "firefox";
 const BROWSER = process.argv[2] as Browser;
