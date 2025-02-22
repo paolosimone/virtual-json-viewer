@@ -90,7 +90,7 @@ function UrlRegexInput({
       <input
         type="text"
         className={classNames(
-          "grow pl-1 bg-input-background text-input-foreground border border-r-0 border-input-focus focus:outline-none",
+          "grow pl-1 bg-input-background text-input-foreground border border-r-0 border-input-focus focus:outline-hidden",
           className,
         )}
         value={inputRegex}

@@ -51,7 +51,7 @@ export function JQCommandBox({
         onClick={openJQManual}
       />
 
-      <span className="flex items-center flex-1 pr-1 rounded border border-input-background bg-input-background text-input-foreground">
+      <span className="flex items-center flex-1 pr-1 rounded-sm border border-input-background bg-input-background text-input-foreground">
         {isEmpty ? (
           <label className="mx-1 mr-2 select-none">jq</label>
         ) : (
@@ -124,7 +124,7 @@ function FilterInput({
     <input
       ref={ref}
       type="input"
-      className={classNames("focus:outline-none", className)}
+      className={classNames("focus:outline-hidden", className)}
       onChange={onChange}
       onKeyDown={onKeyDown}
       placeholder="."

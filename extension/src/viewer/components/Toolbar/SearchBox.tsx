@@ -59,7 +59,7 @@ export function SearchBox({
   return (
     <span
       className={classNames(
-        "flex items-center pr-1 rounded border border-input-background bg-input-background text-input-foreground",
+        "flex items-center pr-1 rounded-sm border border-input-background bg-input-background text-input-foreground",
         className,
       )}
     >
@@ -175,7 +175,7 @@ function SearchInput({
     <input
       ref={ref}
       type="input"
-      className={classNames("focus:outline-none", className)}
+      className={classNames("focus:outline-hidden", className)}
       onChange={onChange}
       placeholder={t.toolbar.search.placeholder}
     />

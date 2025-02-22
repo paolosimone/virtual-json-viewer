@@ -13,7 +13,7 @@ export function IconLabel({
   className,
 }: IconLabelProps): JSX.Element {
   return (
-    <label className={classNames("rounded", className)} title={title}>
+    <label className={classNames("rounded-sm", className)} title={title}>
       <CustomIcon />
     </label>
   );

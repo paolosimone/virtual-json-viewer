@@ -20,7 +20,7 @@ export function Checkbox({
     <input
       type="checkbox"
       className={classNames(
-        "pl-1 bg-input-background focus:outline-none cursor-pointer",
+        "pl-1 bg-input-background focus:outline-hidden cursor-pointer",
         className,
       )}
       onChange={setNewChecked}

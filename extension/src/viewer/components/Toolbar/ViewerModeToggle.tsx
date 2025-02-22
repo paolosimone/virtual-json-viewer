@@ -40,7 +40,7 @@ export function ViewerModeToggle({
   const isTreeView = viewerMode === ViewerMode.Tree;
 
   return (
-    <span className={classNames("flex items-center rounded-sm", className)}>
+    <span className={classNames("flex items-center rounded-xs", className)}>
       <IconButton
         icon={Icon.ListTree}
         onClick={toggleView}

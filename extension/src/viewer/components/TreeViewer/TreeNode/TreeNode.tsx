@@ -47,7 +47,7 @@ export function TreeNode({
   return (
     <div
       ref={parentRef}
-      className="focus:outline-none focus:bg-viewer-focus"
+      className="focus:outline-hidden focus:bg-viewer-focus"
       style={{ ...style, paddingLeft: `${data.nesting}em` }}
       tabIndex={-1}
       onClick={() => parent?.focus()}

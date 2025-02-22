@@ -75,7 +75,7 @@ export function EditCustomTheme({
       {pickerColorKey && (
         <div>
           <div
-            className="fixed inset-0 z-10 backdrop-blur-sm"
+            className="fixed inset-0 z-10 backdrop-blur-xs"
             onClick={() => setPickerColorKey(null)}
           />
           <ColorPicker
@@ -112,13 +112,13 @@ export function ColorPreview({
   return (
     <div
       className={classNames(
-        "flex text-black bg-white rounded cursor-pointer p-0.5",
+        "flex text-black bg-white rounded-sm cursor-pointer p-0.5",
         className,
       )}
       onClick={onClick}
     >
       <div
-        className="basis-1/6 shrink-0 border border-black rounded"
+        className="basis-1/6 shrink-0 border border-black rounded-sm"
         style={{ background: color }}
       />
       <span className="pl-3 grow">{colorName}</span>
