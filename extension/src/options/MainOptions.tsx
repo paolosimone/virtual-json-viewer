@@ -13,6 +13,7 @@ import { GlobalOptionsContext, OptionsPage } from "./Context";
 import {
   Checkbox,
   EnumSelect,
+  Label,
   LanguageSelect,
   NumberInput,
   ThemeSelect,
@@ -38,13 +39,13 @@ export function MainOptions({ className }: MainOptionsProps): JSX.Element {
         {t.settings.sections.system}
       </h2>
 
-      <label>{t.settings.labels.theme}</label>
+      <Label tooltip="">{t.settings.labels.theme}</Label>
       <ThemeSelect onEdit={() => gotoPage(OptionsPage.EditTheme)} />
 
-      <label>{t.settings.labels.language}</label>
+      <Label tooltip="">{t.settings.labels.language}</Label>
       <LanguageSelect />
 
-      <label>{t.settings.labels.textSize}</label>
+      <Label tooltip="">{t.settings.labels.textSize}</Label>
       <EnumSelect
         enumType={TextSize}
         value={settings.textSize}
@@ -54,7 +55,7 @@ export function MainOptions({ className }: MainOptionsProps): JSX.Element {
         labels={t.settings.textSize}
       />
 
-      <label>{t.settings.labels.forceActivation}</label>
+      <Label tooltip="">{t.settings.labels.forceActivation}</Label>
       <ForceActivationSelect
         urlRegex={settings.activationUrlRegex}
         setUrlRegex={(newValue: Nullable<string>) =>
@@ -67,7 +68,7 @@ export function MainOptions({ className }: MainOptionsProps): JSX.Element {
         {t.settings.sections.viewer}
       </h2>
 
-      <label>{t.settings.labels.viewer}</label>
+      <Label tooltip="">{t.settings.labels.viewer}</Label>
       <EnumSelect
         enumType={ViewerMode}
         value={settings.viewerMode}
@@ -77,7 +78,7 @@ export function MainOptions({ className }: MainOptionsProps): JSX.Element {
         labels={t.toolbar.view}
       />
 
-      <label>{t.settings.labels.viewerTreeNode}</label>
+      <Label tooltip="">{t.settings.labels.viewerTreeNode}</Label>
       <NodeStateSelect
         expandNodes={settings.expandNodes}
         setExpandNodes={(newExpandNodes: boolean) =>
@@ -85,7 +86,7 @@ export function MainOptions({ className }: MainOptionsProps): JSX.Element {
         }
       />
 
-      <label>{t.settings.labels.indentation}</label>
+      <Label tooltip="">{t.settings.labels.indentation}</Label>
       <NumberInput
         min={1}
         value={settings.indentation}
@@ -94,13 +95,13 @@ export function MainOptions({ className }: MainOptionsProps): JSX.Element {
         }
       />
 
-      <label>{t.settings.labels.sortKeys}</label>
+      <Label tooltip="">{t.settings.labels.sortKeys}</Label>
       <Checkbox
         checked={settings.sortKeys}
         setChecked={(checked: boolean) => updateSettings({ sortKeys: checked })}
       />
 
-      <label>{t.settings.labels.linkifyUrls}</label>
+      <Label tooltip="">{t.settings.labels.linkifyUrls}</Label>
       <Checkbox
         checked={settings.linkifyUrls}
         setChecked={(checked: boolean) =>
@@ -113,7 +114,7 @@ export function MainOptions({ className }: MainOptionsProps): JSX.Element {
         {t.settings.sections.toolbar}
       </h2>
 
-      <label>{t.settings.labels.searchDelay}</label>
+      <Label tooltip="">{t.settings.labels.searchDelay}</Label>
       <NumberInput
         min={0}
         value={settings.searchDelay}
@@ -122,7 +123,7 @@ export function MainOptions({ className }: MainOptionsProps): JSX.Element {
         }
       />
 
-      <label>{t.settings.labels.searchVisibility}</label>
+      <Label tooltip="">{t.settings.labels.searchVisibility}</Label>
       <EnumSelect
         enumType={SearchVisibility}
         value={settings.searchVisibility}
@@ -132,7 +133,7 @@ export function MainOptions({ className }: MainOptionsProps): JSX.Element {
         labels={t.toolbar.search.visibility}
       />
 
-      <label>{t.settings.labels.enableJQ}</label>
+      <Label tooltip="">{t.settings.labels.enableJQ}</Label>
       <Checkbox
         checked={settings.enableJQ}
         setChecked={(checked: boolean) => updateSettings({ enableJQ: checked })}
