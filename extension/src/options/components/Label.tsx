@@ -3,14 +3,11 @@ import { JSX } from "react";
 import style from "./Label.module.css";
 
 export type LabelProps = Props<{
+  text: string;
   tooltip: string;
 }>;
 
-export function Label({
-  children,
-  tooltip,
-  className,
-}: LabelProps): JSX.Element {
+export function Label({ text, tooltip, className }: LabelProps): JSX.Element {
   return (
     <div className={className}>
       <label
@@ -19,7 +16,7 @@ export function Label({
           "cursor-help border-b border-dotted",
         )}
       >
-        {children}
+        {text}
 
         <span
           className={classNames(

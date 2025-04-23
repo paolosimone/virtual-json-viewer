@@ -14,7 +14,6 @@
 
   max-width: 50vw;
   width: max-content;
-  word-break: break-all;
 }
 
 .has-tooltip:hover .tooltip {

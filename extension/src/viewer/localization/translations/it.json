@@ -10,18 +10,54 @@
       "support": "Supporto"
     },
     "labels": {
-      "enableJQ": "Abilita JQ",
-      "forceActivation": "Forza l'attivazione del plugin",
-      "indentation": "Indentazione",
-      "language": "Lingua",
-      "linkifyUrls": "Trasforma URLs in links",
-      "searchDelay": "Ritardo nella ricerca (ms)",
-      "searchVisibility": "Visibilità iniziale della ricerca",
-      "sortKeys": "Chiavi in ordine alfabetico",
-      "textSize": "Dimensioni caratteri",
-      "theme": "Tema",
-      "viewer": "Vista iniziale",
-      "viewerTreeNode": "Stato iniziale dell'albero"
+      "enableJQ": {
+        "text": "Abilita JQ",
+        "tooltip": "Mostra JQ nella barra degli strumenti. Funziona solo su siti web che permettono l'esecuzione di WASM nella loro Content Security Policy."
+      },
+      "forceActivation": {
+        "text": "Forza attivazione del plugin",
+        "tooltip": "Prova a parsare il contenuto della pagina come JSON su URL che soddisfano la regex, anche se non hanno un Content-Type JSON."
+      },
+      "indentation": {
+        "text": "Indentazione",
+        "tooltip": "Spazi di indentazione dei JSON formattati. Usato sia nella vista Testo che quando si clicca il pulsante di download."
+      },
+      "language": {
+        "text": "Lingua",
+        "tooltip": "Imposta la lingua."
+      },
+      "linkifyUrls": {
+        "text": "Trasforma URLs in link",
+        "tooltip": "Trasforma il testo che rappresenta URL in un link."
+      },
+      "searchDelay": {
+        "text": "Ritardo nella ricerca (ms)",
+        "tooltip": "Millisecondi di ritardo dopo aver smesso di digitare nella barra di ricerca, per evitare di cercare ad ogni tasto."
+      },
+      "searchVisibility": {
+        "text": "Visibilità iniziale della ricerca",
+        "tooltip": "Scegli quali nodi nell'albero mostrare durante una ricerca."
+      },
+      "sortKeys": {
+        "text": "Ordina le chiavi",
+        "tooltip": "Ordina le chiavi in ordine alfabetico per facilitare la navigazione."
+      },
+      "textSize": {
+        "text": "Dimensioni caratteri",
+        "tooltip": "Imposta la dimensione del testo."
+      },
+      "theme": {
+        "text": "Tema",
+        "tooltip": "Imposta il tema. Seleziona 'Personalizzato' per creare il tuo schema di colori."
+      },
+      "viewer": {
+        "text": "Vista iniziale",
+        "tooltip": "Imposta la vista iniziale quando si carica un nuovo JSON."
+      },
+      "viewerTreeNode": {
+        "text": "Stato iniziale dell'albero",
+        "tooltip": "Imposta lo stato iniziale aperto/chiuso dei nodi dell'albero quando si carica un nuovo JSON."
+      }
     },
     "language": {
       "system": "Lingua di sistema"
@@ -86,7 +122,7 @@
       },
       "visibility": {
         "all": "Mostra tutto",
-        "subtree": "Mostra albero",
+        "subtree": "Mostra l'albero sotto i risultati",
         "match": "Mostra solo i risultati"
       },
       "placeholder": "cerca"
