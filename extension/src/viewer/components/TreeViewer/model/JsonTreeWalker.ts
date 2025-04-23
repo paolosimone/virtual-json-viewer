@@ -102,7 +102,25 @@ type NodeDataBuilder = (
   searchMatch?: Nullable<SearchMatch>,
 ) => TreeWalkerValue<JsonNodeData>;
 
-function nodeDataBuilder(isOpenByDefault: boolean): NodeDataBuilder {
+function nodeDataBuilder(expandNodes: boolean): NodeDataBuilder {
+  function isOpenByDefault(
+    value: Json.Root,
+    searchMatch: Nullable<SearchMatch>,
+  ) {
+    // leaves don't have children so they are always "closed"
+    if (Json.isLeaf(value)) {
+      return false;
+    }
+
+    // if search is enabled, open it only if children contain a search match
+    if (searchMatch) {
+      return searchMatch.inValue;
+    }
+
+    // default behavior
+    return expandNodes;
+  }
+
   return function getNodeData(
     { key, value, parent }: JsonNode,
     searchMatch: Nullable<SearchMatch> = null,
@@ -110,9 +128,7 @@ function nodeDataBuilder(isOpenByDefault: boolean): NodeDataBuilder {
     return {
       data: {
         id: buildId(key, parent),
-        isOpenByDefault:
-          !Json.isLeaf(value) &&
-          (searchMatch?.inValue || (searchMatch === null && isOpenByDefault)),
+        isOpenByDefault: isOpenByDefault(value, searchMatch),
         nesting: parent ? parent.nesting + 1 : 0,
         isLeaf: Json.isLeaf(value),
         key: key,

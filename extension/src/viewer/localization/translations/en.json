@@ -10,18 +10,54 @@
       "support": "Support"
     },
     "labels": {
-      "enableJQ": "Enable JQ",
-      "forceActivation": "Force extension activation",
-      "indentation": "Indentation",
-      "language": "Language",
-      "linkifyUrls": "Clickable URLs",
-      "searchDelay": "Search delay (ms)",
-      "searchVisibility": "Default search visibility",
-      "sortKeys": "Sort keys",
-      "textSize": "Text size",
-      "theme": "Theme",
-      "viewer": "Default viewer",
-      "viewerTreeNode": "Default tree view state"
+      "enableJQ": {
+        "text": "Enable JQ",
+        "tooltip": "Shows JQ toolbar. Only works on websites that allow WASM execution in their Content Security Policy."
+      },
+      "forceActivation": {
+        "text": "Force extension activation",
+        "tooltip": "Try parsing the page content as JSON on URLs matching the regex, even if they don't have a JSON Content-Type."
+      },
+      "indentation": {
+        "text": "Indentation",
+        "tooltip": "Indentation spaces of prettified JSONs. Used both in Raw viewer and when clicking the download button."
+      },
+      "language": {
+        "text": "Language",
+        "tooltip": "Set the language."
+      },
+      "linkifyUrls": {
+        "text": "Clickable URLs",
+        "tooltip": "Transform text representing URLs into a link."
+      },
+      "searchDelay": {
+        "text": "Search delay (ms)",
+        "tooltip": "Milliseconds delay after stop typing in the search toolbar, to prevent searching on every keystroke."
+      },
+      "searchVisibility": {
+        "text": "Default search visibility",
+        "tooltip": "Choose which nodes in the tree to show by default when searching."
+      },
+      "sortKeys": {
+        "text": "Sort keys",
+        "tooltip": "Sort keys alphabetically to facilitate navigation."
+      },
+      "textSize": {
+        "text": "Text size",
+        "tooltip": "Set the text size."
+      },
+      "theme": {
+        "text": "Theme",
+        "tooltip": "Set the theme. Select 'Custom' to create your own color scheme."
+      },
+      "viewer": {
+        "text": "Default viewer",
+        "tooltip": "Set the default viewer mode when loading a new JSON."
+      },
+      "viewerTreeNode": {
+        "text": "Default tree nodes state",
+        "tooltip": "Set the default open/closed state of tree nodes when loading a new JSON."
+      }
     },
     "language": {
       "system": "System language"
@@ -86,7 +122,7 @@
       },
       "visibility": {
         "all": "Show all",
-        "subtree": "Show subtree",
+        "subtree": "Show matches subtree",
         "match": "Show matches only"
       },
       "placeholder": "search"
