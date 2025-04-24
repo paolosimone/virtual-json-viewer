@@ -133,5 +133,5 @@ function FilterInput({
 }
 
 function openJQManual() {
-  window.open("https://stedolan.github.io/jq/manual/v1.6/", "_blank");
+  window.open("https://jqlang.org/manual/v1.7/", "_blank");
 }
