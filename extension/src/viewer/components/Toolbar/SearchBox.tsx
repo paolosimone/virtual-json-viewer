@@ -1,3 +1,4 @@
+import { isActiveElementEditable } from "@/viewer/commons/Dom";
 import { Icon, IconButton, IconLabel } from "@/viewer/components";
 import {
   CHORD_KEY,
@@ -158,11 +159,10 @@ function SearchInput({
   // override browser search shortcut
   const handleShortcut = useCallback(
     (e: KeydownEvent) => {
-      if (document.activeElement === current) {
-        return;
-      }
-
-      if ((e[CHORD_KEY] && e.key === "f") || e.key === "/") {
+      if (
+        (e[CHORD_KEY] && e.key === "f") ||
+        (e.key === "/" && !isActiveElementEditable())
+      ) {
         e.preventDefault();
         current?.focus();
       }
