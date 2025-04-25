@@ -10,6 +10,7 @@ import {
   useMemo,
   useState,
 } from "react";
+import { isActiveElementEditable } from "./commons/Dom";
 import {
   Alert,
   RawViewer,
@@ -74,13 +75,14 @@ export function App({ jsonText }: AppProps): JSX.Element {
 
   const viewerProps = useTransitionViewerProps(state, jsonText, jsonLines);
 
-  // disable "select all" shortcut
-  const handleNavigation = useCallback((e: KeydownEvent) => {
-    if (e[CHORD_KEY] && e.key === "a") {
+  // browser default's "select all" behavior is not meaningful in the viewer,
+  // children components should handle their own selection (except for standard input elements)
+  const disableSelectAll = useCallback((e: KeydownEvent) => {
+    if (e[CHORD_KEY] && e.key === "a" && !isActiveElementEditable()) {
       e.preventDefault();
     }
   }, []);
-  useGlobalKeydownEvent(handleNavigation);
+  useGlobalKeydownEvent(disableSelectAll);
 
   // -- no hooks below -- //
 
