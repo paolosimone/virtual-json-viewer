@@ -14,20 +14,11 @@ Browser plugin that uses [virtual DOM](https://github.com/Lodin/react-vtree) to 
 
 > "Oh my! There are plenty of json viewers, why making a new one?"
 
-Rightful question, and the answer is quite simple: the others weren't good enough [for my needs].  
-
-I often have to debug large json payloads, so large that every other plugin for chrome I tried freezed without showing any content.
-
-> "Good for you, but **my** payloads are small, pretty and strawberry flavoured"
-
-That's ok, if you are happy with your current plugin, no need to change.  
-
-And if you want to come back later don't worry, we'll still be here, with blazing fast loading time, 
-built-in search, JQ filtering and many other features... but no strawberries, sorry
+Rightful question, and the answer is quite simple: the others weren't good enough [for my needs]: I often have to debug large json payloads, so large that every other plugin for chrome I tried freezed without showing any content.
 
 ## Features
 
-- [X] JSON rendering using virtual DOM and collapsible nodes
+- [X] [Blazing fast](#performance) JSON rendering using virtual DOM
     - [X] Color-encoded value types
     - [X] Collapse/expand all nodes
     - [X] Preview nested item count for closed nodes

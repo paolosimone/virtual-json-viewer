@@ -75,6 +75,8 @@ function loadJQ(): Promise<JQ> {
     locateFile: () => JQ_WASM_FILE,
     print: devNull,
     printErr: devNull,
+    // subsequent commands to the same jq instance will fail without error messages
+    // https://github.com/paolosimone/jq-wasm/issues/2
     noExitRuntime: false,
   });
 }
