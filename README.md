@@ -257,7 +257,7 @@ Always `yarn format` before creating a commit.
 |-------------------------------------------------------------------------------|-----------------------------------------------|
 |[anchorme](https://github.com/alexcorvi/anchorme.js)                           |Convert URLs to clickable HTML links|
 |[jq-wasm](https://github.com/paolosimone/jq-wasm)                              |JQ in the browser|
-|[json-stable-stringify](https://github.com/substack/json-stable-stringify)     |Sort keys on JSON serialization apparently is rocket science|
+|[json-stable-stringify](https://github.com/ljharb/json-stable-stringify)       |Sort keys on JSON serialization apparently is rocket science|
 |[React](https://reactjs.org/)                                                  |Learn how to write a frontend application without jQuery and bootstrap|
 |[react-color](https://github.com/casesandberg/react-color)                     |Easily edit the custom theme and, more importantly, looking professional while doing it|
 |[react-vtree](https://github.com/Lodin/react-vtree)                            |Render the JSON. I'd say it's a pretty important role|

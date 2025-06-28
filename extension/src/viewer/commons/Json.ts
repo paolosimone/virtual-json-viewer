@@ -142,7 +142,11 @@ export function linesToString(lines: Lines, opts?: ToStringOptions): string {
 
 export function toString(value: Root, opts?: ToStringOptions): string {
   return opts?.sortKeys
-    ? stableStringify(value, { replacer, space: opts?.space })!
+    ? stableStringify(value, {
+        replacer,
+        space: opts?.space,
+        collapseEmpty: true,
+      })!
     : JSON.stringify(value, replacer, opts?.space);
 }
 
