@@ -10,10 +10,10 @@ import {
   useImperativeHandle,
   useRef,
 } from "react";
-import { JsonNodeData } from "../model/JsonNode";
+import { JsonNode } from "../loader/JsonNode";
 
 export type KeyProps = Props<{
-  data: JsonNodeData;
+  node: JsonNode;
   search: Nullable<Search>;
 }>;
 
@@ -25,7 +25,7 @@ export const Key = forwardRef(function Key(
   props: KeyProps,
   ref: ForwardedRef<KeyHandle>,
 ): JSX.Element {
-  if (props.data.key === null) {
+  if (props.node.key === null) {
     return <span />;
   }
 
@@ -40,7 +40,7 @@ export const Key = forwardRef(function Key(
     [keyRef],
   );
 
-  const KeyElement = Json.isNumber(props.data.key) ? ArrayKey : ObjectKey;
+  const KeyElement = Json.isNumber(props.node.key) ? ArrayKey : ObjectKey;
 
   return (
     <KeyElement
@@ -55,22 +55,22 @@ export const Key = forwardRef(function Key(
 });
 
 const ArrayKey = forwardRef(function ArrayKey(
-  { data, className }: KeyProps,
+  { node, className }: KeyProps,
   ref: ForwardedRef<HTMLSpanElement>,
 ): JSX.Element {
   return (
     <span className={className}>
-      <span ref={ref}>{data.key}</span>
+      <span ref={ref}>{node.key}</span>
       <span>:</span>
     </span>
   );
 });
 
 const ObjectKey = forwardRef(function ObjectKey(
-  { data, search, className }: KeyProps,
+  { node, search, className }: KeyProps,
   ref: ForwardedRef<HTMLSpanElement>,
 ): JSX.Element {
-  const highlightedKey = useRenderedText(data.key as string, search);
+  const highlightedKey = useRenderedText(node.key as string, search);
 
   return (
     <span className={className}>

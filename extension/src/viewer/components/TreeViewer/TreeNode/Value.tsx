@@ -10,12 +10,12 @@ import {
   useImperativeHandle,
   useRef,
 } from "react";
-import { TreeNavigator } from "../TreeNavigator";
-import { JsonNodeData } from "../model/JsonNode";
+// import { TreeNavigator } from "../TreeNavigator";
+import { JsonNode } from "../loader/JsonNode";
 
 export type ValueProps = Props<{
-  data: JsonNodeData;
-  treeNavigator: TreeNavigator;
+  node: JsonNode;
+  // treeNavigator: TreeNavigator;
   search: Nullable<Search>;
 }>;
 
@@ -25,16 +25,16 @@ export type ValueHandle = {
 
 export const Value = forwardRef(function Value(
   {
-    data: { id, value, childrenCount },
-    treeNavigator,
+    node: { id, value, childrenCount },
+    // treeNavigator,
     search,
     className,
   }: ValueProps,
   ref: ForwardedRef<ValueHandle>,
 ): JSX.Element {
-  if (treeNavigator.isOpen(id)) {
-    return <span />;
-  }
+  // if (treeNavigator.isOpen(id)) {
+  //   return <span />;
+  // }
 
   if (Json.isCollection(value)) {
     return (

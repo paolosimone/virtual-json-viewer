@@ -1,22 +1,21 @@
 import * as Json from "@/viewer/commons/Json";
 import { Search } from "@/viewer/state";
 
-export type JsonNode = {
+export type JsonNodeInput = {
   key: Nullable<Json.Key>;
   value: Json.Root;
-  parent: Nullable<JsonNodeData>;
+  parent: Nullable<JsonNode>;
 };
 
-export type JsonNodeData = {
+export type JsonNode = {
   id: string;
-  isOpenByDefault: boolean;
-  isLeaf: boolean;
   key: Nullable<Json.Key>;
   value: Json.Root;
   nesting: number;
+  parent: Nullable<JsonNode>;
   childrenCount: Nullable<number>;
-  parent: Nullable<JsonNodeData>;
-  defaultHeight: number;
+  isLeaf: boolean;
+  isOpenByDefault: boolean;
   searchMatch: Nullable<SearchMatch>;
 };
 
