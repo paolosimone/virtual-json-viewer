@@ -114,17 +114,28 @@ export class TreeState {
   }
 
   private open(node: NodeState) {
-    // Nodes that will become visible after opening
-    const firstChild = node.children[0];
+    // The maximum number of nodes that can be added at once with splice
+    // is limited by maximum number of arguments in JavaScript, so we chunk.
+    let start = this.indexById(node.id) + 1;
+    let spliceArgs: [start: number, deleteCount: number, ...string[]] = [
+      start,
+      0,
+    ];
 
-    const appeared: string[] = [];
+    // Iterates over nodes that will become visible after opening
+    const firstChild = node.children[0];
     for (const visibleChild of walkFromNode(firstChild, false)) {
-      appeared.push(visibleChild.id);
+      spliceArgs.push(visibleChild.id);
+
+      if (spliceArgs.length == MAX_APPLY_ARGUMENTS) {
+        Array.prototype.splice.apply(this.visibleNodes, spliceArgs);
+        start += MAX_APPLY_ARGUMENTS - 2;
+        spliceArgs = [start, 0];
+      }
     }
 
-    // TODO large list optimization
-    const addFrom = this.indexById(node.id) + 1;
-    this.visibleNodes.splice(addFrom, 0, ...appeared);
+    // Add the remaining nodes, if any
+    Array.prototype.splice.apply(this.visibleNodes, spliceArgs);
   }
 
   private close(node: NodeState) {
@@ -162,3 +173,8 @@ function* walkFromNode(
     }
   }
 }
+
+// The actual maximum number of arguments depends on the JavaScript engine,
+// this is a conservative limit according to MDN docs and practical tests.
+// See e.g. https://stackoverflow.com/questions/22747068/is-there-a-max-number-of-arguments-javascript-functions-can-accept
+const MAX_APPLY_ARGUMENTS = 65535;
