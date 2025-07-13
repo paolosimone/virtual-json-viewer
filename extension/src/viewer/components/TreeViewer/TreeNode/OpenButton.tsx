@@ -1,10 +1,10 @@
 import classNames from "classnames";
 import { JSX } from "react";
 // import { TreeNavigator } from "../TreeNavigator";
-import { JsonNode } from "../loader/JsonNode";
+import { NodeData } from "../Tree/NodeData";
 
 export type OpenProps = Props<{
-  node: JsonNode;
+  node: NodeData;
   // treeNavigator: TreeNavigator;
 }>;
 

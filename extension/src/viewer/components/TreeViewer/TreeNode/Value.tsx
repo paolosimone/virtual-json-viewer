@@ -11,10 +11,10 @@ import {
   useRef,
 } from "react";
 // import { TreeNavigator } from "../TreeNavigator";
-import { JsonNode } from "../loader/JsonNode";
+import { NodeData } from "../Tree/NodeData";
 
 export type ValueProps = Props<{
-  node: JsonNode;
+  node: NodeData;
   // treeNavigator: TreeNavigator;
   search: Nullable<Search>;
 }>;

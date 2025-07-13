@@ -2,11 +2,10 @@ import * as Json from "@/viewer/commons/Json";
 import { useElementSize, useReactiveRef } from "@/viewer/hooks";
 import { Search, SettingsContext } from "@/viewer/state";
 import classNames from "classnames";
-import React, { JSX, useContext, useMemo } from "react";
+import { JSX, useContext, useMemo } from "react";
 // import { TreeNavigator } from "./TreeNavigator";
-import { jsonWalker } from "./loader/JsonWalker";
-import { Tree } from "./Tree";
-import { TreeState } from "./TreeState";
+import { Tree } from "./Tree/Tree";
+import { treeWalker } from "./Tree/TreeWalker";
 
 export type TreeViewerProps = Props<{
   jsonLines: Json.Lines;
@@ -27,17 +26,18 @@ export function TreeViewer({
   );
 
   const { expandNodes } = useContext(SettingsContext);
+
+  // tree walker for building the tree
+  const walker = useMemo(
+    () => treeWalker(json, search, expandNodes),
+    [json, search, expandNodes],
+  );
+
   // const tree = useRef<Nullable<Tree<JsonNodeData>>>(null);
 
   // for some obscure reason AutoSizer doesn't work on Firefox when loaded as extension
   const [parent, parentRef] = useReactiveRef<HTMLDivElement>();
   const { height, width } = useElementSize(parent);
-
-  // tree walker for building the tree
-  const treeState = useMemo(
-    () => new TreeState(jsonWalker(json, search, expandNodes)),
-    [json, search, expandNodes],
-  );
 
   // global events
   // const expand = useCallback(() => setOpen(json, tree, true), [json, tree]);
@@ -85,7 +85,7 @@ export function TreeViewer({
       tabIndex={0}
       // onKeyDown={onKeydown}
     >
-      <Tree height={height} width={width} treeState={treeState} />
+      <Tree height={height} width={width} treeWalker={walker} />
     </div>
   );
 }

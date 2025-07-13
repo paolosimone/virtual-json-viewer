@@ -1,18 +1,17 @@
 import * as Json from "@/viewer/commons/Json";
 import { Search } from "@/viewer/state";
-import { JsonNode, JsonNodeInput, SearchMatch } from "./JsonNode";
-import { JsonNodeFilter } from "./JsonNodeFilter";
+import { NodeData, NodeInput, SearchMatch } from "./NodeData";
+import { TreeSearch } from "./TreeSearch";
 
-export type JsonWalker = (
-  parent?: JsonNode,
-) => Generator<JsonNode, void, undefined>;
+export type TreeLevelWalker = Generator<NodeData, void, undefined>;
+export type TreeWalker = (parent?: NodeData) => TreeLevelWalker;
 
-export function jsonWalker(
+export function treeWalker(
   json: Json.Root,
   search: Search,
   expandNodes: boolean,
-): JsonWalker {
-  const buildNode = jsonNodeBuilder(expandNodes);
+): TreeWalker {
+  const buildNode = nodeDataBuilder(expandNodes);
   return search.text
     ? filteredJsonWalker(json, buildNode, search)
     : fullJsonWalker(json, buildNode);
@@ -20,15 +19,15 @@ export function jsonWalker(
 
 function fullJsonWalker(
   root: Json.Root,
-  buildNode: JsonNodeBuilder,
-): JsonWalker {
+  buildNode: NodeDataBuilder,
+): TreeWalker {
   function* walkRoot() {
     for (const input of getRootInputs(root)) {
       yield buildNode(input);
     }
   }
 
-  return function* walkNode(parent?: JsonNode) {
+  return function* walkNode(parent?: NodeData) {
     if (parent === undefined) {
       yield* walkRoot();
       return;
@@ -47,10 +46,10 @@ function fullJsonWalker(
 
 function filteredJsonWalker(
   root: Json.Root,
-  buildNode: JsonNodeBuilder,
+  buildNode: NodeDataBuilder,
   search: Search,
-): JsonWalker {
-  const filter = new JsonNodeFilter(search);
+): TreeWalker {
+  const filter = new TreeSearch(search);
 
   function* walkRoot() {
     let existsMatch = false;
@@ -68,7 +67,7 @@ function filteredJsonWalker(
     }
   }
 
-  return function* walkNode(parent?: JsonNode) {
+  return function* walkNode(parent?: NodeData) {
     if (parent === undefined) {
       yield* walkRoot();
       return;
@@ -89,7 +88,7 @@ function filteredJsonWalker(
   };
 }
 
-function getRootInputs(json: Json.Root): JsonNodeInput[] {
+function getRootInputs(json: Json.Root): NodeInput[] {
   if (Json.isLeaf(json)) {
     return [{ key: null, value: json, parent: null }];
   }
@@ -101,16 +100,16 @@ function getRootInputs(json: Json.Root): JsonNodeInput[] {
   }));
 }
 
-function buildId(key: Nullable<Json.Key>, parent: Nullable<JsonNode>): string {
+function buildId(key: Nullable<Json.Key>, parent: Nullable<NodeData>): string {
   return `${parent?.id ?? ""}.${key ?? ""}`;
 }
 
-type JsonNodeBuilder = (
-  input: JsonNodeInput,
+type NodeDataBuilder = (
+  input: NodeInput,
   searchMatch?: Nullable<SearchMatch>,
-) => JsonNode;
+) => NodeData;
 
-function jsonNodeBuilder(expandNodes: boolean): JsonNodeBuilder {
+function nodeDataBuilder(expandNodes: boolean): NodeDataBuilder {
   function isOpenByDefault(
     value: Json.Root,
     searchMatch: Nullable<SearchMatch>,
@@ -130,24 +129,24 @@ function jsonNodeBuilder(expandNodes: boolean): JsonNodeBuilder {
   }
 
   return function buildNode(
-    { key, value, parent }: JsonNodeInput,
+    { key, value, parent }: NodeInput,
     searchMatch: Nullable<SearchMatch> = null,
-  ): JsonNode {
+  ): NodeData {
     return {
       id: buildId(key, parent),
-      key: key,
-      value: value,
+      key,
+      value,
       nesting: parent ? parent.nesting + 1 : 0,
-      parent: parent,
+      parent,
       childrenCount: Json.isCollection(value) ? Json.length(value) : null,
       isLeaf: Json.isLeaf(value),
       isOpenByDefault: isOpenByDefault(value, searchMatch),
-      searchMatch: searchMatch,
+      searchMatch,
     };
   };
 }
 
-const NOT_FOUND_PLACEHOLDER: JsonNodeInput = {
+const NOT_FOUND_PLACEHOLDER: NodeInput = {
   key: null,
   value: null,
   parent: null,

@@ -10,10 +10,10 @@ import {
   useImperativeHandle,
   useRef,
 } from "react";
-import { JsonNode } from "../loader/JsonNode";
+import { NodeData } from "../Tree/NodeData";
 
 export type KeyProps = Props<{
-  node: JsonNode;
+  node: NodeData;
   search: Nullable<Search>;
 }>;
 

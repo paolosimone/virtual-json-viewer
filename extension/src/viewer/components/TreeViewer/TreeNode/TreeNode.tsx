@@ -4,18 +4,22 @@ import { Search } from "@/viewer/state";
 import classNames from "classnames";
 import { JSX, useEffect } from "react";
 // import { TreeNavigator } from "../TreeNavigator";
-import { ListChildComponentProps } from "react-window";
-import { JsonNode } from "../loader/JsonNode";
-import { TreeState } from "../TreeState";
+import { NodeData } from "../Tree/NodeData";
+import { NodeState, TreeState } from "../Tree/TreeState";
 import { Key, KeyHandle } from "./Key";
 import { OpenButton } from "./OpenButton";
 import { Value, ValueHandle } from "./Value";
 
-export type TreeNodeProps = ListChildComponentProps<TreeState>;
+type Resize = (height: number, shouldForceUpdate?: boolean) => void;
+
+export type TreeNodeProps = Props<{
+  tree: TreeState;
+  node: NodeState;
+}>;
 
 export function TreeNode({
-  index,
-  data: tree,
+  tree,
+  node: nodeState,
   style,
   // resize,
 }: TreeNodeProps): JSX.Element {
@@ -38,7 +42,7 @@ export function TreeNode({
   //   handleShortcuts({ content, key, value }, e);
   // };
 
-  const node = tree.nodeByIndex(index);
+  const node = nodeState.data;
   const searchAnalysis = analyzeSearchMatch(node);
   const fade = { "opacity-60": !searchAnalysis.inMatchingPath };
 
@@ -48,7 +52,8 @@ export function TreeNode({
       className="focus:bg-viewer-focus focus:outline-hidden"
       style={{ ...style, paddingLeft: `${node.nesting}em` }}
       tabIndex={-1}
-      onClick={() => parent?.focus()}
+      onClick={() => tree.setOpen(node.id, !nodeState.isOpen)}
+      // onClick={() => parent?.focus()}
       // onKeyDown={onKeydown}
     >
       <div
@@ -76,8 +81,6 @@ export function TreeNode({
     </div>
   );
 }
-
-type Resize = (height: number, shouldForceUpdate?: boolean) => void;
 
 function useFitContent(
   parent: RefCurrent<HTMLElement>,
@@ -110,7 +113,7 @@ type SearchMatchAnalysis = {
 function analyzeSearchMatch({
   searchMatch,
   isLeaf,
-}: JsonNode): SearchMatchAnalysis {
+}: NodeData): SearchMatchAnalysis {
   if (!searchMatch) {
     return { inMatchingPath: true, keySearch: null, valueSearch: null };
   }
