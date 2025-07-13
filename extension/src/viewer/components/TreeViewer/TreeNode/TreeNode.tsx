@@ -2,26 +2,23 @@ import * as DOM from "@/viewer/commons/Dom";
 import { CHORD_KEY, RefCurrent, useReactiveRef } from "@/viewer/hooks";
 import { Search } from "@/viewer/state";
 import classNames from "classnames";
-import { JSX, useEffect } from "react";
+import React, { JSX, useEffect } from "react";
 // import { TreeNavigator } from "../TreeNavigator";
-import { NodeState, TreeState } from "../Tree";
+import { NodeState, TreeNodeProps, TreeState } from "../Tree";
 import { Key, KeyHandle } from "./Key";
 import { OpenButton } from "./OpenButton";
 import { Value, ValueHandle } from "./Value";
 
 type Resize = (height: number, shouldForceUpdate?: boolean) => void;
 
-export type TreeNodeProps = Props<{
-  tree: TreeState;
-  node: NodeState;
-}>;
+export type TempContext = React.RefObject<Nullable<TreeState>>;
 
 export function TreeNode({
-  tree,
+  context,
   node,
   style,
   // resize,
-}: TreeNodeProps): JSX.Element {
+}: TreeNodeProps<TempContext>): JSX.Element {
   const [parent, parentRef] = useReactiveRef<HTMLDivElement>();
   // const [content, contentRef] = useReactiveRef<HTMLDivElement>();
   // const [key, keyRef] = useReactiveRef<KeyHandle>();
@@ -41,6 +38,8 @@ export function TreeNode({
   //   handleShortcuts({ content, key, value }, e);
   // };
 
+  const tree = context.current;
+
   const searchAnalysis = analyzeSearchMatch(node);
   const fade = { "opacity-60": !searchAnalysis.inMatchingPath };
 
@@ -50,7 +49,7 @@ export function TreeNode({
       className="focus:bg-viewer-focus focus:outline-hidden"
       style={{ ...style, paddingLeft: `${node.nesting}em` }}
       tabIndex={-1}
-      onClick={() => tree.setOpen(node.id, !node.isOpen)}
+      onClick={() => tree?.setOpen(node.id, !node.isOpen)}
       // onClick={() => parent?.focus()}
       // onKeyDown={onKeydown}
     >

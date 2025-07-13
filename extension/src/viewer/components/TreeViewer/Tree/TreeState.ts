@@ -127,7 +127,7 @@ export class TreeState {
     for (const visibleChild of walkFromNode(firstChild, false)) {
       spliceArgs.push(visibleChild.id);
 
-      if (spliceArgs.length == MAX_APPLY_ARGUMENTS) {
+      if (spliceArgs.length === MAX_APPLY_ARGUMENTS) {
         Array.prototype.splice.apply(this.visibleNodes, spliceArgs);
         start += MAX_APPLY_ARGUMENTS - 2;
         spliceArgs = [start, 0];
@@ -153,7 +153,7 @@ function* walkFromNode(
   node: NodeState,
   enterClosed: boolean,
 ): Generator<NodeState> {
-  let stack = [node];
+  const stack = [node];
 
   while (stack.length) {
     const current = stack[stack.length - 1];

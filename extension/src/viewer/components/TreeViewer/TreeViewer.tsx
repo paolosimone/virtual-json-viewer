@@ -2,10 +2,11 @@ import * as Json from "@/viewer/commons/Json";
 import { useElementSize, useReactiveRef } from "@/viewer/hooks";
 import { Search, SettingsContext } from "@/viewer/state";
 import classNames from "classnames";
-import { JSX, useContext, useMemo } from "react";
+import { JSX, useContext, useMemo, useRef } from "react";
 // import { TreeNavigator } from "./TreeNavigator";
-import { Tree } from "./Tree/Tree";
-import { treeWalker } from "./TreeWalker/TreeWalker";
+import { Tree, TreeState } from "./Tree";
+import { TreeNode } from "./TreeNode";
+import { treeWalker } from "./TreeWalker";
 
 export type TreeViewerProps = Props<{
   jsonLines: Json.Lines;
@@ -33,7 +34,8 @@ export function TreeViewer({
     [json, search, expandNodes],
   );
 
-  // const tree = useRef<Nullable<Tree<JsonNodeData>>>(null);
+  // imperative reference to manipulate the tree
+  const tree = useRef<TreeState>(null);
 
   // for some obscure reason AutoSizer doesn't work on Firefox when loaded as extension
   const [parent, parentRef] = useReactiveRef<HTMLDivElement>();
@@ -75,8 +77,8 @@ export function TreeViewer({
 
   // fix tab navigation on firefox
   // Ref: https://github.com/bvaughn/react-window/issues/130
-  // const [treeDiv, treeDivRef] = useReactiveRef<HTMLDivElement>();
-  // if (treeDiv) treeDiv.tabIndex = -1;
+  const [treeDiv, treeDivRef] = useReactiveRef<HTMLDivElement>();
+  if (treeDiv) treeDiv.tabIndex = -1;
 
   return (
     <div
@@ -85,7 +87,16 @@ export function TreeViewer({
       tabIndex={0}
       // onKeyDown={onKeydown}
     >
-      <Tree height={height} width={width} treeWalker={walker} />
+      <Tree
+        height={height}
+        width={width}
+        treeWalker={walker}
+        ref={tree}
+        outerRef={treeDivRef}
+        context={tree}
+      >
+        {TreeNode}
+      </Tree>
     </div>
   );
 }
