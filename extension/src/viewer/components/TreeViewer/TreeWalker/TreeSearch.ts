@@ -1,6 +1,6 @@
 import * as Json from "@/viewer/commons/Json";
 import { Search, SearchVisibility } from "@/viewer/state";
-import { NodeInput, SearchMatch } from "./NodeData";
+import { SearchMatch, WalkNodeInput } from "./WalkNode";
 
 export class TreeSearch {
   search: Search;
@@ -17,7 +17,7 @@ export class TreeSearch {
     this.keepStrategy = buildKeepStrategy(search);
   }
 
-  public match(node: NodeInput): Nullable<SearchMatch> {
+  public match(node: WalkNodeInput): Nullable<SearchMatch> {
     const searchMatch = {
       search: this.search,
       inKey: this.matchKey(node),
@@ -28,7 +28,7 @@ export class TreeSearch {
     return this.keepStrategy.keep(searchMatch) ? searchMatch : null;
   }
 
-  private matchKey({ key, parent }: NodeInput): boolean {
+  private matchKey({ key, parent }: WalkNodeInput): boolean {
     if (key === null) {
       return false;
     }
@@ -41,7 +41,7 @@ export class TreeSearch {
     return !isArrayElement && this.searchStrategy.isMatch(key);
   }
 
-  private matchValue({ value, parent }: NodeInput): boolean {
+  private matchValue({ value, parent }: WalkNodeInput): boolean {
     if (value === null) {
       return false;
     }
@@ -53,7 +53,7 @@ export class TreeSearch {
     return this.searchStrategy.isMatch(Json.toString(value));
   }
 
-  private matchAncestor({ parent }: NodeInput): boolean {
+  private matchAncestor({ parent }: WalkNodeInput): boolean {
     return (
       parent?.searchMatch?.inAncestor || parent?.searchMatch?.inKey || false
     );

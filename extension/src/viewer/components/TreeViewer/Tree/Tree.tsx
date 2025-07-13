@@ -8,8 +8,8 @@ import {
 } from "react";
 import { ListChildComponentProps, VariableSizeList } from "react-window";
 import { TreeNode } from "../TreeNode";
+import { TreeWalker } from "../TreeWalker";
 import { TreeState } from "./TreeState";
-import { TreeWalker } from "./TreeWalker";
 
 export type TreeProps = Props<{
   height: number;

@@ -1,20 +1,17 @@
 import * as Json from "@/viewer/commons/Json";
 import { Search } from "@/viewer/state";
 
-export type NodeInput = {
+export type WalkNodeInput = {
   key: Nullable<Json.Key>;
   value: Json.Root;
-  parent: Nullable<NodeData>;
+  parent: Nullable<WalkedNode>;
 };
 
-export type NodeData = {
+export type WalkedNode = {
   id: string;
   key: Nullable<Json.Key>;
   value: Json.Root;
-  nesting: number;
-  parent: Nullable<NodeData>;
-  childrenCount: Nullable<number>;
-  isLeaf: boolean;
+  parent: Nullable<WalkedNode>;
   isOpenByDefault: boolean;
   searchMatch: Nullable<SearchMatch>;
 };

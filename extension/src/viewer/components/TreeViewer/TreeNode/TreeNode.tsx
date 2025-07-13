@@ -4,8 +4,7 @@ import { Search } from "@/viewer/state";
 import classNames from "classnames";
 import { JSX, useEffect } from "react";
 // import { TreeNavigator } from "../TreeNavigator";
-import { NodeData } from "../Tree/NodeData";
-import { NodeState, TreeState } from "../Tree/TreeState";
+import { NodeState, TreeState } from "../Tree";
 import { Key, KeyHandle } from "./Key";
 import { OpenButton } from "./OpenButton";
 import { Value, ValueHandle } from "./Value";
@@ -19,7 +18,7 @@ export type TreeNodeProps = Props<{
 
 export function TreeNode({
   tree,
-  node: nodeState,
+  node,
   style,
   // resize,
 }: TreeNodeProps): JSX.Element {
@@ -42,7 +41,6 @@ export function TreeNode({
   //   handleShortcuts({ content, key, value }, e);
   // };
 
-  const node = nodeState.data;
   const searchAnalysis = analyzeSearchMatch(node);
   const fade = { "opacity-60": !searchAnalysis.inMatchingPath };
 
@@ -52,7 +50,7 @@ export function TreeNode({
       className="focus:bg-viewer-focus focus:outline-hidden"
       style={{ ...style, paddingLeft: `${node.nesting}em` }}
       tabIndex={-1}
-      onClick={() => tree.setOpen(node.id, !nodeState.isOpen)}
+      onClick={() => tree.setOpen(node.id, !node.isOpen)}
       // onClick={() => parent?.focus()}
       // onKeyDown={onKeydown}
     >
@@ -113,7 +111,7 @@ type SearchMatchAnalysis = {
 function analyzeSearchMatch({
   searchMatch,
   isLeaf,
-}: NodeData): SearchMatchAnalysis {
+}: NodeState): SearchMatchAnalysis {
   if (!searchMatch) {
     return { inMatchingPath: true, keySearch: null, valueSearch: null };
   }

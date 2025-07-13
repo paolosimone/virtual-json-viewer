@@ -10,10 +10,10 @@ import {
   useImperativeHandle,
   useRef,
 } from "react";
-import { NodeData } from "../Tree/NodeData";
+import { NodeState } from "../Tree";
 
 export type KeyProps = Props<{
-  node: NodeData;
+  node: NodeState;
   search: Nullable<Search>;
 }>;
 

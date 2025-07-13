@@ -1,14 +1,5 @@
-import { NodeData } from "./NodeData";
-import { TreeLevelWalker, TreeWalker } from "./TreeWalker";
-
-export type NodeState = {
-  data: NodeData;
-  parent: Nullable<NodeState>;
-  children: NodeState[];
-  sibling: Nullable<NodeState>;
-  canOpen: boolean;
-  isOpen: boolean;
-};
+import { TreeWalker } from "../TreeWalker";
+import { NodeState } from "./NodeState";
 
 export type StateChangeCallback = (newState: TreeState) => void;
 
@@ -56,58 +47,50 @@ export class TreeState {
     this.nodesById.clear();
     this.visibleNodes = [];
 
-    // Start walking the tree from root nodes
-    type Level = { walker: TreeLevelWalker; last?: NodeState };
-    const stack: Level[] = [{ walker: treeWalker() }];
+    // Keep track of the last visited node in each level
+    const lastSiblings = new Map<string | undefined, NodeState>();
 
     // Keep track of parents with visible children
     const visibleParents = new Set<string>();
 
     // Depth first walk
-    while (stack.length) {
-      const level = stack[stack.length - 1];
-
-      const walk = level.walker.next();
-
-      // This level of the tree was fully walked
-      if (walk.done) {
-        stack.pop();
-        continue;
-      }
+    for (const data of treeWalker()) {
+      const parent = data.parent ? this.nodeById(data.parent.id) : null;
 
       // Build the node
-      const data = walk.value;
-      const node = {
-        data: data,
-        parent: data.parent ? this.nodeById(data.parent.id) : null,
+      const node: NodeState = {
+        id: data.id,
+        key: data.key,
+        value: data.value,
+        parent: parent,
+        nesting: parent ? parent.nesting + 1 : 0,
+        isOpen: data.isOpenByDefault,
+        searchMatch: data.searchMatch,
+        // Forward relationships will be resolved by later iterations
+        isLeaf: true,
         children: [],
         sibling: null,
-        canOpen: !data.isLeaf,
-        isOpen: data.isOpenByDefault,
       };
 
       // Register the node in the state
-      this.nodesById.set(node.data.id, node);
-      const isVisible = !node.parent || visibleParents.has(node.parent.data.id);
+      this.nodesById.set(node.id, node);
+      const isVisible = !parent || visibleParents.has(parent.id);
       if (isVisible) {
-        this.visibleNodes.push(node.data.id);
+        this.visibleNodes.push(node.id);
 
-        if (node.isOpen) visibleParents.add(node.data.id);
+        if (node.isOpen) visibleParents.add(node.id);
       }
 
-      // Bind relationships with previous nodes
-      if (node.parent) {
-        node.parent.children.push(node);
+      // Bind child to parent
+      if (parent) {
+        parent.children.push(node);
+        parent.isLeaf = false;
       }
-      if (level.last) {
-        level.last.sibling = node;
-      }
-      level.last = node;
 
-      // If the node has children, push it to the stack
-      if (node.canOpen) {
-        stack.push({ walker: treeWalker(node.data) });
-      }
+      // Bind sibling
+      const last = lastSiblings.get(parent?.id);
+      if (last) last.sibling = node;
+      lastSiblings.set(parent?.id, node);
     }
     this.onStateChange?.(this.cloneRef());
   }
@@ -115,7 +98,7 @@ export class TreeState {
   public setOpen(id: string, open: boolean) {
     const node = this.nodeById(id);
 
-    if (!node.canOpen || node.isOpen === open) {
+    if (node.isLeaf || node.isOpen === open) {
       return;
     }
 
@@ -132,41 +115,50 @@ export class TreeState {
 
   private open(node: NodeState) {
     // Nodes that will become visible after opening
+    const firstChild = node.children[0];
+
     const appeared: string[] = [];
-
-    // Start walking from the opened node's children
-    const stack = [node.children.values()];
-
-    while (stack.length) {
-      const walk = stack[stack.length - 1].next();
-
-      // This level was fully walked
-      if (walk.done) {
-        stack.pop();
-        continue;
-      }
-
-      const node = walk.value;
-
-      appeared.push(node.data.id);
-
-      if (node.isOpen) {
-        stack.push(node.children.values());
-      }
+    for (const visibleChild of walkFromNode(firstChild, false)) {
+      appeared.push(visibleChild.id);
     }
 
     // TODO large list optimization
-    const addFrom = this.indexById(node.data.id) + 1;
+    const addFrom = this.indexById(node.id) + 1;
     this.visibleNodes.splice(addFrom, 0, ...appeared);
   }
 
   private close(node: NodeState) {
     const nextNode = node.sibling || node.parent?.sibling;
-    const nextIndex = nextNode ? this.indexById(nextNode.data.id) : Infinity;
+    const nextIndex = nextNode ? this.indexById(nextNode.id) : Infinity;
 
-    const deleteFrom = this.indexById(node.data.id) + 1;
+    const deleteFrom = this.indexById(node.id) + 1;
     const deleteCount = nextIndex - deleteFrom;
 
     this.visibleNodes.splice(deleteFrom, deleteCount);
+  }
+}
+
+function* walkFromNode(
+  node: NodeState,
+  enterClosed: boolean,
+): Generator<NodeState> {
+  let stack = [node];
+
+  while (stack.length) {
+    const current = stack[stack.length - 1];
+
+    yield current;
+
+    // Advance cursor in the current level
+    if (current.sibling) {
+      stack[stack.length - 1] = current.sibling;
+    } else {
+      stack.pop();
+    }
+
+    // Possibly enter the inner level
+    if (!current.isLeaf && (current.isOpen || enterClosed)) {
+      stack.push(current.children[0]);
+    }
   }
 }

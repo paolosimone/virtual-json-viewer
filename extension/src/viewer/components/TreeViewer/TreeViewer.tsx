@@ -5,7 +5,7 @@ import classNames from "classnames";
 import { JSX, useContext, useMemo } from "react";
 // import { TreeNavigator } from "./TreeNavigator";
 import { Tree } from "./Tree/Tree";
-import { treeWalker } from "./Tree/TreeWalker";
+import { treeWalker } from "./TreeWalker/TreeWalker";
 
 export type TreeViewerProps = Props<{
   jsonLines: Json.Lines;
