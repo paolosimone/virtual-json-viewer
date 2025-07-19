@@ -58,7 +58,11 @@ export function TreeNode({
           isOpen={node.isOpen}
           toggleOpen={() => tree.toggleOpen(node.id)}
         />
-        <Key ref={keyRef} nodeKey={node.key} search={searchAnalysis.keySearch} />
+        <Key
+          ref={keyRef}
+          nodeKey={node.key}
+          search={searchAnalysis.keySearch}
+        />
         <Value
           ref={valueRef}
           className="grow"

@@ -20,6 +20,8 @@ export class TreeHandler {
     this.list = list;
   }
 
+  // Accessors
+
   public length(): number {
     return this.tree.length();
   }
@@ -36,6 +38,8 @@ export class TreeHandler {
     return this.tree.nodeById(id);
   }
 
+  // Openness
+
   public isOpen(id: NodeId): boolean {
     return this.get(id).isOpen;
   }
@@ -43,6 +47,16 @@ export class TreeHandler {
   public setOpen(id: NodeId, isOpen: boolean) {
     this.tree.setOpen(id, isOpen);
   }
+
+  public openAll() {
+    this.tree.openAll();
+  }
+
+  public closeAll() {
+    this.tree.closeAll();
+  }
+
+  // Height
 
   public getHeight(id: NodeId): number {
     return this.itemsHeight.get(id) ?? DEFAULT_ITEM_HEIGHT;
@@ -53,6 +67,8 @@ export class TreeHandler {
     const index = this.tree.indexById(id);
     this.list?.resetAfterIndex(index, true);
   }
+
+  // Navigation
 
   public scrollTo(id: NodeId) {
     const index = this.tree.indexById(id);

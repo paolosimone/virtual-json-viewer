@@ -6,6 +6,7 @@ import {
   KeydownBufferEvent,
   KeydownEvent,
   useElementSize,
+  useEventBusListener,
   useGlobalKeydownEvent,
   useKeydownBuffer,
   useReactiveRef,
@@ -14,6 +15,7 @@ import { Search, SettingsContext } from "@/viewer/state";
 import classNames from "classnames";
 import { JSX, useCallback, useContext, useMemo } from "react";
 // import { TreeNavigator } from "./TreeNavigator";
+import { EventType } from "@/viewer/commons/EventBus";
 import { Tree, TreeHandler } from "./Tree";
 import { TreeNavigator } from "./TreeNavigator";
 import { TreeNode } from "./TreeNode";
@@ -53,11 +55,11 @@ export function TreeViewer({
   const { height, width } = useElementSize(parent);
 
   // global events
-  // const expand = useCallback(() => setOpen(json, tree, true), [json, tree]);
-  // useEventBusListener(EventType.Expand, expand);
+  const expand = useCallback(() => tree?.openAll(), [tree]);
+  useEventBusListener(EventType.Expand, expand);
 
-  // const collapse = useCallback(() => setOpen(json, tree, false), [json, tree]);
-  // useEventBusListener(EventType.Collapse, collapse);
+  const collapse = useCallback(() => tree?.closeAll(), [tree]);
+  useEventBusListener(EventType.Collapse, collapse);
 
   // register global shortcut
   const handleShortcut = useCallback(
@@ -111,30 +113,6 @@ export function TreeViewer({
     </div>
   );
 }
-
-// function setOpen(
-//   json: Json.Root,
-//   tree: RefObject<Nullable<Tree<JsonNodeData>>>,
-//   isOpen: boolean,
-// ) {
-//   function subtreeCallback(
-//     node: NodeState<JsonNodeData>,
-//     ownerNode: NodeState<JsonNodeData>,
-//   ) {
-//     if (node !== ownerNode) {
-//       node.isOpen = !node.data.isLeaf && isOpen;
-//     }
-//   }
-
-//   const newState = Object.fromEntries(
-//     getRootNodes(json).map(({ key, value }) => [
-//       buildId(key, null),
-//       { open: !Json.isLeaf(value) && isOpen, subtreeCallback },
-//     ]),
-//   );
-
-//   tree.current?.recomputeTree(newState);
-// }
 
 function handleNavigation(
   treeElem: Nullable<HTMLElement>,

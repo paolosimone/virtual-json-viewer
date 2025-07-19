@@ -95,6 +95,38 @@ export class TreeState {
     this.onStateChange?.(this.cloneRef());
   }
 
+  public openAll() {
+    if (!this.visibleNodes.length) return;
+
+    const allNodes: NodeId[] = [];
+
+    const firstRoot = this.nodeById(this.visibleNodes[0]);
+    for (const node of walkFromNode(firstRoot, true)) {
+      allNodes.push(node.id);
+      node.isOpen = !node.isLeaf;
+    }
+
+    this.visibleNodes = allNodes;
+    this.onStateChange?.(this.cloneRef());
+  }
+
+  public closeAll() {
+    if (!this.visibleNodes.length) return;
+
+    const onlyRoots: NodeId[] = [];
+
+    const firstRoot = this.nodeById(this.visibleNodes[0]);
+    for (const node of walkFromNode(firstRoot, true)) {
+      if (!node.parent) {
+        onlyRoots.push(node.id);
+      }
+      node.isOpen = false;
+    }
+
+    this.visibleNodes = onlyRoots;
+    this.onStateChange?.(this.cloneRef());
+  }
+
   public setOpen(id: NodeId, open: boolean) {
     const node = this.nodeById(id);
 
@@ -114,7 +146,7 @@ export class TreeState {
   }
 
   private open(node: NodeState) {
-    type SpliceArgs = [start: number, deleteCount: number, ...items: string[]];
+    type SpliceArgs = [start: number, deleteCount: number, ...items: NodeId[]];
 
     let start = this.indexById(node.id) + 1;
     let spliceArgs: SpliceArgs = [start, 0];
