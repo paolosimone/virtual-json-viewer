@@ -1,46 +1,61 @@
-import { RefObject } from "react";
+import { RefCurrent } from "@/viewer/hooks";
 import { VariableSizeList } from "react-window";
+import { NodeId, NodeState } from "./NodeState";
 import { ItemData } from "./TreeItem";
 import { TreeState } from "./TreeState";
 
 // context is any because it's not used in the handler,
 // this also avoids circular dependencies
-export type TreeListRef = RefObject<Nullable<VariableSizeList<ItemData<any>>>>;
+export type TreeListCurrent = RefCurrent<VariableSizeList<ItemData<any>>>;
 
 const DEFAULT_ITEM_HEIGHT = 30;
 
 export class TreeHandler {
-  private list: TreeListRef;
-  private tree: TreeState = new TreeState();
-  private itemsHeight: Map<string, number> = new Map();
+  private tree: TreeState;
+  private list: TreeListCurrent;
+  private itemsHeight: Map<NodeId, number> = new Map();
 
-  constructor(list: TreeListRef) {
+  constructor(tree: TreeState, list: TreeListCurrent) {
+    this.tree = tree;
     this.list = list;
   }
 
-  public updateState(tree: TreeState) {
-    this.tree = tree;
+  public length(): number {
+    return this.tree.length();
   }
 
-  public canOpen(id: string): boolean {
-    return !this.tree.nodeById(id).isLeaf;
+  public getByIndex(index: number): NodeState {
+    return this.tree.nodeByIndex(index);
   }
 
-  public isOpen(id: string): boolean {
-    return this.tree.nodeById(id).isOpen;
+  public indexById(id: NodeId): number {
+    return this.tree.indexById(id);
   }
 
-  public setOpen(id: string, isOpen: boolean) {
+  public get(id: NodeId): NodeState {
+    return this.tree.nodeById(id);
+  }
+
+  public isOpen(id: NodeId): boolean {
+    return this.get(id).isOpen;
+  }
+
+  public setOpen(id: NodeId, isOpen: boolean) {
     this.tree.setOpen(id, isOpen);
   }
 
-  public getHeight(id: string): number {
+  public getHeight(id: NodeId): number {
     return this.itemsHeight.get(id) ?? DEFAULT_ITEM_HEIGHT;
   }
 
-  public resize(id: string, height: number) {
+  public resize(id: NodeId, height: number) {
     this.itemsHeight.set(id, height);
     const index = this.tree.indexById(id);
-    this.list.current?.resetAfterIndex(index, true);
+    this.list?.resetAfterIndex(index, true);
+  }
+
+  public scrollTo(id: NodeId) {
+    const index = this.tree.indexById(id);
+    this.list?.scrollToItem(index);
   }
 }

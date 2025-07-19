@@ -2,8 +2,10 @@ import * as Json from "@/viewer/commons/Json";
 import { SearchMatch } from "../TreeWalker";
 export type { SearchMatch } from "../TreeWalker";
 
+export type NodeId = string;
+
 export type NodeState = {
-  id: string;
+  id: NodeId;
   key: Nullable<Json.Key>;
   value: Json.Root;
   nesting: number;

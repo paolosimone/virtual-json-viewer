@@ -1,10 +1,10 @@
+import { useReactiveRef } from "@/viewer/hooks";
 import {
   JSX,
   Ref,
   useEffect,
   useImperativeHandle,
   useMemo,
-  useRef,
   useState,
 } from "react";
 import { VariableSizeList } from "react-window";
@@ -33,18 +33,25 @@ export function Tree<Context>({
   ref,
   outerRef,
 }: TreeProps<Context>): JSX.Element {
-  // Bind the tree state to the treeWalker
+  // TreeState is a reference to the mutable state of the tree.
+  // The reference gets updated whenever the state changes to trigger reactive updates.
+  // The underlying data structure is mutable, so any reference points to the latest state.
   const [treeState, setTreeState] = useState<TreeState>(() => new TreeState());
   useEffect(() => treeState.observeStateChange(setTreeState), []);
   useEffect(() => treeState.load(treeWalker), [treeWalker]);
 
   // Reference to the list component
-  const listRef = useRef<VariableSizeList<ItemData<Context>>>(null);
+  const [list, listRef] = useReactiveRef<VariableSizeList<ItemData<Context>>>();
 
   // Expose an handler to manipulate the tree from outside
-  const handler = useRef<TreeHandler>(new TreeHandler(listRef));
-  useEffect(() => handler.current.updateState(treeState), [treeState]);
-  useImperativeHandle(ref, () => handler.current, [handler]);
+  const [handler, setHandler] = useState<TreeHandler>(
+    () => new TreeHandler(treeState, list),
+  );
+  useEffect(
+    () => setHandler(new TreeHandler(treeState, list)),
+    [treeWalker, list],
+  );
+  useImperativeHandle(ref, () => handler, [handler]);
 
   const itemData: ItemData<Context> = useMemo(
     () => ({ treeState, context, TreeNode }),
@@ -61,9 +68,7 @@ export function Tree<Context>({
       itemCount={itemData.treeState.length()}
       itemData={itemData as any}
       itemKey={(index, itemData) => itemData.treeState.idByIndex(index)}
-      itemSize={(index) =>
-        handler.current?.getHeight(treeState.idByIndex(index))
-      }
+      itemSize={(index) => handler.getHeight(treeState.idByIndex(index))}
       overscanCount={20}
     >
       {TreeItem}

@@ -3,29 +3,25 @@ import * as Json from "@/viewer/commons/Json";
 import { useRenderedText } from "@/viewer/hooks";
 import { Search } from "@/viewer/state";
 import classNames from "classnames";
-import {
-  ForwardedRef,
-  forwardRef,
-  JSX,
-  useImperativeHandle,
-  useRef,
-} from "react";
+import { JSX, Ref, useImperativeHandle, useRef } from "react";
 import { NodeState } from "../Tree";
-
-export type ValueProps = Props<{
-  node: NodeState;
-  // treeNavigator: TreeNavigator;
-  search: Nullable<Search>;
-}>;
 
 export type ValueHandle = {
   selectText: () => void;
 };
 
-export const Value = forwardRef(function Value(
-  { node: { value, children, isOpen }, search, className }: ValueProps,
-  ref: ForwardedRef<ValueHandle>,
-): JSX.Element {
+export type ValueProps = Props<{
+  node: NodeState;
+  search: Nullable<Search>;
+  ref?: Ref<ValueHandle>;
+}>;
+
+export function Value({
+  node: { value, children, isOpen },
+  search,
+  className,
+  ref,
+}: ValueProps): JSX.Element {
   if (isOpen) {
     return <span />;
   }
@@ -48,7 +44,7 @@ export const Value = forwardRef(function Value(
       search={search}
     />
   );
-});
+}
 
 type CollectionValueProps = Props<{
   value: Json.Collection;
@@ -73,12 +69,15 @@ function CollectionValue({
 type LiteralValueProps = Props<{
   value: Json.Literal;
   search: Nullable<Search>;
+  ref?: Ref<ValueHandle>;
 }>;
 
-export const LiteralValue = forwardRef(function LiteralValue(
-  { value, search, className }: LiteralValueProps,
-  ref: ForwardedRef<ValueHandle>,
-): JSX.Element {
+export function LiteralValue({
+  value,
+  search,
+  className,
+  ref,
+}: LiteralValueProps): JSX.Element {
   const valueRef = useRef<HTMLSpanElement>(null);
 
   useImperativeHandle(
@@ -104,4 +103,4 @@ export const LiteralValue = forwardRef(function LiteralValue(
       {isString && <span>&quot;</span>}
     </span>
   );
-});
+}

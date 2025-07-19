@@ -1,8 +1,13 @@
 import * as DOM from "@/viewer/commons/Dom";
-import { CHORD_KEY, RefCurrent, useReactiveRef } from "@/viewer/hooks";
+import {
+  CHORD_KEY,
+  isUpperCaseKeypress,
+  RefCurrent,
+  useReactiveRef,
+} from "@/viewer/hooks";
 import { Search } from "@/viewer/state";
 import classNames from "classnames";
-import { JSX, useCallback, useEffect } from "react";
+import { JSX, useEffect, useLayoutEffect } from "react";
 import { NodeState, TreeNodeProps } from "../Tree";
 import { TreeNavigator } from "../TreeNavigator";
 import { Key, KeyHandle } from "./Key";
@@ -16,21 +21,23 @@ export function TreeNode({
 }: TreeNodeProps<TreeNavigator>): JSX.Element {
   const [parent, parentRef] = useReactiveRef<HTMLDivElement>();
   const [content, contentRef] = useReactiveRef<HTMLDivElement>();
-  // const [key, keyRef] = useReactiveRef<KeyHandle>();
-  // const [value, valueRef] = useReactiveRef<ValueHandle>();
+  const [key, keyRef] = useReactiveRef<KeyHandle>();
+  const [value, valueRef] = useReactiveRef<ValueHandle>();
 
+  // resize the node to fit its content on every re-render
   const resize = (height: number) => tree.resize(node.id, height);
   useFitContent(parent, content, resize);
 
-  // useLayoutEffect(() => {
-  //   if (!parent) return;
-  //   treeNavigator.onElemShown(data.id, parent);
-  //   return () => treeNavigator.onElemHidden(data.id);
-  // }, [data.id, parent, treeNavigator]);
+  // registers the node's html element in the navigator
+  useLayoutEffect(() => {
+    if (!parent) return;
+    tree.onElemShown(node.id, parent);
+    return () => tree.onElemHidden(node.id);
+  }, [node.id, parent, tree]);
 
-  // const onKeydown = (e: React.KeyboardEvent) => {
-  //   handleShortcuts({ content, key, value }, e);
-  // };
+  const onKeydown = (e: React.KeyboardEvent) => {
+    handleShortcuts({ content, key, value }, e);
+  };
 
   const searchAnalysis = analyzeSearchMatch(node);
   const fade = { "opacity-60": !searchAnalysis.inMatchingPath };
@@ -41,26 +48,21 @@ export function TreeNode({
       className="focus:bg-viewer-focus focus:outline-hidden"
       style={{ ...style, paddingLeft: `${node.nesting}em` }}
       tabIndex={-1}
-      onClick={() => tree.toggleOpen(node.id)}
-      // onClick={() => parent?.focus()}
-      // onKeyDown={onKeydown}
+      onClick={() => parent?.focus()}
+      onKeyDown={onKeydown}
     >
       <div ref={contentRef} className={classNames("flex items-start", fade)}>
         <OpenButton
           className="shrink-0"
-          node={node}
-          // treeNavigator={treeNavigator}
+          enabled={!node.isLeaf}
+          isOpen={node.isOpen}
+          toggleOpen={() => tree.toggleOpen(node.id)}
         />
-        <Key
-          // ref={keyRef}
-          node={node}
-          search={searchAnalysis.keySearch}
-        />
+        <Key ref={keyRef} nodeKey={node.key} search={searchAnalysis.keySearch} />
         <Value
-          // ref={valueRef}
+          ref={valueRef}
           className="grow"
           node={node}
-          // treeNavigator={treeNavigator}
           search={searchAnalysis.valueSearch}
         />
       </div>
@@ -129,13 +131,13 @@ function handleShortcuts(
     return;
   }
 
-  if ((e.shiftKey && e.key == "ArrowLeft") || e.key == "H") {
+  if ((e.shiftKey && e.key == "ArrowLeft") || isUpperCaseKeypress(e, "H")) {
     e.preventDefault();
     key?.selectText();
     return;
   }
 
-  if ((e.shiftKey && e.key == "ArrowRight") || e.key == "L") {
+  if ((e.shiftKey && e.key == "ArrowRight") || isUpperCaseKeypress(e, "L")) {
     e.preventDefault();
     value?.selectText();
     return;

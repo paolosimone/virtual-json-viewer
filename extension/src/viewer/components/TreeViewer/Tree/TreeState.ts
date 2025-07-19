@@ -1,11 +1,11 @@
 import { TreeWalker } from "../TreeWalker";
-import { NodeState } from "./NodeState";
+import { NodeId, NodeState } from "./NodeState";
 
 export type StateChangeCallback = (newState: TreeState) => void;
 
 export class TreeState {
   private nodesById: Map<string, NodeState> = new Map();
-  private visibleNodes: string[] = [];
+  private visibleNodes: NodeId[] = [];
   private onStateChange: Nullable<StateChangeCallback> = null;
 
   private cloneRef(): TreeState {
@@ -28,16 +28,16 @@ export class TreeState {
     return this.nodeById(this.idByIndex(index));
   }
 
-  public nodeById(id: string): NodeState {
+  public nodeById(id: NodeId): NodeState {
     return this.nodesById.get(id)!;
   }
 
-  public idByIndex(index: number): string {
+  public idByIndex(index: number): NodeId {
     return this.visibleNodes[index];
   }
 
   // O(N)
-  public indexById(id: string): number {
+  public indexById(id: NodeId): number {
     return this.visibleNodes.indexOf(id);
   }
 
@@ -48,10 +48,10 @@ export class TreeState {
     this.visibleNodes = [];
 
     // Keep track of the last visited node in each level
-    const lastSiblings = new Map<string | undefined, NodeState>();
+    const lastSiblings = new Map<NodeId | undefined, NodeState>();
 
     // Keep track of parents with visible children
-    const visibleParents = new Set<string>();
+    const visibleParents = new Set<NodeId>();
 
     // Depth first walk
     for (const data of treeWalker()) {
@@ -95,7 +95,7 @@ export class TreeState {
     this.onStateChange?.(this.cloneRef());
   }
 
-  public setOpen(id: string, open: boolean) {
+  public setOpen(id: NodeId, open: boolean) {
     const node = this.nodeById(id);
 
     if (node.isLeaf || node.isOpen === open) {
