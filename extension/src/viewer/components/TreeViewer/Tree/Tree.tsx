@@ -4,22 +4,15 @@ import {
   useEffect,
   useImperativeHandle,
   useMemo,
+  useRef,
   useState,
 } from "react";
-import { ListChildComponentProps, VariableSizeList } from "react-window";
+import { VariableSizeList } from "react-window";
 import { TreeWalker } from "../TreeWalker";
-import { NodeState } from "./NodeState";
+import { TreeHandler } from "./TreeHandler";
+import { ItemData, TreeItem } from "./TreeItem";
+import { TreeNodeComponent } from "./TreeNodeComponent";
 import { TreeState } from "./TreeState";
-
-export type TreeNodeProps<Context> = {
-  style?: React.CSSProperties;
-  node: NodeState;
-  context: Context;
-};
-
-export type TreeNodeComponent<Context> = React.ComponentType<
-  TreeNodeProps<Context>
->;
 
 export type TreeProps<Context> = {
   height: number;
@@ -27,7 +20,7 @@ export type TreeProps<Context> = {
   treeWalker: TreeWalker;
   context: Context;
   children: TreeNodeComponent<Context>;
-  ref?: Ref<TreeState>;
+  ref?: Ref<TreeHandler>;
   outerRef?: Ref<HTMLDivElement>;
 };
 
@@ -42,11 +35,16 @@ export function Tree<Context>({
 }: TreeProps<Context>): JSX.Element {
   // Bind the tree state to the treeWalker
   const [treeState, setTreeState] = useState<TreeState>(() => new TreeState());
-  treeState.observeStateChange(setTreeState);
+  useEffect(() => treeState.observeStateChange(setTreeState), []);
   useEffect(() => treeState.load(treeWalker), [treeWalker]);
 
-  // Expose an handler to manipulate the tree state
-  useImperativeHandle(ref, () => treeState, [treeState]);
+  // Reference to the list component
+  const listRef = useRef<VariableSizeList<ItemData<Context>>>(null);
+
+  // Expose an handler to manipulate the tree from outside
+  const handler = useRef<TreeHandler>(new TreeHandler(listRef));
+  useEffect(() => handler.current.updateState(treeState), [treeState]);
+  useImperativeHandle(ref, () => handler.current, [handler]);
 
   const itemData: ItemData<Context> = useMemo(
     () => ({ treeState, context, TreeNode }),
@@ -54,37 +52,21 @@ export function Tree<Context>({
   );
 
   return (
+    // react-window is not able to infer the type from generics
     <VariableSizeList
+      ref={listRef as any}
       outerRef={outerRef}
       height={height}
       width={width}
       itemCount={itemData.treeState.length()}
-      // react-window is not able to infer the type from generics
       itemData={itemData as any}
       itemKey={(index, itemData) => itemData.treeState.idByIndex(index)}
-      itemSize={() => 30}
+      itemSize={(index) =>
+        handler.current?.getHeight(treeState.idByIndex(index))
+      }
       overscanCount={20}
     >
-      {VariableSizeListItem}
+      {TreeItem}
     </VariableSizeList>
   );
-}
-
-type ItemData<Context> = {
-  treeState: TreeState;
-  context: Context;
-  TreeNode: TreeNodeComponent<Context>;
-};
-
-type VariableSizeListItemProps<Context> = ListChildComponentProps<
-  ItemData<Context>
->;
-
-function VariableSizeListItem<Context>({
-  index,
-  data: { treeState, TreeNode, context },
-  style,
-}: VariableSizeListItemProps<Context>): JSX.Element {
-  const nodeState = treeState.nodeByIndex(index);
-  return <TreeNode style={style} node={nodeState} context={context} />;
 }

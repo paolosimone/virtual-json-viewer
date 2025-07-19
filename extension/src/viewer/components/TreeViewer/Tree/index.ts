@@ -1,3 +1,4 @@
 export * from "./NodeState";
 export * from "./Tree";
-export * from "./TreeState";
+export * from "./TreeHandler";
+export * from "./TreeNodeComponent";

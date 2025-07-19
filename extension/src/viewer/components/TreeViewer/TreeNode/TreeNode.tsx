@@ -2,31 +2,25 @@ import * as DOM from "@/viewer/commons/Dom";
 import { CHORD_KEY, RefCurrent, useReactiveRef } from "@/viewer/hooks";
 import { Search } from "@/viewer/state";
 import classNames from "classnames";
-import React, { JSX, useEffect } from "react";
-// import { TreeNavigator } from "../TreeNavigator";
-import { NodeState, TreeNodeProps, TreeState } from "../Tree";
+import { JSX, useCallback, useEffect } from "react";
+import { NodeState, TreeNodeProps } from "../Tree";
+import { TreeNavigator } from "../TreeNavigator";
 import { Key, KeyHandle } from "./Key";
 import { OpenButton } from "./OpenButton";
 import { Value, ValueHandle } from "./Value";
 
-type Resize = (height: number, shouldForceUpdate?: boolean) => void;
-
-export type TempContext = React.RefObject<Nullable<TreeState>>;
-
 export function TreeNode({
-  context,
+  context: tree,
   node,
   style,
-  // resize,
-}: TreeNodeProps<TempContext>): JSX.Element {
+}: TreeNodeProps<TreeNavigator>): JSX.Element {
   const [parent, parentRef] = useReactiveRef<HTMLDivElement>();
-  // const [content, contentRef] = useReactiveRef<HTMLDivElement>();
+  const [content, contentRef] = useReactiveRef<HTMLDivElement>();
   // const [key, keyRef] = useReactiveRef<KeyHandle>();
   // const [value, valueRef] = useReactiveRef<ValueHandle>();
 
-  // useFitContent(parent, content, resize);
-
-  // const treeNavigator: TreeNavigator = treeData.navigator;
+  const resize = (height: number) => tree.resize(node.id, height);
+  useFitContent(parent, content, resize);
 
   // useLayoutEffect(() => {
   //   if (!parent) return;
@@ -38,8 +32,6 @@ export function TreeNode({
   //   handleShortcuts({ content, key, value }, e);
   // };
 
-  const tree = context.current;
-
   const searchAnalysis = analyzeSearchMatch(node);
   const fade = { "opacity-60": !searchAnalysis.inMatchingPath };
 
@@ -49,14 +41,11 @@ export function TreeNode({
       className="focus:bg-viewer-focus focus:outline-hidden"
       style={{ ...style, paddingLeft: `${node.nesting}em` }}
       tabIndex={-1}
-      onClick={() => tree?.setOpen(node.id, !node.isOpen)}
+      onClick={() => tree.toggleOpen(node.id)}
       // onClick={() => parent?.focus()}
       // onKeyDown={onKeydown}
     >
-      <div
-        // ref={contentRef}
-        className={classNames("flex items-start", fade)}
-      >
+      <div ref={contentRef} className={classNames("flex items-start", fade)}>
         <OpenButton
           className="shrink-0"
           node={node}
@@ -79,6 +68,8 @@ export function TreeNode({
   );
 }
 
+type Resize = (height: number) => void;
+
 function useFitContent(
   parent: RefCurrent<HTMLElement>,
   content: RefCurrent<HTMLElement>,
@@ -93,7 +84,7 @@ function useFitContent(
     const contentHeight = content.clientHeight + PADDING_HEIGHT;
     const delta = Math.abs(contentHeight - parentHeight);
     if (delta > TOLERANCE) {
-      resize(contentHeight, true);
+      resize(contentHeight);
     }
   };
 

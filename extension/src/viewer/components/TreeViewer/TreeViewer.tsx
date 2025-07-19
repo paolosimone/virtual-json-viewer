@@ -2,9 +2,10 @@ import * as Json from "@/viewer/commons/Json";
 import { useElementSize, useReactiveRef } from "@/viewer/hooks";
 import { Search, SettingsContext } from "@/viewer/state";
 import classNames from "classnames";
-import { JSX, useContext, useMemo, useRef } from "react";
+import { JSX, useContext, useMemo } from "react";
 // import { TreeNavigator } from "./TreeNavigator";
-import { Tree, TreeState } from "./Tree";
+import { Tree, TreeHandler } from "./Tree";
+import { TreeNavigator } from "./TreeNavigator";
 import { TreeNode } from "./TreeNode";
 import { treeWalker } from "./TreeWalker";
 
@@ -35,7 +36,7 @@ export function TreeViewer({
   );
 
   // imperative reference to manipulate the tree
-  const tree = useRef<TreeState>(null);
+  const [tree, treeRef] = useReactiveRef<TreeHandler>();
 
   // for some obscure reason AutoSizer doesn't work on Firefox when loaded as extension
   const [parent, parentRef] = useReactiveRef<HTMLDivElement>();
@@ -61,10 +62,10 @@ export function TreeViewer({
   // useGlobalKeydownEvent(handleShortcut);
 
   // keyboard navigation
-  // const treeNavigator = useMemo(
-  //   () => new TreeNavigator(tree, parent),
-  //   [tree, parent],
-  // );
+  const treeNavigator = useMemo(
+    () => new TreeNavigator(tree, parent),
+    [tree, parent],
+  );
 
   // const navigate = useCallback(
   //   (e: KeydownBufferEvent) => handleNavigation(parent, treeNavigator, e),
@@ -91,9 +92,9 @@ export function TreeViewer({
         height={height}
         width={width}
         treeWalker={walker}
-        ref={tree}
+        ref={treeRef}
         outerRef={treeDivRef}
-        context={tree}
+        context={treeNavigator}
       >
         {TreeNode}
       </Tree>

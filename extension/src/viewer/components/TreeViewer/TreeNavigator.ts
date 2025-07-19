@@ -1,5 +1,5 @@
-// import { RefCurrent } from "@/viewer/hooks";
-// import { RefObject } from "react";
+import { RefCurrent } from "@/viewer/hooks";
+import { TreeHandler } from "./Tree";
 // import { VariableSizeTree as Tree } from "react-vtree";
 // import { NodePublicState, NodeRecord } from "react-vtree/dist/es/Tree";
 // import { JsonNode} from "./model/JsonNode";
@@ -11,137 +11,141 @@
 //   pages?: number;
 // };
 
-// export class TreeNavigator {
-//   private tree: RefObject<Nullable<JsonTree>>;
-//   private treeElem: RefCurrent<HTMLElement>;
-//   private elemById: Map<string, HTMLElement> = new Map();
-//   private lastFocused?: string;
+export class TreeNavigator {
+  private tree: RefCurrent<TreeHandler>;
+  private treeElem: RefCurrent<HTMLElement>;
+  private elemById: Map<string, HTMLElement> = new Map();
+  private lastFocused?: string;
 
-//   constructor(
-//     tree: RefObject<Nullable<JsonTree>>,
-//     treeElem: RefCurrent<HTMLElement>,
-//   ) {
-//     this.tree = tree;
-//     this.treeElem = treeElem;
-//   }
+  constructor(
+    tree: RefCurrent<TreeHandler>,
+    treeElem: RefCurrent<HTMLElement>,
+  ) {
+    this.tree = tree;
+    this.treeElem = treeElem;
+  }
 
-//   onElemShown(id: string, elem: HTMLElement) {
-//     this.elemById.set(id, elem);
+  //   onElemShown(id: string, elem: HTMLElement) {
+  //     this.elemById.set(id, elem);
 
-//     // register to external focus event (e.g. by mouse click)
-//     elem.onfocus = () => (this.lastFocused = id);
+  //     // register to external focus event (e.g. by mouse click)
+  //     elem.onfocus = () => (this.lastFocused = id);
 
-//     // handle pending navigation
-//     if (id === this.lastFocused) {
-//       elem.focus();
-//     }
-//   }
+  //     // handle pending navigation
+  //     if (id === this.lastFocused) {
+  //       elem.focus();
+  //     }
+  //   }
 
-//   onElemHidden(id: string) {
-//     this.elemById.delete(id);
+  //   onElemHidden(id: string) {
+  //     this.elemById.delete(id);
 
-//     // return focus to parent to avoid inconsistencies
-//     if (id === this.lastFocused) {
-//       this.lastFocused = undefined;
-//       this.treeElem?.focus();
-//     }
-//   }
+  //     // return focus to parent to avoid inconsistencies
+  //     if (id === this.lastFocused) {
+  //       this.lastFocused = undefined;
+  //       this.treeElem?.focus();
+  //     }
+  //   }
 
-//   canOpen(id: string): boolean {
-//     return !this.getNode(id)?.public?.data?.isLeaf;
-//   }
+  //   canOpen(id: string): boolean {
+  //     return !this.getNode(id)?.public?.data?.isLeaf;
+  //   }
 
-//   isOpen(id: string): boolean {
-//     return this.getNode(id)?.public?.isOpen ?? false;
-//   }
+  //   isOpen(id: string): boolean {
+  //     return this.getNode(id)?.public?.isOpen ?? false;
+  //   }
 
-//   toogleOpen(id: string) {
-//     this.setOpen(id, !this.isOpen(id));
-//   }
+  public toggleOpen(id: string) {
+    this.tree?.setOpen(id, !this.tree?.isOpen(id));
+  }
 
-//   open(id: string) {
-//     if (!this.isOpen(id)) {
-//       this.setOpen(id, true);
-//     }
-//   }
+  public resize(id: string, height: number) {
+    this.tree?.resize(id, height);
+  }
 
-//   close(id: string) {
-//     if (this.isOpen(id)) {
-//       this.setOpen(id, false);
-//       return;
-//     }
+  //   open(id: string) {
+  //     if (!this.isOpen(id)) {
+  //       this.setOpen(id, true);
+  //     }
+  //   }
 
-//     // if already closed and it has a parent, then close the parent
-//     const parentId = this.getNode(id)?.parent?.public.data.id;
-//     if (parentId) {
-//       this.goto(parentId);
-//       this.setOpen(parentId, false);
-//     }
-//   }
+  //   close(id: string) {
+  //     if (this.isOpen(id)) {
+  //       this.setOpen(id, false);
+  //       return;
+  //     }
 
-//   gotoOffset(id: string, { rows, pages }: NavigationOffset) {
-//     const index = this.order().indexOf(id);
-//     if (index >= 0) {
-//       const target = index + (rows ?? 0) + (pages ?? 0) * this.pageRows();
-//       this.gotoIndex(target);
-//     }
-//   }
+  //     // if already closed and it has a parent, then close the parent
+  //     const parentId = this.getNode(id)?.parent?.public.data.id;
+  //     if (parentId) {
+  //       this.goto(parentId);
+  //       this.setOpen(parentId, false);
+  //     }
+  //   }
 
-//   gotoFirst() {
-//     this.gotoIndex(0);
-//   }
+  //   gotoOffset(id: string, { rows, pages }: NavigationOffset) {
+  //     const index = this.order().indexOf(id);
+  //     if (index >= 0) {
+  //       const target = index + (rows ?? 0) + (pages ?? 0) * this.pageRows();
+  //       this.gotoIndex(target);
+  //     }
+  //   }
 
-//   gotoLast() {
-//     this.gotoIndex(this.order().length - 1);
-//   }
+  //   gotoFirst() {
+  //     this.gotoIndex(0);
+  //   }
 
-//   getCurrentId(): string | undefined {
-//     return this.lastFocused ? this.lastFocused : this.getId(0);
-//   }
+  //   gotoLast() {
+  //     this.gotoIndex(this.order().length - 1);
+  //   }
 
-//   // O(N)
-//   goto(id: string) {
-//     // manually mark the node as focused, because
-//     // the target html element could be outside the virtual list
-//     this.lastFocused = id;
+  //   getCurrentId(): string | undefined {
+  //     return this.lastFocused ? this.lastFocused : this.getId(0);
+  //   }
 
-//     this.tree.current?.scrollToItem(id);
-//     this.elemById.get(id)?.focus();
-//   }
+  //   // O(N)
+  //   goto(id: string) {
+  //     // manually mark the node as focused, because
+  //     // the target html element could be outside the virtual list
+  //     this.lastFocused = id;
 
-//   private gotoIndex(index: number) {
-//     const order = this.order();
-//     if (!order.length) return;
+  //     this.tree.current?.scrollToItem(id);
+  //     this.elemById.get(id)?.focus();
+  //   }
 
-//     index = Math.max(0, Math.min(index, order.length - 1));
-//     this.goto(order[index]);
-//   }
+  //   private gotoIndex(index: number) {
+  //     const order = this.order();
+  //     if (!order.length) return;
 
-//   private order(): string[] {
-//     return this.tree.current?.state.order ?? [];
-//   }
+  //     index = Math.max(0, Math.min(index, order.length - 1));
+  //     this.goto(order[index]);
+  //   }
 
-//   private setOpen(id: string, state: boolean) {
-//     if (this.canOpen(id)) {
-//       this.getNode(id)?.public?.setOpen(state);
-//     }
-//   }
+  //   private order(): string[] {
+  //     return this.tree.current?.state.order ?? [];
+  //   }
 
-//   private getNode(id: string): JsonNodeRecord | undefined {
-//     return this.tree.current?.state.records.get(id);
-//   }
+  //   private setOpen(id: string, state: boolean) {
+  //     if (this.canOpen(id)) {
+  //       this.getNode(id)?.public?.setOpen(state);
+  //     }
+  //   }
 
-//   private getId(index: number): string | undefined {
-//     const order = this.order();
-//     if (0 <= index && index < order.length) {
-//       return order[index];
-//     }
-//   }
+  //   private getNode(id: string): JsonNodeRecord | undefined {
+  //     return this.tree.current?.state.records.get(id);
+  //   }
 
-//   private pageRows(): number {
-//     const pageHeight = this.treeElem?.clientHeight;
-//     const itemHeight =
-//       this.tree.current?.state?.list?.current?.props?.itemSize(0);
-//     return pageHeight && itemHeight ? Math.ceil(pageHeight / itemHeight) : 1;
-//   }
-// }
+  //   private getId(index: number): string | undefined {
+  //     const order = this.order();
+  //     if (0 <= index && index < order.length) {
+  //       return order[index];
+  //     }
+  //   }
+
+  //   private pageRows(): number {
+  //     const pageHeight = this.treeElem?.clientHeight;
+  //     const itemHeight =
+  //       this.tree.current?.state?.list?.current?.props?.itemSize(0);
+  //     return pageHeight && itemHeight ? Math.ceil(pageHeight / itemHeight) : 1;
+  //   }
+}

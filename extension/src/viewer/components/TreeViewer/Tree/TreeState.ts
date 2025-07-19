@@ -114,19 +114,18 @@ export class TreeState {
   }
 
   private open(node: NodeState) {
-    // The maximum number of nodes that can be added at once with splice
-    // is limited by maximum number of arguments in JavaScript, so we chunk.
+    type SpliceArgs = [start: number, deleteCount: number, ...items: string[]];
+
     let start = this.indexById(node.id) + 1;
-    let spliceArgs: [start: number, deleteCount: number, ...string[]] = [
-      start,
-      0,
-    ];
+    let spliceArgs: SpliceArgs = [start, 0];
 
     // Iterates over nodes that will become visible after opening
     const firstChild = node.children[0];
     for (const visibleChild of walkFromNode(firstChild, false)) {
       spliceArgs.push(visibleChild.id);
 
+      // The maximum number of nodes that can be added at once with splice
+      // is limited by maximum number of arguments in JavaScript, so we chunk.
       if (spliceArgs.length === MAX_APPLY_ARGUMENTS) {
         Array.prototype.splice.apply(this.visibleNodes, spliceArgs);
         start += MAX_APPLY_ARGUMENTS - 2;
