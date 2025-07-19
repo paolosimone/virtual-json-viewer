@@ -59,14 +59,13 @@ export function Tree<Context>({
   );
 
   return (
-    // react-window is not able to infer the type from generics
-    <VariableSizeList
-      ref={listRef as any}
+    <VariableSizeList<ItemData<Context>>
+      ref={listRef}
       outerRef={outerRef}
       height={height}
       width={width}
       itemCount={itemData.treeState.length()}
-      itemData={itemData as any}
+      itemData={itemData}
       itemKey={(index, itemData) => itemData.treeState.idByIndex(index)}
       itemSize={(index) => handler.getHeight(treeState.idByIndex(index))}
       overscanCount={20}

@@ -4,8 +4,7 @@ import { NodeId, NodeState } from "./NodeState";
 import { ItemData } from "./TreeItem";
 import { TreeState } from "./TreeState";
 
-// context is any because it's not used in the handler,
-// this also avoids circular dependencies
+// context is any because it's not used in the handler
 export type TreeListCurrent = RefCurrent<VariableSizeList<ItemData<any>>>;
 
 const DEFAULT_ITEM_HEIGHT = 30;
