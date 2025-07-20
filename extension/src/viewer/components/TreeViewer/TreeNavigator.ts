@@ -95,7 +95,6 @@ export class TreeNavigator {
     }
   }
 
-  // O(N)
   goto(id: NodeId) {
     // manually mark the node as focused, because
     // the target html element could be outside the virtual list

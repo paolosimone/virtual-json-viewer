@@ -1,10 +1,10 @@
 import { TreeWalker } from "../TreeWalker";
-import { NodeId, NodeState } from "./NodeState";
+import { NodeId, NodeState, NodeWalkId } from "./NodeState";
 
 export type StateChangeCallback = (newState: TreeState) => void;
 
 export class TreeState {
-  private nodesById: Map<string, NodeState> = new Map();
+  private nodesById: Map<NodeId, NodeState> = new Map();
   private visibleNodes: NodeId[] = [];
   private onStateChange: Nullable<StateChangeCallback> = null;
 
@@ -14,6 +14,11 @@ export class TreeState {
     newState.visibleNodes = this.visibleNodes;
     newState.onStateChange = this.onStateChange;
     return newState;
+  }
+
+  private resetState() {
+    this.nodesById.clear();
+    this.visibleNodes = [];
   }
 
   public observeStateChange(callback: StateChangeCallback) {
@@ -36,30 +41,53 @@ export class TreeState {
     return this.visibleNodes[index];
   }
 
-  // O(N)
+  // O(log(N))
   public indexById(id: NodeId): number {
-    return this.visibleNodes.indexOf(id);
+    const arr = this.visibleNodes;
+    let left = 0;
+    let right = arr.length - 1;
+
+    while (left <= right) {
+      const mid = Math.floor((left + right) / 2);
+
+      if (arr[mid] === id) {
+        return mid; // Found
+      }
+
+      if (arr[mid] < id) {
+        left = mid + 1;
+      } else {
+        right = mid - 1;
+      }
+    }
+
+    return -1; // Not found
   }
 
   // Builds the initial state by walking the whole tree
   public load(treeWalker: TreeWalker) {
     // Reset state
-    this.nodesById.clear();
-    this.visibleNodes = [];
+    this.resetState();
+
+    // Keep track of walked nodes to resolve parent relationships
+    const walked = new Map<NodeWalkId, NodeId>();
+
+    // Assigns an incremental index to each node, according to walking order
+    let globalIndex = 1;
 
     // Keep track of the last visited node in each level
     const lastSiblings = new Map<NodeId | undefined, NodeState>();
 
-    // Keep track of parents with visible children
-    const visibleParents = new Set<NodeId>();
-
     // Depth first walk
     for (const data of treeWalker()) {
-      const parent = data.parent ? this.nodeById(data.parent.id) : null;
+      const parent = data.parent
+        ? this.nodeById(walked.get(data.parent.id)!)
+        : null;
 
       // Build the node
       const node: NodeState = {
-        id: data.id,
+        id: globalIndex++,
+        walkId: data.id,
         key: data.key,
         value: data.value,
         parent: parent,
@@ -74,11 +102,9 @@ export class TreeState {
 
       // Register the node in the state
       this.nodesById.set(node.id, node);
-      const isVisible = !parent || visibleParents.has(parent.id);
+      const isVisible = !parent || parent.isOpen;
       if (isVisible) {
         this.visibleNodes.push(node.id);
-
-        if (node.isOpen) visibleParents.add(node.id);
       }
 
       // Bind child to parent
@@ -91,6 +117,9 @@ export class TreeState {
       const last = lastSiblings.get(parent?.id);
       if (last) last.sibling = node;
       lastSiblings.set(parent?.id, node);
+
+      // Mark the node as walked
+      walked.set(node.walkId, node.id);
     }
     this.onStateChange?.(this.cloneRef());
   }
