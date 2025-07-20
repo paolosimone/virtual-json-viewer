@@ -51,7 +51,7 @@ export function Toolbar({
           className="ml-2 flex-1"
           search={searchState.value}
           setSearch={searchState.setValue}
-          disableShowMismatch={!isTreeView}
+          enableVisibility={isTreeView}
         />
       </div>
 
