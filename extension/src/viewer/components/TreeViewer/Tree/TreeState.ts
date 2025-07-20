@@ -49,7 +49,7 @@ export class TreeState {
     }
   }
 
-  public lenghtAll(): number {
+  public lengthAll(): number {
     return this.nodes.length;
   }
 
