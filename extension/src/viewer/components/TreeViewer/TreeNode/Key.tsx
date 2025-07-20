@@ -3,35 +3,22 @@ import * as Json from "@/viewer/commons/Json";
 import { useRenderedText } from "@/viewer/hooks";
 import { Search } from "@/viewer/state";
 import classNames from "classnames";
-import {
-  ForwardedRef,
-  forwardRef,
-  JSX,
-  useImperativeHandle,
-  useRef,
-} from "react";
-import { JsonNodeData } from "../model/JsonNode";
-
-export type KeyProps = Props<{
-  data: JsonNodeData;
-  search: Nullable<Search>;
-}>;
+import { JSX, Ref, useImperativeHandle, useRef } from "react";
 
 export type KeyHandle = {
   selectText: () => void;
 };
 
-export const Key = forwardRef(function Key(
-  props: KeyProps,
-  ref: ForwardedRef<KeyHandle>,
-): JSX.Element {
-  if (props.data.key === null) {
-    return <span />;
-  }
+export type KeyProps = Props<{
+  nodeKey: Nullable<Json.Key>;
+  search: Nullable<Search>;
+  ref?: Ref<KeyHandle>;
+}>;
 
+export function Key(props: KeyProps): JSX.Element {
   const keyRef = useRef<HTMLSpanElement>(null);
   useImperativeHandle(
-    ref,
+    props.ref,
     () => ({
       selectText() {
         if (keyRef.current) DOM.selectAllText(keyRef.current);
@@ -40,37 +27,55 @@ export const Key = forwardRef(function Key(
     [keyRef],
   );
 
-  const KeyElement = Json.isNumber(props.data.key) ? ArrayKey : ObjectKey;
+  if (props.nodeKey === null) {
+    return <span />;
+  }
+
+  const className = classNames(
+    "text-json-key mr-4 whitespace-pre-wrap",
+    props.className,
+  );
+
+  if (Json.isNumber(props.nodeKey)) {
+    return <ArrayKey className={className} nodeKey={props.nodeKey} />;
+  }
 
   return (
-    <KeyElement
+    <ObjectKey
+      className={className}
+      nodeKey={props.nodeKey}
+      search={props.search}
       ref={keyRef}
-      className={classNames(
-        "text-json-key mr-4 whitespace-pre-wrap",
-        props.className,
-      )}
-      {...props}
     />
   );
-});
+}
 
-const ArrayKey = forwardRef(function ArrayKey(
-  { data, className }: KeyProps,
-  ref: ForwardedRef<HTMLSpanElement>,
-): JSX.Element {
+type ArrayKeyProps = Props<{
+  nodeKey: number;
+}>;
+
+function ArrayKey({ nodeKey, className }: ArrayKeyProps): JSX.Element {
   return (
     <span className={className}>
-      <span ref={ref}>{data.key}</span>
+      <span>{nodeKey}</span>
       <span>:</span>
     </span>
   );
-});
+}
 
-const ObjectKey = forwardRef(function ObjectKey(
-  { data, search, className }: KeyProps,
-  ref: ForwardedRef<HTMLSpanElement>,
-): JSX.Element {
-  const highlightedKey = useRenderedText(data.key as string, search);
+type ObjectKeyProps = Props<{
+  nodeKey: string;
+  search: Nullable<Search>;
+  ref?: Ref<HTMLSpanElement>;
+}>;
+
+function ObjectKey({
+  nodeKey,
+  search,
+  className,
+  ref,
+}: ObjectKeyProps): JSX.Element {
+  const highlightedKey = useRenderedText(nodeKey, search);
 
   return (
     <span className={className}>
@@ -78,4 +83,4 @@ const ObjectKey = forwardRef(function ObjectKey(
       <span>:</span>
     </span>
   );
-});
+}

@@ -2,7 +2,7 @@
 
 # ![logo](assets/logo_48.png) Virtual Json Viewer
 
-Browser plugin that uses [virtual DOM](https://github.com/Lodin/react-vtree) to render JSONs with built-in search, JQ filtering and many other [features](#features).
+Browser plugin that uses [virtual DOM](https://github.com/bvaughn/react-window) to render JSONs with built-in search, JQ filtering and many other [features](#features).
 
 ![preview](assets/preview.png)
 
@@ -260,7 +260,7 @@ Always `yarn format` before creating a commit.
 |[json-stable-stringify](https://github.com/ljharb/json-stable-stringify)       |Sort keys on JSON serialization apparently is rocket science|
 |[React](https://reactjs.org/)                                                  |Learn how to write a frontend application without jQuery and bootstrap|
 |[react-color](https://github.com/casesandberg/react-color)                     |Easily edit the custom theme and, more importantly, looking professional while doing it|
-|[react-vtree](https://github.com/Lodin/react-vtree)                            |Render the JSON. I'd say it's a pretty important role|
+|[react-window](https://github.com/bvaughn/react-window)                        |Put the virtual in Virtual Json Viewer|
 |[TailwindCSS](https://tailwindcss.com/)                                        |Prevent me from touching CSS files|
 |[Typescript](https://www.typescriptlang.org/)                                  |Try to forget I'm actually writing JS 🤢|
 |[uid](https://github.com/lukeed/uid)                                           |Fast generation of unique keys for [React lists](https://reactjs.org/docs/lists-and-keys.html#keys) |

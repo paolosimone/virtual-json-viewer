@@ -1,8 +1,8 @@
 import * as Json from "@/viewer/commons/Json";
 import { Search, SearchVisibility } from "@/viewer/state";
-import { JsonNode, SearchMatch } from "./JsonNode";
+import { SearchMatch, WalkNodeInput } from "./WalkNode";
 
-export class NodeFilter {
+export class TreeSearch {
   search: Search;
   searchStrategy: SearchStrategy;
   keepStrategy: KeepStrategy;
@@ -17,7 +17,7 @@ export class NodeFilter {
     this.keepStrategy = buildKeepStrategy(search);
   }
 
-  public match(node: JsonNode): Nullable<SearchMatch> {
+  public match(node: WalkNodeInput): Nullable<SearchMatch> {
     const searchMatch = {
       search: this.search,
       inKey: this.matchKey(node),
@@ -28,7 +28,7 @@ export class NodeFilter {
     return this.keepStrategy.keep(searchMatch) ? searchMatch : null;
   }
 
-  private matchKey({ key, parent }: JsonNode): boolean {
+  private matchKey({ key, parent }: WalkNodeInput): boolean {
     if (key === null) {
       return false;
     }
@@ -41,7 +41,7 @@ export class NodeFilter {
     return !isArrayElement && this.searchStrategy.isMatch(key);
   }
 
-  private matchValue({ value, parent }: JsonNode): boolean {
+  private matchValue({ value, parent }: WalkNodeInput): boolean {
     if (value === null) {
       return false;
     }
@@ -53,7 +53,7 @@ export class NodeFilter {
     return this.searchStrategy.isMatch(Json.toString(value));
   }
 
-  private matchAncestor({ parent }: JsonNode): boolean {
+  private matchAncestor({ parent }: WalkNodeInput): boolean {
     return (
       parent?.searchMatch?.inAncestor || parent?.searchMatch?.inKey || false
     );

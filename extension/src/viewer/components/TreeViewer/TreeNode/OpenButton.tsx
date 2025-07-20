@@ -1,25 +1,25 @@
 import { Icon, IconButton } from "@/viewer/components";
 import classNames from "classnames";
 import { JSX } from "react";
-import { TreeNavigator } from "../TreeNavigator";
-import { JsonNodeData } from "../model/JsonNode";
 
 export type OpenProps = Props<{
-  data: JsonNodeData;
-  treeNavigator: TreeNavigator;
+  enabled: boolean;
+  isOpen: boolean;
+  toggleOpen: () => void;
 }>;
 
 export function OpenButton({
-  data: { id },
-  treeNavigator,
+  enabled,
+  isOpen,
+  toggleOpen,
   className,
 }: OpenProps): JSX.Element {
   return (
     <span className={classNames("mr-0.5 w-5 min-w-5", className)}>
-      {treeNavigator.canOpen(id) && (
+      {enabled && (
         <IconButton
-          icon={treeNavigator.isOpen(id) ? Icon.ChevronDown : Icon.ChevronRight}
-          onClick={() => treeNavigator.toogleOpen(id)}
+          icon={isOpen ? Icon.ChevronDown : Icon.ChevronRight}
+          onClick={toggleOpen}
           className="fill-viewer-foreground h-4 w-4 align-middle"
           tabIndex={-1}
         />

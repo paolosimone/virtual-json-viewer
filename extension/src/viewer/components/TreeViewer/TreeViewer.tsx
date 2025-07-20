@@ -1,11 +1,10 @@
 import * as DOM from "@/viewer/commons/Dom";
-import { EventType } from "@/viewer/commons/EventBus";
 import * as Json from "@/viewer/commons/Json";
 import {
   CHORD_KEY,
+  isUpperCaseKeypress,
   KeydownBufferEvent,
   KeydownEvent,
-  isUpperCaseKeypress,
   useElementSize,
   useEventBusListener,
   useGlobalKeydownEvent,
@@ -14,22 +13,13 @@ import {
 } from "@/viewer/hooks";
 import { Search, SettingsContext } from "@/viewer/state";
 import classNames from "classnames";
-import {
-  JSX,
-  RefObject,
-  useCallback,
-  useContext,
-  useMemo,
-  useRef,
-} from "react";
-import {
-  VariableSizeNodePublicState as NodeState,
-  VariableSizeTree as Tree,
-} from "react-vtree";
+import { JSX, useCallback, useContext, useMemo } from "react";
+// import { TreeNavigator } from "./TreeNavigator";
+import { EventType } from "@/viewer/commons/EventBus";
+import { Tree, TreeHandler } from "./Tree";
 import { TreeNavigator } from "./TreeNavigator";
 import { TreeNode } from "./TreeNode";
-import { JsonNodeData } from "./model/JsonNode";
-import { buildId, getRootNodes, jsonTreeWalker } from "./model/JsonTreeWalker";
+import { treeWalker } from "./TreeWalker";
 
 export type TreeViewerProps = Props<{
   jsonLines: Json.Lines;
@@ -50,23 +40,25 @@ export function TreeViewer({
   );
 
   const { expandNodes } = useContext(SettingsContext);
-  const tree = useRef<Nullable<Tree<JsonNodeData>>>(null);
+
+  // tree walker for building the tree
+  const walker = useMemo(
+    () => treeWalker(json, search, expandNodes),
+    [json, search, expandNodes],
+  );
+
+  // imperative reference to manipulate the tree
+  const [tree, treeRef] = useReactiveRef<TreeHandler>();
 
   // for some obscure reason AutoSizer doesn't work on Firefox when loaded as extension
   const [parent, parentRef] = useReactiveRef<HTMLDivElement>();
   const { height, width } = useElementSize(parent);
 
-  // tree walker for building the tree
-  const treeWalker = useMemo(
-    () => jsonTreeWalker(json, search, expandNodes),
-    [json, search, expandNodes],
-  );
-
   // global events
-  const expand = useCallback(() => setOpen(json, tree, true), [json, tree]);
+  const expand = useCallback(() => tree?.openAll(), [tree]);
   useEventBusListener(EventType.Expand, expand);
 
-  const collapse = useCallback(() => setOpen(json, tree, false), [json, tree]);
+  const collapse = useCallback(() => tree?.closeAll(), [tree]);
   useEventBusListener(EventType.Collapse, collapse);
 
   // register global shortcut
@@ -108,14 +100,13 @@ export function TreeViewer({
       tabIndex={0}
       onKeyDown={onKeydown}
     >
-      {/* @ts-expect-error react-vtree signature not compatible with React 19 */}
       <Tree
-        ref={tree}
-        treeWalker={treeWalker}
-        outerRef={treeDivRef}
         height={height}
         width={width}
-        itemData={{ navigator: treeNavigator }}
+        treeWalker={walker}
+        ref={treeRef}
+        outerRef={treeDivRef}
+        context={treeNavigator}
       >
         {TreeNode}
       </Tree>
@@ -123,42 +114,18 @@ export function TreeViewer({
   );
 }
 
-function setOpen(
-  json: Json.Root,
-  tree: RefObject<Nullable<Tree<JsonNodeData>>>,
-  isOpen: boolean,
-) {
-  function subtreeCallback(
-    node: NodeState<JsonNodeData>,
-    ownerNode: NodeState<JsonNodeData>,
-  ) {
-    if (node !== ownerNode) {
-      node.isOpen = !node.data.isLeaf && isOpen;
-    }
-  }
-
-  const newState = Object.fromEntries(
-    getRootNodes(json).map(({ key, value }) => [
-      buildId(key, null),
-      { open: !Json.isLeaf(value) && isOpen, subtreeCallback },
-    ]),
-  );
-
-  tree.current?.recomputeTree(newState);
-}
-
 function handleNavigation(
   treeElem: Nullable<HTMLElement>,
-  treeNavigator: TreeNavigator,
+  tree: TreeNavigator,
   { last: e, text }: KeydownBufferEvent,
 ) {
-  const id = treeNavigator.getCurrentId();
+  const id = tree.getCurrentId();
 
   // Focus
 
   if (e.key == "Enter") {
     e.preventDefault();
-    if (id) treeNavigator.goto(id);
+    if (id) tree.goto(id);
     return;
   }
 
@@ -173,13 +140,13 @@ function handleNavigation(
 
   if (e.key == "ArrowDown" || e.key == "j") {
     e.preventDefault();
-    if (id) treeNavigator.gotoOffset(id, { rows: 1 });
+    if (id) tree.gotoOffset(id, { rows: 1 });
     return;
   }
 
   if (e.key == "ArrowUp" || e.key == "k") {
     e.preventDefault();
-    if (id) treeNavigator.gotoOffset(id, { rows: -1 });
+    if (id) tree.gotoOffset(id, { rows: -1 });
     return;
   }
 
@@ -187,25 +154,25 @@ function handleNavigation(
 
   if (e.key == "PageDown" || isUpperCaseKeypress(e, "J")) {
     e.preventDefault();
-    if (id) treeNavigator.gotoOffset(id, { pages: 1 });
+    if (id) tree.gotoOffset(id, { pages: 1 });
     return;
   }
 
   if (e.key == "PageUp" || isUpperCaseKeypress(e, "K")) {
     e.preventDefault();
-    if (id) treeNavigator.gotoOffset(id, { pages: -1 });
+    if (id) tree.gotoOffset(id, { pages: -1 });
     return;
   }
 
   if (e.key == "Home" || text.slice(-2) == "gg") {
     e.preventDefault();
-    treeNavigator.gotoFirst();
+    tree.gotoFirst();
     return;
   }
 
   if (e.key == "End" || isUpperCaseKeypress(e, "G")) {
     e.preventDefault();
-    treeNavigator.gotoLast();
+    tree.gotoLast();
     return;
   }
 
@@ -213,19 +180,19 @@ function handleNavigation(
 
   if (e.key == "ArrowRight" || e.key == "l") {
     e.preventDefault();
-    if (id) treeNavigator.open(id);
+    if (id) tree.open(id);
     return;
   }
 
   if (e.key == "ArrowLeft" || e.key == "h") {
     e.preventDefault();
-    if (id) treeNavigator.close(id);
+    if (id) tree.close(id);
     return;
   }
 
   if (e.key == " ") {
     e.preventDefault();
-    if (id) treeNavigator.toogleOpen(id);
+    if (id) tree.toggleOpen(id);
     return;
   }
 }

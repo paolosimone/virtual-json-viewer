@@ -1,11 +1,5 @@
 import { RefCurrent } from "@/viewer/hooks";
-import { RefObject } from "react";
-import { VariableSizeTree as Tree } from "react-vtree";
-import { NodePublicState, NodeRecord } from "react-vtree/dist/es/Tree";
-import { JsonNodeData } from "./model/JsonNode";
-
-export type JsonTree = Tree<JsonNodeData>;
-export type JsonNodeRecord = NodeRecord<NodePublicState<JsonNodeData>>;
+import { NodeId, TreeHandler } from "./Tree";
 
 export type NavigationOffset = {
   rows?: number;
@@ -13,20 +7,20 @@ export type NavigationOffset = {
 };
 
 export class TreeNavigator {
-  private tree: RefObject<Nullable<JsonTree>>;
+  private tree: RefCurrent<TreeHandler>;
   private treeElem: RefCurrent<HTMLElement>;
-  private elemById: Map<string, HTMLElement> = new Map();
-  private lastFocused?: string;
+  private elemById: Map<NodeId, HTMLElement> = new Map();
+  private lastFocused?: NodeId;
 
   constructor(
-    tree: RefObject<Nullable<JsonTree>>,
+    tree: RefCurrent<TreeHandler>,
     treeElem: RefCurrent<HTMLElement>,
   ) {
     this.tree = tree;
     this.treeElem = treeElem;
   }
 
-  onElemShown(id: string, elem: HTMLElement) {
+  public onElemShown(id: NodeId, elem: HTMLElement) {
     this.elemById.set(id, elem);
 
     // register to external focus event (e.g. by mouse click)
@@ -38,7 +32,7 @@ export class TreeNavigator {
     }
   }
 
-  onElemHidden(id: string) {
+  public onElemHidden(id: NodeId) {
     this.elemById.delete(id);
 
     // return focus to parent to avoid inconsistencies
@@ -48,41 +42,35 @@ export class TreeNavigator {
     }
   }
 
-  canOpen(id: string): boolean {
-    return !this.getNode(id)?.public?.data?.isLeaf;
+  public resize(id: NodeId, height: number) {
+    this.tree?.resize(id, height);
   }
 
-  isOpen(id: string): boolean {
-    return this.getNode(id)?.public?.isOpen ?? false;
+  public toggleOpen(id: NodeId) {
+    this.tree?.setOpen(id, !this.tree?.isOpen(id));
   }
 
-  toogleOpen(id: string) {
-    this.setOpen(id, !this.isOpen(id));
+  public open(id: NodeId) {
+    this.tree?.setOpen(id, true);
   }
 
-  open(id: string) {
-    if (!this.isOpen(id)) {
-      this.setOpen(id, true);
-    }
-  }
-
-  close(id: string) {
-    if (this.isOpen(id)) {
-      this.setOpen(id, false);
+  public close(id: NodeId) {
+    if (this.tree?.isOpen(id)) {
+      this.tree?.setOpen(id, false);
       return;
     }
 
     // if already closed and it has a parent, then close the parent
-    const parentId = this.getNode(id)?.parent?.public.data.id;
+    const parentId = this.tree?.get(id).parent?.id;
     if (parentId) {
       this.goto(parentId);
-      this.setOpen(parentId, false);
+      this.close(parentId);
     }
   }
 
-  gotoOffset(id: string, { rows, pages }: NavigationOffset) {
-    const index = this.order().indexOf(id);
-    if (index >= 0) {
+  gotoOffset(id: NodeId, { rows, pages }: NavigationOffset) {
+    const index = this.tree?.indexById(id);
+    if (index !== undefined) {
       const target = index + (rows ?? 0) + (pages ?? 0) * this.pageRows();
       this.gotoIndex(target);
     }
@@ -93,56 +81,41 @@ export class TreeNavigator {
   }
 
   gotoLast() {
-    this.gotoIndex(this.order().length - 1);
+    if (!this.tree?.length()) return;
+    this.gotoIndex(this.tree.length() - 1);
   }
 
-  getCurrentId(): string | undefined {
-    return this.lastFocused ? this.lastFocused : this.getId(0);
+  getCurrentId(): NodeId | undefined {
+    if (this.lastFocused) {
+      return this.lastFocused;
+    }
+
+    if (this.tree?.length()) {
+      return this.tree.getByIndex(0).id;
+    }
   }
 
   // O(N)
-  goto(id: string) {
+  goto(id: NodeId) {
     // manually mark the node as focused, because
     // the target html element could be outside the virtual list
     this.lastFocused = id;
 
-    this.tree.current?.scrollToItem(id);
+    this.tree?.scrollTo(id);
     this.elemById.get(id)?.focus();
   }
 
   private gotoIndex(index: number) {
-    const order = this.order();
-    if (!order.length) return;
-
-    index = Math.max(0, Math.min(index, order.length - 1));
-    this.goto(order[index]);
-  }
-
-  private order(): string[] {
-    return this.tree.current?.state.order ?? [];
-  }
-
-  private setOpen(id: string, state: boolean) {
-    if (this.canOpen(id)) {
-      this.getNode(id)?.public?.setOpen(state);
-    }
-  }
-
-  private getNode(id: string): JsonNodeRecord | undefined {
-    return this.tree.current?.state.records.get(id);
-  }
-
-  private getId(index: number): string | undefined {
-    const order = this.order();
-    if (0 <= index && index < order.length) {
-      return order[index];
-    }
+    if (!this.tree?.length()) return;
+    index = Math.max(0, Math.min(index, this.tree.length() - 1));
+    const id = this.tree.getByIndex(index).id;
+    this.goto(id);
   }
 
   private pageRows(): number {
+    if (!this.tree?.length()) return 0;
     const pageHeight = this.treeElem?.clientHeight;
-    const itemHeight =
-      this.tree.current?.state?.list?.current?.props?.itemSize(0);
+    const itemHeight = this.tree.getHeight(this.tree.getByIndex(0).id);
     return pageHeight && itemHeight ? Math.ceil(pageHeight / itemHeight) : 1;
   }
 }

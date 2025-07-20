@@ -1,54 +1,52 @@
 import * as DOM from "@/viewer/commons/Dom";
-import { CHORD_KEY, RefCurrent, useReactiveRef } from "@/viewer/hooks";
+import {
+  CHORD_KEY,
+  isUpperCaseKeypress,
+  RefCurrent,
+  useReactiveRef,
+} from "@/viewer/hooks";
 import { Search } from "@/viewer/state";
 import classNames from "classnames";
 import { JSX, useEffect, useLayoutEffect } from "react";
-import { VariableSizeNodePublicState as NodeState } from "react-vtree";
-import { NodeComponentProps } from "react-vtree/dist/es/Tree";
+import { NodeState, TreeNodeProps } from "../Tree";
 import { TreeNavigator } from "../TreeNavigator";
-import { JsonNodeData } from "../model/JsonNode";
 import { Key, KeyHandle } from "./Key";
 import { OpenButton } from "./OpenButton";
 import { Value, ValueHandle } from "./Value";
 
-export type JsonTreeNode = NodeComponentProps<
-  JsonNodeData,
-  NodeState<JsonNodeData>
->;
-
 export function TreeNode({
-  data,
+  context: tree,
+  node,
   style,
-  resize,
-  treeData,
-}: JsonTreeNode): JSX.Element {
+}: TreeNodeProps<TreeNavigator>): JSX.Element {
   const [parent, parentRef] = useReactiveRef<HTMLDivElement>();
   const [content, contentRef] = useReactiveRef<HTMLDivElement>();
   const [key, keyRef] = useReactiveRef<KeyHandle>();
   const [value, valueRef] = useReactiveRef<ValueHandle>();
 
+  // resize the node to fit its content on every re-render
+  const resize = (height: number) => tree.resize(node.id, height);
   useFitContent(parent, content, resize);
 
-  const treeNavigator: TreeNavigator = treeData.navigator;
-
+  // registers the node's html element in the navigator
   useLayoutEffect(() => {
     if (!parent) return;
-    treeNavigator.onElemShown(data.id, parent);
-    return () => treeNavigator.onElemHidden(data.id);
-  }, [data.id, parent, treeNavigator]);
+    tree.onElemShown(node.id, parent);
+    return () => tree.onElemHidden(node.id);
+  }, [node.id, parent, tree]);
 
   const onKeydown = (e: React.KeyboardEvent) => {
     handleShortcuts({ content, key, value }, e);
   };
 
-  const searchAnalysis = analyzeSearchMatch(data);
+  const searchAnalysis = analyzeSearchMatch(node);
   const fade = { "opacity-60": !searchAnalysis.inMatchingPath };
 
   return (
     <div
       ref={parentRef}
       className="focus:bg-viewer-focus focus:outline-hidden"
-      style={{ ...style, paddingLeft: `${data.nesting}em` }}
+      style={{ ...style, paddingLeft: `${node.nesting}em` }}
       tabIndex={-1}
       onClick={() => parent?.focus()}
       onKeyDown={onKeydown}
@@ -56,15 +54,19 @@ export function TreeNode({
       <div ref={contentRef} className={classNames("flex items-start", fade)}>
         <OpenButton
           className="shrink-0"
-          data={data}
-          treeNavigator={treeNavigator}
+          enabled={!node.isLeaf}
+          isOpen={node.isOpen}
+          toggleOpen={() => tree.toggleOpen(node.id)}
         />
-        <Key ref={keyRef} data={data} search={searchAnalysis.keySearch} />
+        <Key
+          ref={keyRef}
+          nodeKey={node.key}
+          search={searchAnalysis.keySearch}
+        />
         <Value
           ref={valueRef}
           className="grow"
-          data={data}
-          treeNavigator={treeNavigator}
+          node={node}
           search={searchAnalysis.valueSearch}
         />
       </div>
@@ -72,7 +74,7 @@ export function TreeNode({
   );
 }
 
-type Resize = (height: number, shouldForceUpdate?: boolean) => void;
+type Resize = (height: number) => void;
 
 function useFitContent(
   parent: RefCurrent<HTMLElement>,
@@ -88,7 +90,7 @@ function useFitContent(
     const contentHeight = content.clientHeight + PADDING_HEIGHT;
     const delta = Math.abs(contentHeight - parentHeight);
     if (delta > TOLERANCE) {
-      resize(contentHeight, true);
+      resize(contentHeight);
     }
   };
 
@@ -105,7 +107,7 @@ type SearchMatchAnalysis = {
 function analyzeSearchMatch({
   searchMatch,
   isLeaf,
-}: JsonNodeData): SearchMatchAnalysis {
+}: NodeState): SearchMatchAnalysis {
   if (!searchMatch) {
     return { inMatchingPath: true, keySearch: null, valueSearch: null };
   }
@@ -133,13 +135,13 @@ function handleShortcuts(
     return;
   }
 
-  if ((e.shiftKey && e.key == "ArrowLeft") || e.key == "H") {
+  if ((e.shiftKey && e.key == "ArrowLeft") || isUpperCaseKeypress(e, "H")) {
     e.preventDefault();
     key?.selectText();
     return;
   }
 
-  if ((e.shiftKey && e.key == "ArrowRight") || e.key == "L") {
+  if ((e.shiftKey && e.key == "ArrowRight") || isUpperCaseKeypress(e, "L")) {
     e.preventDefault();
     value?.selectText();
     return;

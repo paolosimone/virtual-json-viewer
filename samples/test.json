@@ -49,6 +49,7 @@
   "unicode_slash":"/some_action\u0026key=value",
   "chinese_string": "\u6CA1\u6709\u66F4\u591A\u7684\u95EE\u9898",
   "korean_string": "\uB354 \uC774\uC0C1 \uBB38\uC81C",
-  "russian_string": "\u041D\u0435\u0442 \u0431\u043E\u043B\u044C\u0448\u0435 \u043F\u0440\u043E\u0431\u043B\u0435\u043C"
+  "russian_string": "\u041D\u0435\u0442 \u0431\u043E\u043B\u044C\u0448\u0435 \u043F\u0440\u043E\u0431\u043B\u0435\u043C",
+  "long_string": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
 }
 
