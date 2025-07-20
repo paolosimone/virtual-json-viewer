@@ -23,19 +23,19 @@ export function SearchVisibilityToggle({
         className,
       )}
       title={t.toolbar.search.visibility[visibility]}
-      icon={SEARCH_MISMATCH_ICONS[visibility]}
-      onClick={() => setVisibility(nextSearchMismatch(visibility))}
+      icon={SEARCH_VISIBILTY_ICONS[visibility]}
+      onClick={() => setVisibility(nextSearchVisibility(visibility))}
     />
   );
 }
 
-const SEARCH_MISMATCH_ICONS: Record<SearchVisibility, Icon.Icon> = {
+const SEARCH_VISIBILTY_ICONS: Record<SearchVisibility, Icon.Icon> = {
   [SearchVisibility.All]: Icon.Eye,
   [SearchVisibility.Subtree]: Icon.EyeClosed,
   [SearchVisibility.Match]: Icon.EyeClosedCross,
 };
 
-function nextSearchMismatch(current: SearchVisibility): SearchVisibility {
+function nextSearchVisibility(current: SearchVisibility): SearchVisibility {
   const values = Object.values(SearchVisibility);
   return values[(values.indexOf(current) + 1) % values.length];
 }
