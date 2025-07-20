@@ -1,25 +1,34 @@
-import { Search } from "@/viewer/state";
+import { Search, SearchNavigation } from "@/viewer/state";
 import classNames from "classnames";
 import { Dispatch, JSX, SetStateAction } from "react";
 import { SearchClearButton } from "./SearchClearButton";
 import { SearchInput } from "./SearchInput";
+import { SearchNavigationPanel } from "./SearchNavigationPanel";
 import { SearchSensitivityToggle } from "./SearchSensitivityButton";
 import { SearchVisibilityToggle } from "./SearchVisibilityButton";
 
 export type SearchBoxProps = Props<{
   search: Search;
   setSearch: Dispatch<SetStateAction<Search>>;
+  navigation: SearchNavigation;
+  setNavigation: Dispatch<SetStateAction<SearchNavigation>>;
   enableVisibility: boolean;
 }>;
 
 export function SearchBox({
+  className,
   search,
   setSearch,
-  className,
+  navigation,
+  setNavigation,
   enableVisibility,
 }: SearchBoxProps): JSX.Element {
   function updateSearch(update: Partial<Search>) {
     setSearch((prevSearch) => ({ ...prevSearch, ...update }));
+  }
+
+  function updateNavigation(update: Partial<SearchNavigation>) {
+    setNavigation((prevNavigation) => ({ ...prevNavigation, ...update }));
   }
 
   return (
@@ -40,6 +49,15 @@ export function SearchBox({
         text={search.text}
         setText={(text) => updateSearch({ text })}
       />
+
+      {navigation.totalCount !== null && (
+        <SearchNavigationPanel
+          className="mx-3 h-6"
+          currentIndex={navigation.currentIndex}
+          totalCount={navigation.totalCount}
+          setCurrentIndex={(currentIndex) => updateNavigation({ currentIndex })}
+        />
+      )}
 
       {enableVisibility && (
         <SearchVisibilityToggle

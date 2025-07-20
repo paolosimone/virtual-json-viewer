@@ -37,6 +37,7 @@ import {
   EmptySearch,
   JQCommand,
   Search,
+  SearchNavigation,
   Settings,
   SettingsContext,
   ViewerMode,
@@ -100,6 +101,7 @@ export function App({ jsonText }: AppProps): JSX.Element {
     jsonLines,
     viewerModeState: state.viewerMode,
     searchState: state.search,
+    searchNavigationState: state.searchNavigation,
     jqCommandState: jqEnabled ? state.jqCommand : undefined,
   };
 
@@ -143,6 +145,7 @@ export function App({ jsonText }: AppProps): JSX.Element {
 type ApplicationState = {
   viewerMode: StateObject<ViewerMode>;
   search: StateObject<Search>;
+  searchNavigation: StateObject<SearchNavigation>;
   jqCommand: StateObject<JQCommand>;
 };
 
@@ -174,11 +177,26 @@ function useApplicationState(settings: Settings): ApplicationState {
     );
   }
 
+  // TODO test behaviour
+  // const [searchNavigation, setSearchNavigation] = useSessionStorage(
+  //   "search-navigation",
+  //   EmptySearchNavigation,
+  // );
+  // const [searchNavigation, setSearchNavigation] = useState(EmptySearchNavigation);
+  const [searchNavigation, setSearchNavigation] = useState({
+    currentIndex: null,
+    totalCount: 5,
+  } as SearchNavigation);
+
   const [jq, setJQ] = useSessionStorage("jq", EmptyJQCommand);
 
   return {
     viewerMode: useStateObjectAdapter([viewer, setViewer]),
     search: useStateObjectAdapter([search, setSearch]),
+    searchNavigation: useStateObjectAdapter([
+      searchNavigation,
+      setSearchNavigation,
+    ]),
     jqCommand: useStateObjectAdapter([jq, setJQ]),
   };
 }

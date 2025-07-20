@@ -1,6 +1,11 @@
 import * as Json from "@/viewer/commons/Json";
 import { StateObject } from "@/viewer/hooks";
-import { JQCommand, Search, ViewerMode } from "@/viewer/state";
+import {
+  JQCommand,
+  Search,
+  SearchNavigation,
+  ViewerMode,
+} from "@/viewer/state";
 import classNames from "classnames";
 import { JSX } from "react";
 import { JQCommandBox } from "./JQCommandBox";
@@ -13,6 +18,7 @@ export type ToolbarProps = Props<{
   jsonLines: Json.Lines;
   viewerModeState: StateObject<ViewerMode>;
   searchState: StateObject<Search>;
+  searchNavigationState: StateObject<SearchNavigation>;
   jqCommandState?: StateObject<JQCommand>;
 }>;
 
@@ -20,6 +26,7 @@ export function Toolbar({
   jsonLines,
   viewerModeState,
   searchState,
+  searchNavigationState,
   jqCommandState,
   className,
 }: ToolbarProps): JSX.Element {
@@ -51,6 +58,8 @@ export function Toolbar({
           className="ml-2 flex-1"
           search={searchState.value}
           setSearch={searchState.setValue}
+          navigation={searchNavigationState.value}
+          setNavigation={searchNavigationState.setValue}
           enableVisibility={isTreeView}
         />
       </div>
