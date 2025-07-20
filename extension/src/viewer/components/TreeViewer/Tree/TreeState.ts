@@ -4,20 +4,20 @@ import { NodeId, NodeState, NodeWalkId } from "./NodeState";
 export type StateChangeCallback = (newState: TreeState) => void;
 
 export class TreeState {
-  private nodesById: Map<NodeId, NodeState> = new Map();
+  private nodes: NodeState[] = [];
   private visibleNodes: NodeId[] = [];
   private onStateChange: Nullable<StateChangeCallback> = null;
 
   private cloneRef(): TreeState {
     const newState = new TreeState();
-    newState.nodesById = this.nodesById;
+    newState.nodes = this.nodes;
     newState.visibleNodes = this.visibleNodes;
     newState.onStateChange = this.onStateChange;
     return newState;
   }
 
   private resetState() {
-    this.nodesById.clear();
+    this.nodes = [];
     this.visibleNodes = [];
   }
 
@@ -25,20 +25,36 @@ export class TreeState {
     this.onStateChange = callback;
   }
 
-  public length(): number {
-    return this.visibleNodes.length;
-  }
+  // Accessors
 
   public nodeByIndex(index: number): NodeState {
     return this.nodeById(this.idByIndex(index));
   }
 
   public nodeById(id: NodeId): NodeState {
-    return this.nodesById.get(id)!;
+    return this.nodes[id];
   }
 
   public idByIndex(index: number): NodeId {
     return this.visibleNodes[index];
+  }
+
+  public length(): number {
+    return this.visibleNodes.length;
+  }
+
+  public *iter(): Generator<NodeState> {
+    for (const id of this.visibleNodes) {
+      yield this.nodeById(id);
+    }
+  }
+
+  public lenghtAll(): number {
+    return this.nodes.length;
+  }
+
+  public *iterAll(): Generator<NodeState> {
+    yield* this.nodes.values();
   }
 
   // O(log(N))
@@ -64,16 +80,14 @@ export class TreeState {
     return -1; // Not found
   }
 
-  // Builds the initial state by walking the whole tree
+  // Initialization
+
   public load(treeWalker: TreeWalker) {
     // Reset state
     this.resetState();
 
     // Keep track of walked nodes to resolve parent relationships
     const walked = new Map<NodeWalkId, NodeId>();
-
-    // Assigns an incremental index to each node, according to walking order
-    let globalIndex = 1;
 
     // Keep track of the last visited node in each level
     const lastSiblings = new Map<NodeId | undefined, NodeState>();
@@ -86,7 +100,7 @@ export class TreeState {
 
       // Build the node
       const node: NodeState = {
-        id: globalIndex++,
+        id: this.nodes.length,
         walkId: data.id,
         key: data.key,
         value: data.value,
@@ -101,7 +115,7 @@ export class TreeState {
       };
 
       // Register the node in the state
-      this.nodesById.set(node.id, node);
+      this.nodes.push(node);
       const isVisible = !parent || parent.isOpen;
       if (isVisible) {
         this.visibleNodes.push(node.id);
@@ -123,6 +137,8 @@ export class TreeState {
     }
     this.onStateChange?.(this.cloneRef());
   }
+
+  // Openness
 
   public openAll() {
     if (!this.visibleNodes.length) return;
