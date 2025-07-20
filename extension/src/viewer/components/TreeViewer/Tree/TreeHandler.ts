@@ -37,6 +37,10 @@ export class TreeHandler {
     return this.tree.nodeById(id);
   }
 
+  public iterAll(): Generator<NodeState> {
+    return this.tree.iterAll();
+  }
+
   // Openness
 
   public isOpen(id: NodeId): boolean {

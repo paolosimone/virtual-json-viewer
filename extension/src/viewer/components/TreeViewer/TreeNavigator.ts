@@ -62,13 +62,13 @@ export class TreeNavigator {
 
     // if already closed and it has a parent, then close the parent
     const parentId = this.tree?.get(id).parent?.id;
-    if (parentId) {
+    if (parentId !== undefined) {
       this.goto(parentId);
       this.close(parentId);
     }
   }
 
-  gotoOffset(id: NodeId, { rows, pages }: NavigationOffset) {
+  public gotoOffset(id: NodeId, { rows, pages }: NavigationOffset) {
     const index = this.tree?.indexById(id);
     if (index !== undefined) {
       const target = index + (rows ?? 0) + (pages ?? 0) * this.pageRows();
@@ -76,17 +76,17 @@ export class TreeNavigator {
     }
   }
 
-  gotoFirst() {
+  public gotoFirst() {
     this.gotoIndex(0);
   }
 
-  gotoLast() {
+  public gotoLast() {
     if (!this.tree?.length()) return;
     this.gotoIndex(this.tree.length() - 1);
   }
 
-  getCurrentId(): NodeId | undefined {
-    if (this.lastFocused) {
+  public getCurrentId(): NodeId | undefined {
+    if (this.lastFocused !== undefined) {
       return this.lastFocused;
     }
 
@@ -95,7 +95,7 @@ export class TreeNavigator {
     }
   }
 
-  goto(id: NodeId) {
+  public goto(id: NodeId) {
     // manually mark the node as focused, because
     // the target html element could be outside the virtual list
     this.lastFocused = id;

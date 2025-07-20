@@ -1,4 +1,5 @@
 import * as DOM from "@/viewer/commons/Dom";
+import { EventType } from "@/viewer/commons/EventBus";
 import * as Json from "@/viewer/commons/Json";
 import {
   CHORD_KEY,
@@ -14,9 +15,7 @@ import {
 import { Search, SettingsContext } from "@/viewer/state";
 import classNames from "classnames";
 import { JSX, useCallback, useContext, useMemo } from "react";
-// import { TreeNavigator } from "./TreeNavigator";
-import { EventType } from "@/viewer/commons/EventBus";
-import { Tree, TreeHandler } from "./Tree";
+import { NodeId, Tree, TreeHandler } from "./Tree";
 import { TreeNavigator } from "./TreeNavigator";
 import { TreeNode } from "./TreeNode";
 import { treeWalker } from "./TreeWalker";
@@ -119,13 +118,16 @@ function handleNavigation(
   tree: TreeNavigator,
   { last: e, text }: KeydownBufferEvent,
 ) {
-  const id = tree.getCurrentId();
+  function from(navigate: (id: NodeId) => void) {
+    const id = tree.getCurrentId();
+    if (id !== undefined) navigate(id);
+  }
 
   // Focus
 
   if (e.key == "Enter") {
     e.preventDefault();
-    if (id) tree.goto(id);
+    from((id) => tree.goto(id));
     return;
   }
 
@@ -140,13 +142,13 @@ function handleNavigation(
 
   if (e.key == "ArrowDown" || e.key == "j") {
     e.preventDefault();
-    if (id) tree.gotoOffset(id, { rows: 1 });
+    from((id) => tree.gotoOffset(id, { rows: 1 }));
     return;
   }
 
   if (e.key == "ArrowUp" || e.key == "k") {
     e.preventDefault();
-    if (id) tree.gotoOffset(id, { rows: -1 });
+    from((id) => tree.gotoOffset(id, { rows: -1 }));
     return;
   }
 
@@ -154,13 +156,13 @@ function handleNavigation(
 
   if (e.key == "PageDown" || isUpperCaseKeypress(e, "J")) {
     e.preventDefault();
-    if (id) tree.gotoOffset(id, { pages: 1 });
+    from((id) => tree.gotoOffset(id, { pages: 1 }));
     return;
   }
 
   if (e.key == "PageUp" || isUpperCaseKeypress(e, "K")) {
     e.preventDefault();
-    if (id) tree.gotoOffset(id, { pages: -1 });
+    from((id) => tree.gotoOffset(id, { pages: -1 }));
     return;
   }
 
@@ -180,19 +182,19 @@ function handleNavigation(
 
   if (e.key == "ArrowRight" || e.key == "l") {
     e.preventDefault();
-    if (id) tree.open(id);
+    from((id) => tree.open(id));
     return;
   }
 
   if (e.key == "ArrowLeft" || e.key == "h") {
     e.preventDefault();
-    if (id) tree.close(id);
+    from((id) => tree.close(id));
     return;
   }
 
   if (e.key == " ") {
     e.preventDefault();
-    if (id) tree.toggleOpen(id);
+    from((id) => tree.toggleOpen(id));
     return;
   }
 }

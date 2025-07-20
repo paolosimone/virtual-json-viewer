@@ -2,7 +2,6 @@ import * as Json from "@/viewer/commons/Json";
 import { SearchMatch } from "../TreeWalker";
 export type { SearchMatch } from "../TreeWalker";
 
-// strictly positive integer (to avoid 0 which is falsy)
 export type NodeId = number;
 
 export type NodeWalkId = string;
