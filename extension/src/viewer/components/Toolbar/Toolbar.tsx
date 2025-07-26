@@ -59,7 +59,6 @@ export function Toolbar({
           search={searchState.value}
           setSearch={searchState.setValue}
           navigation={searchNavigationState.value}
-          setNavigation={searchNavigationState.setValue}
           enableVisibility={isTreeView}
         />
       </div>

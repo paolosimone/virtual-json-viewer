@@ -1,4 +1,5 @@
-import { ReactElement } from "react";
+import classNames from "classnames";
+import { JSX, Ref, useImperativeHandle, useRef, useState } from "react";
 import { uid } from "uid";
 import { Match } from "./Match";
 
@@ -10,10 +11,38 @@ export interface SearchMatch extends Match<EmptyObject> {
 
 // Rendering
 
+export interface HighlightedTextHandler {
+  setSelected: (selected: boolean) => void;
+  scrollIntoView: () => void;
+}
+
+export type HighlightedTextProps = Props<{
+  ref?: Ref<HighlightedTextHandler>;
+}>;
+
 export function HighlightedText({
+  ref,
   children,
-}: BaseProps): ReactElement<HTMLElement> {
-  return <mark>{children}</mark>;
+}: HighlightedTextProps): JSX.Element {
+  const [selected, setSelected] = useState(false);
+  const markRef = useRef<HTMLElement>(null);
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      setSelected,
+      scrollIntoView: () => markRef.current?.scrollIntoView(),
+    }),
+    [setSelected, markRef],
+  );
+
+  const background = selected ? "bg-orange-400" : "bg-yellow-300";
+
+  return (
+    <mark ref={markRef} className={classNames(background, "text-black")}>
+      {children}
+    </mark>
+  );
 }
 
 // Matching

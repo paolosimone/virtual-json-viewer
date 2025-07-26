@@ -35,6 +35,7 @@ import { TranslationContext, useLocalization } from "./localization";
 import {
   EmptyJQCommand,
   EmptySearch,
+  EmptySearchNavigation,
   JQCommand,
   Search,
   SearchNavigation,
@@ -54,6 +55,7 @@ export type AppProps = {
 type ViewerProps = {
   jsonLines: Json.Lines;
   search: Search;
+  searchNavigationState: StateObject<SearchNavigation>;
   isLargeJson: boolean;
 };
 
@@ -177,16 +179,9 @@ function useApplicationState(settings: Settings): ApplicationState {
     );
   }
 
-  // TODO test behaviour
-  // const [searchNavigation, setSearchNavigation] = useSessionStorage(
-  //   "search-navigation",
-  //   EmptySearchNavigation,
-  // );
-  // const [searchNavigation, setSearchNavigation] = useState(EmptySearchNavigation);
-  const [searchNavigation, setSearchNavigation] = useState({
-    currentIndex: null,
-    totalCount: 5,
-  } as SearchNavigation);
+  const [searchNavigation, setSearchNavigation] = useState(
+    EmptySearchNavigation,
+  );
 
   const [jq, setJQ] = useSessionStorage("jq", EmptyJQCommand);
 
@@ -222,9 +217,16 @@ function useTransitionViewerProps(
     return {
       jsonLines,
       search: state.search.value,
+      searchNavigationState: state.searchNavigation,
       isLargeJson,
     };
-  }, [state.viewerMode.value, jsonLines, isLargeJson, state.search.value]);
+  }, [
+    state.viewerMode.value,
+    jsonLines,
+    isLargeJson,
+    state.search.value,
+    state.searchNavigation,
+  ]);
 
   useEffect(() => {
     const updateTask = setTimeout(() => setNextProps(targetProps), 1);

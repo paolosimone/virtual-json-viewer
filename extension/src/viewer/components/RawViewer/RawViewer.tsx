@@ -1,18 +1,17 @@
 import * as DOM from "@/viewer/commons/Dom";
 import { EventType } from "@/viewer/commons/EventBus";
 import * as Json from "@/viewer/commons/Json";
-import { RenderedText } from "@/viewer/components";
 import {
   CHORD_KEY,
   KeydownEvent,
+  StateObject,
   useEventBusListener,
   useGlobalKeydownEvent,
 } from "@/viewer/hooks";
-import { Search, SettingsContext } from "@/viewer/state";
+import { Search, SearchNavigation, SettingsContext } from "@/viewer/state";
 import classNames from "classnames";
 import {
   JSX,
-  ReactNode,
   useCallback,
   useContext,
   useEffect,
@@ -20,11 +19,13 @@ import {
   useRef,
   useState,
 } from "react";
-import { uid } from "uid";
+import { SearchMatchNavigator } from "./SearchMatchNavigator";
+import { RenderedLines } from "./RenderedLines";
 
 export type RawViewerProps = Props<{
   jsonLines: Json.Lines;
   search: Search;
+  searchNavigationState: StateObject<SearchNavigation>;
   isLargeJson: boolean;
 }>;
 
@@ -32,9 +33,12 @@ export function RawViewer({
   jsonLines,
   search,
   isLargeJson,
+  searchNavigationState,
   className,
 }: RawViewerProps): JSX.Element {
   const { indentation, sortKeys } = useContext(SettingsContext);
+
+  // collapse/expand state
   const [minify, setMinify] = useState(false);
 
   const expand = useCallback(() => setMinify(false), [setMinify]);
@@ -43,6 +47,10 @@ export function RawViewer({
   const collapse = useCallback(() => setMinify(true), [setMinify]);
   useEventBusListener(EventType.Collapse, collapse);
 
+  // linkify URLs
+  const linkifyUrls = useLinkifyUrls(isLargeJson, minify);
+
+  // raw text
   const space = minify ? undefined : indentation;
 
   const rawLines = useMemo(
@@ -50,11 +58,24 @@ export function RawViewer({
     [jsonLines, sortKeys, space],
   );
 
-  const renderedLines = useRenderedLines(rawLines, search, isLargeJson);
+  // navigation
+  const navigator = useRef<SearchMatchNavigator>(new SearchMatchNavigator());
+  navigator.current.observeNavigation(searchNavigationState.setValue);
 
-  const ref = useRef<Nullable<HTMLDivElement>>(null);
+  const goToPreviousMatch = useCallback(
+    () => navigator.current.goToPreviousMatch(),
+    [navigator],
+  );
+  useEventBusListener(EventType.SearchNavigatePrevious, goToPreviousMatch);
+
+  const goToNextMatch = useCallback(
+    () => navigator.current.goToNextMatch(),
+    [navigator],
+  );
+  useEventBusListener(EventType.SearchNavigateNext, goToNextMatch);
 
   // register shortcuts
+  const ref = useRef<Nullable<HTMLDivElement>>(null);
   const handleNavigation = useCallback(
     (e: KeydownEvent) => {
       if (e[CHORD_KEY] && e.key === "0") {
@@ -90,36 +111,31 @@ export function RawViewer({
       spellCheck={false}
       onKeyDown={handleSelectAll}
     >
-      {renderedLines}
+      <RenderedLines
+        rawLines={rawLines}
+        search={search}
+        linkifyUrls={linkifyUrls}
+        onSearchMatchesUpdate={(handlers) => navigator.current.reset(handlers)}
+      />
     </div>
   );
 }
 
-function useRenderedLines(
-  rawlines: string[],
-  search: Nullable<Search>,
-  isLargeJson: boolean,
-): ReactNode {
+function useLinkifyUrls(isLargeJson: boolean, minify: boolean): boolean {
   const { linkifyUrls: linkifyUrlsSettings } = useContext(SettingsContext);
 
-  // linkifyUrls is disabled for large text to improve performance
-  const linkifyUrls = linkifyUrlsSettings && !isLargeJson;
+  // disable linkify when collapsed to excessive false positives
+  const linkifyUrlsExpected = linkifyUrlsSettings && !minify;
+
+  // disable linkify for large text to improve performance
+  const linkifyUrls = linkifyUrlsExpected && !isLargeJson;
   useEffect(() => {
-    if (linkifyUrlsSettings && !linkifyUrls) {
+    if (linkifyUrlsExpected && !linkifyUrls) {
       console.info(
-        "Large amount of text detected: Linkify URL has been disable to improve performance",
+        "Large amount of text detected: Linkify URL has been disabled to improve performance",
       );
     }
-  }, [isLargeJson, linkifyUrlsSettings]);
+  }, [linkifyUrlsExpected, isLargeJson]);
 
-  return useMemo(
-    () =>
-      rawlines
-        .flatMap((text) => [
-          <br key={uid()} />,
-          RenderedText({ text, search, linkifyUrls }),
-        ])
-        .slice(1),
-    [rawlines, search, linkifyUrls],
-  );
+  return linkifyUrls;
 }

@@ -6,13 +6,14 @@ import {
   isUpperCaseKeypress,
   KeydownBufferEvent,
   KeydownEvent,
+  StateObject,
   useElementSize,
   useEventBusListener,
   useGlobalKeydownEvent,
   useKeydownBuffer,
   useReactiveRef,
 } from "@/viewer/hooks";
-import { Search, SettingsContext } from "@/viewer/state";
+import { Search, SearchNavigation, SettingsContext } from "@/viewer/state";
 import classNames from "classnames";
 import { JSX, useCallback, useContext, useMemo } from "react";
 import { NodeId, Tree, TreeHandler } from "./Tree";
@@ -23,6 +24,7 @@ import { treeWalker } from "./TreeWalker";
 export type TreeViewerProps = Props<{
   jsonLines: Json.Lines;
   search: Search;
+  searchNavigationState: StateObject<SearchNavigation>;
   isLargeJson: boolean;
 }>;
 
