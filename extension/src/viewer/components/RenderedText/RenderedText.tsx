@@ -1,8 +1,8 @@
 import { Search } from "@/viewer/state";
-import { ReactNode } from "react";
-import { uid } from "uid";
+import { JSX, ReactNode, Ref, useImperativeHandle, useMemo } from "react";
 import {
   HighlightedText,
+  HighlightedTextHandler,
   SEARCH_TYPE,
   SearchMatch,
   matchSearch,
@@ -14,17 +14,55 @@ import {
   matchLinks,
 } from "./LinkifiedText";
 
+// export type RenderedTextProps = Props<{
+//   text: string;
+//   search: Nullable<Search>;
+//   linkifyUrls: boolean;
+//   ref?: Ref<RenderedTextRef>;
+// }>;
+
+export type RenderedTextRef = {
+  searchMatches: SearchMatchHandler[];
+};
+
+export type SearchMatchHandler = {
+  setSelected: (selected: boolean) => void;
+  scrollIntoView: () => void;
+};
+
 export type RenderedTextProps = Props<{
   text: string;
-  search: Nullable<Search>;
-  linkifyUrls: boolean;
+  matches: MatchesCollection;
+  ref?: Ref<RenderedTextRef>;
 }>;
 
 export function RenderedText({
   text,
-  search,
-  linkifyUrls,
+  matches,
+  ref,
 }: RenderedTextProps): ReactNode {
+  const { nodes, searchMatches } = useMemo(() => {
+    const allMatches = [...matches.searchMatches, ...matches.linkMatches];
+    return renderMatches(text, allMatches);
+  }, [text, matches]);
+
+  useImperativeHandle(ref, () => ({ searchMatches }), [searchMatches]);
+
+  return nodes;
+}
+
+type AnyMatch = SearchMatch | LinkMatch;
+
+export type MatchesCollection = {
+  searchMatches: SearchMatch[];
+  linkMatches: LinkMatch[];
+};
+
+export function buildMatches(
+  text: string,
+  search: Nullable<Search>,
+  linkifyUrls: boolean,
+): MatchesCollection {
   const searchMatches = search?.text
     ? matchSearch(text, {
         searchText: search.text,
@@ -34,10 +72,11 @@ export function RenderedText({
 
   const linkMatches = linkifyUrls ? matchLinks(text) : [];
 
-  return renderMatches(text, [...searchMatches, ...linkMatches]);
+  return {
+    searchMatches,
+    linkMatches,
+  };
 }
-
-type AnyMatch = SearchMatch | LinkMatch;
 
 // numerical value is used for comparison
 const START = 0;
@@ -50,9 +89,19 @@ type Edge = {
   match: AnyMatch;
 };
 
-function renderMatches(text: string, matches: AnyMatch[]): ReactNode {
+type RenderedNode = string | JSX.Element;
+
+type RenderedMatchesResult = {
+  nodes: RenderedNode[];
+  searchMatches: SearchMatchHandler[];
+};
+
+function renderMatches(
+  text: string,
+  matches: AnyMatch[],
+): RenderedMatchesResult {
   if (!matches.length) {
-    return text;
+    return { nodes: [text], searchMatches: [] };
   }
 
   // split matches in starting/ending edges
@@ -72,7 +121,11 @@ function renderMatches(text: string, matches: AnyMatch[]): ReactNode {
   const started: AnyMatch[] = [];
 
   // stack of children for each open tag
-  const nodesStack: ReactNode[][] = [[]];
+  const nodesStack: RenderedNode[][] = [[]];
+
+  // register search nodes as they are created
+  const [searchMatches, buildSearchNode] = searchNodeBuilder();
+  const nodeFromMatch = nodeBuilder(buildSearchNode, buildLinkNode);
 
   let lastIndex = 0;
   for (const { index, direction, match } of edges) {
@@ -133,7 +186,7 @@ function renderMatches(text: string, matches: AnyMatch[]): ReactNode {
     nodesStack[0].push(text.substring(lastIndex));
   }
 
-  return nodesStack[0];
+  return { nodes: nodesStack[0], searchMatches };
 }
 
 // lower priority types are used as outermost tags
@@ -162,20 +215,81 @@ function compareEdges(a: Edge, b: Edge): number {
     return order * (TYPE_PRIORITY[a.match.type] - TYPE_PRIORITY[b.match.type]);
   }
 
-  // arbitrary order based on id
+  // arbitrary but stable order based on id
   return order * a.id.localeCompare(b.id);
 }
 
-function nodeFromMatch(match: AnyMatch, children: ReactNode[]): ReactNode {
-  switch (match.type) {
-    case SEARCH_TYPE:
-      return <HighlightedText key={uid()}>{children}</HighlightedText>;
+type RenderedNodeBuilder = (
+  match: AnyMatch,
+  children: RenderedNode[],
+) => RenderedNode;
 
-    case LINK_TYPE:
-      return (
-        <LinkifiedText key={uid()} {...match.metadata}>
-          {children}
-        </LinkifiedText>
-      );
+function nodeBuilder(
+  searchNodeBuilder: SearchNodeBuilder,
+  linkNodeBuilder: LinkNodeBuilder,
+): RenderedNodeBuilder {
+  return (match: AnyMatch, children: RenderedNode[]): RenderedNode => {
+    switch (match.type) {
+      case SEARCH_TYPE:
+        return searchNodeBuilder(match, children);
+
+      case LINK_TYPE:
+        return linkNodeBuilder(match, children);
+    }
+  };
+}
+
+type SearchNodeBuilder = (
+  match: SearchMatch,
+  children: RenderedNode[],
+) => RenderedNode;
+
+export const SEARCH_MATCH_HANDLER_PLACEHOLDER: SearchMatchHandler = {
+  setSelected: () => {},
+  scrollIntoView: () => {},
+};
+
+function searchNodeBuilder(): [SearchMatchHandler[], SearchNodeBuilder] {
+  const searchMatches: SearchMatchHandler[] = [];
+
+  // TODO collapse same id
+  function newSearchMatchRefCallback() {
+    searchMatches.push(SEARCH_MATCH_HANDLER_PLACEHOLDER);
+    const index = searchMatches.length - 1;
+
+    return (handler: HighlightedTextHandler) => {
+      if (searchMatches[index] === SEARCH_MATCH_HANDLER_PLACEHOLDER) {
+        searchMatches[index] = handler;
+      }
+    };
   }
+
+  function buildSearchNode(
+    match: SearchMatch,
+    children: RenderedNode[],
+  ): RenderedNode {
+    return (
+      <HighlightedText key={match.id} ref={newSearchMatchRefCallback()}>
+        {children}
+      </HighlightedText>
+    );
+  }
+
+  return [searchMatches, buildSearchNode];
+}
+
+type LinkNodeBuilder = (
+  match: LinkMatch,
+  children: RenderedNode[],
+) => RenderedNode;
+
+function buildLinkNode(
+  match: LinkMatch,
+  children: RenderedNode[],
+): RenderedNode {
+  return (
+    <LinkifiedText key={match.id} {...match.metadata}>
+      {children}
+    </LinkifiedText>
+  );
 }

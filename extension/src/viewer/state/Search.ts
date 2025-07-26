@@ -20,10 +20,10 @@ export const EmptySearch: Search = {
 
 export type SearchNavigation = {
   currentIndex: Nullable<number>;
-  totalCount: Nullable<number>;
+  totalCount: number;
 };
 
 export const EmptySearchNavigation: SearchNavigation = {
   currentIndex: null,
-  totalCount: null,
+  totalCount: 0,
 };

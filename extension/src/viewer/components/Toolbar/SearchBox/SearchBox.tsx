@@ -27,10 +27,6 @@ export function SearchBox({
     setSearch((prevSearch) => ({ ...prevSearch, ...update }));
   }
 
-  function updateNavigation(update: Partial<SearchNavigation>) {
-    setNavigation((prevNavigation) => ({ ...prevNavigation, ...update }));
-  }
-
   return (
     <span
       className={classNames(
@@ -50,12 +46,11 @@ export function SearchBox({
         setText={(text) => updateSearch({ text })}
       />
 
-      {navigation.totalCount !== null && (
+      {search.text && (
         <SearchNavigationPanel
           className="mx-3 h-6"
           currentIndex={navigation.currentIndex}
           totalCount={navigation.totalCount}
-          setCurrentIndex={(currentIndex) => updateNavigation({ currentIndex })}
         />
       )}
 
