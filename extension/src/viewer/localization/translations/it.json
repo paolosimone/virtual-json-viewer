@@ -125,6 +125,10 @@
         "subtree": "Mostra l'albero sotto i risultati",
         "match": "Mostra solo i risultati"
       },
+      "navigation": {
+        "previous": "Risultato precedente",
+        "next": "Risultato successivo"
+      },
       "placeholder": "cerca"
     },
     "jq": {

@@ -1,6 +1,8 @@
 export enum EventType {
   Expand = "expand",
   Collapse = "collapse",
+  SearchNavigatePrevious = "search-navigate-previous",
+  SearchNavigateNext = "search-navigate-next",
 }
 
 export function subscribe(event: EventType, listener: EventListener): void {

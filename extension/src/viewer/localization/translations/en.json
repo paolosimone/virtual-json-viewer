@@ -125,6 +125,10 @@
         "subtree": "Show matches subtree",
         "match": "Show matches only"
       },
+      "navigation": {
+        "previous": "Previous match",
+        "next": "Next match"
+      },
       "placeholder": "search"
     },
     "jq": {

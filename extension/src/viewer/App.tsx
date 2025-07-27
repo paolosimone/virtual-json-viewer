@@ -35,8 +35,10 @@ import { TranslationContext, useLocalization } from "./localization";
 import {
   EmptyJQCommand,
   EmptySearch,
+  EmptySearchNavigation,
   JQCommand,
   Search,
+  SearchNavigation,
   Settings,
   SettingsContext,
   ViewerMode,
@@ -53,6 +55,7 @@ export type AppProps = {
 type ViewerProps = {
   jsonLines: Json.Lines;
   search: Search;
+  searchNavigationState: StateObject<SearchNavigation>;
   isLargeJson: boolean;
 };
 
@@ -100,6 +103,7 @@ export function App({ jsonText }: AppProps): JSX.Element {
     jsonLines,
     viewerModeState: state.viewerMode,
     searchState: state.search,
+    searchNavigationState: state.searchNavigation,
     jqCommandState: jqEnabled ? state.jqCommand : undefined,
   };
 
@@ -143,6 +147,7 @@ export function App({ jsonText }: AppProps): JSX.Element {
 type ApplicationState = {
   viewerMode: StateObject<ViewerMode>;
   search: StateObject<Search>;
+  searchNavigation: StateObject<SearchNavigation>;
   jqCommand: StateObject<JQCommand>;
 };
 
@@ -174,11 +179,19 @@ function useApplicationState(settings: Settings): ApplicationState {
     );
   }
 
+  const [searchNavigation, setSearchNavigation] = useState(
+    EmptySearchNavigation,
+  );
+
   const [jq, setJQ] = useSessionStorage("jq", EmptyJQCommand);
 
   return {
     viewerMode: useStateObjectAdapter([viewer, setViewer]),
     search: useStateObjectAdapter([search, setSearch]),
+    searchNavigation: useStateObjectAdapter([
+      searchNavigation,
+      setSearchNavigation,
+    ]),
     jqCommand: useStateObjectAdapter([jq, setJQ]),
   };
 }
@@ -204,9 +217,16 @@ function useTransitionViewerProps(
     return {
       jsonLines,
       search: state.search.value,
+      searchNavigationState: state.searchNavigation,
       isLargeJson,
     };
-  }, [state.viewerMode.value, jsonLines, isLargeJson, state.search.value]);
+  }, [
+    state.viewerMode.value,
+    jsonLines,
+    isLargeJson,
+    state.search.value,
+    state.searchNavigation,
+  ]);
 
   useEffect(() => {
     const updateTask = setTimeout(() => setNextProps(targetProps), 1);

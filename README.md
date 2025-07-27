@@ -26,6 +26,7 @@ Rightful question, and the answer is quite simple: the others weren't good enoug
     - [X] Option to sort JSON keys alphabetically
 - [X] Full text search
     - [X] Highlight search results
+    - [ ] Navigate to next/previous search match
     - [X] Option to completely hide subtrees without any search match
     - [X] Option to enable case sensitive search
 - [X] JQ filtering
@@ -33,7 +34,7 @@ Rightful question, and the answer is quite simple: the others weren't good enoug
     - [X] Prettify/minify 
 - [X] Support [JSON Lines](https://jsonlines.org/)
 - [X] Download JSON
-- [X] Keyboard shortcuts
+- [X] [Keyboard shortcuts](#keyboard-shortcuts)
 - [X] Appearance
     - [X] Light/dark mode
     - [X] Custom theme
@@ -62,6 +63,8 @@ Rightful question, and the answer is quite simple: the others weren't good enoug
 | Expand                       | `Ctrl + e`           |                   |
 | Collapse                     | `Ctrl + Shift + e`   |                   |
 | Save                         | `Ctrl + s`           |                   |
+| Go to next search match      | `Ctrl + g`           | `n`               |
+| Go to previous search match  | `Ctrl + Shift + g`   | `Shift + n`       |
 
 ##### Tree viewer
 

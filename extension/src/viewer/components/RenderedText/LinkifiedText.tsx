@@ -1,6 +1,6 @@
 import anchorme from "anchorme";
 import type { ListingProps } from "anchorme/dist/node/types";
-import { ReactElement } from "react";
+import { JSX } from "react";
 import { uid } from "uid";
 import { Match } from "./Match";
 
@@ -21,7 +21,7 @@ export function LinkifiedText({
   children,
   href,
   linkType,
-}: Props<LinkMetadata>): ReactElement<HTMLElement> {
+}: Props<LinkMetadata>): JSX.Element {
   return (
     <a
       href={href}
