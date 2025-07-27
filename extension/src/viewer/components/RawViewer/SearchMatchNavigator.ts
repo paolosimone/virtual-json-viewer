@@ -11,7 +11,13 @@ export class SearchMatchNavigator {
   public reset(handlers: SearchMatchHandler[]) {
     this.handlers = handlers;
     this.currentIndex = null;
-    this.notifyNavigation();
+
+    // Automatically select the first match if available
+    if (this.handlers.length) {
+      this.goToIndex(0);
+    } else {
+      this.notifyNavigation();
+    }
   }
 
   public observeNavigation(callback: SearchNavigationCallback) {

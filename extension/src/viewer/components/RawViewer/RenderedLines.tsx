@@ -21,7 +21,7 @@ export function RenderedLines({
   linkifyUrls,
   onSearchMatchesUpdate,
 }: RenderedLinesProps): ReactNode {
-  // find all matches in each line
+  // Find all matches in each line
   const lineMatches = useMemo(() => {
     const lineMatches = new LineMatchesFlattener();
     rawLines.forEach((text) => {
@@ -30,12 +30,13 @@ export function RenderedLines({
     return lineMatches;
   }, [rawLines, search, linkifyUrls]);
 
-  // register the search matches placeholders in the caller
+  // Register the search matches placeholders in the caller.
+  // Handlers will (should?) be already resolved by the time this effect runs.
   useEffect(() => {
     onSearchMatchesUpdate(lineMatches.getFlattenedHandlers());
   }, [lineMatches]);
 
-  // resolve search matches handlers when they are rendered
+  // Resolve search matches handlers when they are rendered
   function resolveLineHandlers(
     lineIndex: number,
     handlers: SearchMatchHandler[] | undefined,
@@ -52,7 +53,7 @@ export function RenderedLines({
         key={lineIndex}
         text={text}
         matches={lineMatches.get(lineIndex)}
-        // resolve the search matches handlers
+        // Resolve the search matches handlers
         ref={(ref) => resolveLineHandlers(lineIndex, ref?.searchMatches)}
       />,
     ])
@@ -66,14 +67,12 @@ type LineMatches = {
 
 class LineMatchesFlattener {
   private lineMatches: LineMatches[] = [];
-  private searchOffset = 0;
   private flatHandlers: SearchMatchHandler[] = [];
 
   public add(matches: MatchesResult) {
-    this.lineMatches.push({ searchOffset: this.searchOffset, matches });
-    this.searchOffset += matches.searchMatches.length;
+    this.lineMatches.push({ searchOffset: this.flatHandlers.length, matches });
 
-    for (let i = 0; i < matches.linkMatches.length; i++) {
+    for (let i = 0; i < matches.searchMatches.length; i++) {
       this.flatHandlers.push(SEARCH_MATCH_HANDLER_PLACEHOLDER);
     }
   }
