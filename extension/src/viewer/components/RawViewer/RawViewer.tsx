@@ -19,8 +19,8 @@ import {
   useRef,
   useState,
 } from "react";
-import { SearchMatchNavigator } from "./SearchMatchNavigator";
 import { RenderedLines } from "./RenderedLines";
+import { SearchMatchNavigator } from "./SearchMatchNavigator";
 
 export type RawViewerProps = Props<{
   jsonLines: Json.Lines;

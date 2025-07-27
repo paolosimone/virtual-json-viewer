@@ -23,7 +23,7 @@ export function RenderedLines({
 }: RenderedLinesProps): ReactNode {
   // find all matches in each line
   const lineMatches = useMemo(() => {
-    let lineMatches = new LineMatchesFlattener();
+    const lineMatches = new LineMatchesFlattener();
     rawLines.forEach((text) => {
       lineMatches.add(findMatches(text, search, linkifyUrls));
     });

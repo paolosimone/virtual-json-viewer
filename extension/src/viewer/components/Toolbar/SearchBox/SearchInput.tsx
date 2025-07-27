@@ -1,4 +1,5 @@
 import { isActiveElementEditable } from "@/viewer/commons/Dom";
+import { dispatch, EventType } from "@/viewer/commons/EventBus";
 import {
   CHORD_KEY,
   KeydownEvent,
@@ -38,10 +39,19 @@ export function SearchInput({
   // clear timeout on component unmount
   useEffect(() => maybeClearTimeout, []);
 
+  // automatically submit the search when the text changes
   const onChange = (e: FormEvent<HTMLInputElement>) => {
     maybeClearTimeout();
     const text = (e.target as HTMLInputElement).value;
     timeoutId = setTimeout(() => setText(text), searchDelay);
+  };
+
+  // on Enter key press select next match
+  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      dispatch(EventType.SearchNavigateNext);
+    }
   };
 
   // override browser search shortcut
@@ -68,9 +78,8 @@ export function SearchInput({
         className,
       )}
       onChange={onChange}
+      onKeyDown={onKeyDown}
       placeholder={t.toolbar.search.placeholder}
     />
   );
 }
-
-// TODO enter goto next

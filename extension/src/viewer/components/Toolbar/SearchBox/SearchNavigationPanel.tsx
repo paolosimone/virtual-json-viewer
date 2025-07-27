@@ -1,5 +1,12 @@
+import { isActiveElementEditable } from "@/viewer/commons/Dom";
 import { dispatch, EventType } from "@/viewer/commons/EventBus";
 import { Icon, IconButton } from "@/viewer/components";
+import {
+  CHORD_KEY,
+  isUpperCaseKeypress,
+  KeydownEvent,
+  useGlobalKeydownEvent,
+} from "@/viewer/hooks";
 import { TranslationContext } from "@/viewer/localization";
 import classNames from "classnames";
 import { JSX, useContext } from "react";
@@ -15,6 +22,8 @@ export function SearchNavigationPanel({
   totalCount,
 }: SearchNavigationPanelProps): JSX.Element {
   const t = useContext(TranslationContext);
+
+  useGlobalKeydownEvent(handleShortcut);
 
   const displayIndex = (currentIndex ?? -1) + 1;
 
@@ -47,4 +56,22 @@ export function SearchNavigationPanel({
   );
 }
 
-// TODO keyboard shortcuts
+function handleShortcut(e: KeydownEvent) {
+  if (
+    (e[CHORD_KEY] && isUpperCaseKeypress(e, "g")) ||
+    (isUpperCaseKeypress(e, "n") && !isActiveElementEditable())
+  ) {
+    e.preventDefault();
+    dispatch(EventType.SearchNavigatePrevious);
+    return;
+  }
+
+  if (
+    (e[CHORD_KEY] && e.key === "g") ||
+    (e.key === "n" && !isActiveElementEditable())
+  ) {
+    e.preventDefault();
+    dispatch(EventType.SearchNavigateNext);
+    return;
+  }
+}
