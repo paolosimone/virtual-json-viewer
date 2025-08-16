@@ -187,7 +187,7 @@ function replacer(_key: stableStringify.Key, value: unknown): unknown {
 
 export type Key = number | string;
 
-export function* iterator(json: Root): Generator<[Key, Root], void, void> {
+export function* iterator(json: Root): Generator<[Key, Root]> {
   if (isArray(json)) {
     for (let i = 0; i < json.length; i++) {
       yield [i, json[i]];

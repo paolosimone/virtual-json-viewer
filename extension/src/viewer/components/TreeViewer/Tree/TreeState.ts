@@ -21,8 +21,14 @@ export class TreeState {
     this.visibleNodes = [];
   }
 
+  // Observers
+
   public observeStateChange(callback: StateChangeCallback) {
     this.onStateChange = callback;
+  }
+
+  private notifyStateChange() {
+    this.onStateChange?.(this.cloneRef());
   }
 
   // Accessors
@@ -135,7 +141,7 @@ export class TreeState {
       // Mark the node as walked
       walked.set(node.walkId, node.id);
     }
-    this.onStateChange?.(this.cloneRef());
+    this.notifyStateChange();
   }
 
   // Openness
@@ -152,7 +158,7 @@ export class TreeState {
     }
 
     this.visibleNodes = allNodes;
-    this.onStateChange?.(this.cloneRef());
+    this.notifyStateChange();
   }
 
   public closeAll() {
@@ -169,7 +175,7 @@ export class TreeState {
     }
 
     this.visibleNodes = onlyRoots;
-    this.onStateChange?.(this.cloneRef());
+    this.notifyStateChange();
   }
 
   public setOpen(id: NodeId, open: boolean) {
@@ -187,7 +193,7 @@ export class TreeState {
 
     node.isOpen = open;
 
-    this.onStateChange?.(this.cloneRef());
+    this.notifyStateChange();
   }
 
   private open(node: NodeState) {

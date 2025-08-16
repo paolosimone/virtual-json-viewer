@@ -1,12 +1,12 @@
 import { JSX } from "react";
-import {
-  HighlightedText,
-  HighlightedTextHandler,
-  SEARCH_TYPE,
-  SearchMatch,
-} from "./HighlightedText";
 import { LINK_TYPE, LinkifiedText, LinkMatch } from "./LinkifiedText";
 import { SearchMatchHandler } from "./Renderer";
+import {
+  SEARCH_TYPE,
+  SearchedText,
+  SearchedTextHandler,
+  SearchMatch,
+} from "./SearchedText";
 
 export type AnyMatch = SearchMatch | LinkMatch;
 
@@ -43,9 +43,9 @@ type SearchNodeBuilder = (
 ) => RenderedNode;
 
 class CollapsedSearchMatchHandler implements SearchMatchHandler {
-  private nodeHandlers: HighlightedTextHandler[] = [];
+  private nodeHandlers: SearchedTextHandler[] = [];
 
-  public add(handler: HighlightedTextHandler): void {
+  public add(handler: SearchedTextHandler): void {
     this.nodeHandlers.push(handler);
   }
 
@@ -79,7 +79,7 @@ function searchNodeBuilder(): [SearchMatchHandler[], SearchNodeBuilder] {
 
     const index = searchMatches.length - 1;
 
-    return (handler: HighlightedTextHandler) => {
+    return (handler: SearchedTextHandler) => {
       searchMatches[index].add(handler);
     };
   }
@@ -89,9 +89,9 @@ function searchNodeBuilder(): [SearchMatchHandler[], SearchNodeBuilder] {
     children: RenderedNode[],
   ): RenderedNode {
     return (
-      <HighlightedText key={match.id} ref={newSearchMatchRefCallback(match.id)}>
+      <SearchedText key={match.id} ref={newSearchMatchRefCallback(match.id)}>
         {children}
-      </HighlightedText>
+      </SearchedText>
     );
   }
 

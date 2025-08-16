@@ -1,10 +1,10 @@
 import * as DOM from "@/viewer/commons/Dom";
 import * as Json from "@/viewer/commons/Json";
-import { useRenderedText } from "@/viewer/hooks";
-import { Search } from "@/viewer/state";
+import { SearchMatchRange } from "@/viewer/commons/Searcher";
 import classNames from "classnames";
 import { JSX, Ref, useImperativeHandle, useRef } from "react";
 import { NodeState } from "../Tree";
+import { RenderedTextFromSearch } from "./RenderedTextFromSearch";
 
 export type ValueHandle = {
   selectText: () => void;
@@ -12,13 +12,13 @@ export type ValueHandle = {
 
 export type ValueProps = Props<{
   node: NodeState;
-  search: Nullable<Search>;
+  searchMatches: SearchMatchRange[];
   ref?: Ref<ValueHandle>;
 }>;
 
 export function Value({
   node: { value, children, isOpen },
-  search,
+  searchMatches,
   className,
   ref,
 }: ValueProps): JSX.Element {
@@ -41,7 +41,7 @@ export function Value({
       ref={ref}
       className={className}
       value={value}
-      search={search}
+      searchMatches={searchMatches}
     />
   );
 }
@@ -68,13 +68,13 @@ function CollectionValue({
 
 type LiteralValueProps = Props<{
   value: Json.Literal;
-  search: Nullable<Search>;
+  searchMatches: SearchMatchRange[];
   ref?: Ref<ValueHandle>;
 }>;
 
 export function LiteralValue({
   value,
-  search,
+  searchMatches,
   className,
   ref,
 }: LiteralValueProps): JSX.Element {
@@ -90,16 +90,20 @@ export function LiteralValue({
     [valueRef],
   );
 
-  const textValue = value?.toString() ?? "null";
-  const highlightedText = useRenderedText(textValue, search);
-
   const isString = Json.isString(value);
   const textColor = isString ? "text-json-string" : "text-json-value";
+
+  const textValue = value?.toString() ?? "null";
 
   return (
     <span className={classNames("whitespace-pre-wrap", textColor, className)}>
       {isString && <span>&quot;</span>}
-      <span ref={valueRef}>{highlightedText}</span>
+      <span ref={valueRef}>
+        <RenderedTextFromSearch
+          text={textValue}
+          searchMatches={searchMatches}
+        />
+      </span>
       {isString && <span>&quot;</span>}
     </span>
   );

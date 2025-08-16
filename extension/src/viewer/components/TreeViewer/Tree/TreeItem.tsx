@@ -9,15 +9,13 @@ export type ItemData<Context> = {
   TreeNode: TreeNodeComponent<Context>;
 };
 
-export type VariableSizeListItemProps<Context> = ListChildComponentProps<
-  ItemData<Context>
->;
+export type TreeItemProps<Context> = ListChildComponentProps<ItemData<Context>>;
 
 export function TreeItem<Context>({
   index,
   data: { treeState, TreeNode, context },
   style,
-}: VariableSizeListItemProps<Context>): JSX.Element {
+}: TreeItemProps<Context>): JSX.Element {
   const nodeState = treeState.nodeByIndex(index);
   return <TreeNode style={style} node={nodeState} context={context} />;
 }

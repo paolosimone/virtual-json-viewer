@@ -9,6 +9,8 @@ export type NavigationOffset = {
 export class TreeNavigator {
   private tree: RefCurrent<TreeHandler>;
   private treeElem: RefCurrent<HTMLElement>;
+
+  // Nodes navigation
   private elemById: Map<NodeId, HTMLElement> = new Map();
   private lastFocused?: NodeId;
 
@@ -19,6 +21,8 @@ export class TreeNavigator {
     this.tree = tree;
     this.treeElem = treeElem;
   }
+
+  // Nodes lifecycle
 
   public onElemShown(id: NodeId, elem: HTMLElement) {
     this.elemById.set(id, elem);
@@ -46,6 +50,8 @@ export class TreeNavigator {
     this.tree?.resize(id, height);
   }
 
+  // Openness
+
   public toggleOpen(id: NodeId) {
     this.tree?.setOpen(id, !this.tree?.isOpen(id));
   }
@@ -67,6 +73,8 @@ export class TreeNavigator {
       this.close(parentId);
     }
   }
+
+  // Nodes navigation
 
   public gotoOffset(id: NodeId, { rows, pages }: NavigationOffset) {
     const index = this.tree?.indexById(id);
@@ -117,4 +125,6 @@ export class TreeNavigator {
     const itemHeight = this.tree.getHeight(this.tree.getByIndex(0).id);
     return pageHeight && itemHeight ? Math.ceil(pageHeight / itemHeight) : 1;
   }
+
+  // TODO Search navigation
 }

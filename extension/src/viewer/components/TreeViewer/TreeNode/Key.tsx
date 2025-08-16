@@ -1,9 +1,9 @@
 import * as DOM from "@/viewer/commons/Dom";
 import * as Json from "@/viewer/commons/Json";
-import { useRenderedText } from "@/viewer/hooks";
-import { Search } from "@/viewer/state";
+import { SearchMatchRange } from "@/viewer/commons/Searcher";
 import classNames from "classnames";
 import { JSX, Ref, useImperativeHandle, useRef } from "react";
+import { RenderedTextFromSearch } from "./RenderedTextFromSearch";
 
 export type KeyHandle = {
   selectText: () => void;
@@ -11,7 +11,7 @@ export type KeyHandle = {
 
 export type KeyProps = Props<{
   nodeKey: Nullable<Json.Key>;
-  search: Nullable<Search>;
+  searchMatches: SearchMatchRange[];
   ref?: Ref<KeyHandle>;
 }>;
 
@@ -44,7 +44,7 @@ export function Key(props: KeyProps): JSX.Element {
     <ObjectKey
       className={className}
       nodeKey={props.nodeKey}
-      search={props.search}
+      searchMatches={props.searchMatches}
       ref={keyRef}
     />
   );
@@ -65,21 +65,21 @@ function ArrayKey({ nodeKey, className }: ArrayKeyProps): JSX.Element {
 
 type ObjectKeyProps = Props<{
   nodeKey: string;
-  search: Nullable<Search>;
+  searchMatches: SearchMatchRange[];
   ref?: Ref<HTMLSpanElement>;
 }>;
 
 function ObjectKey({
   nodeKey,
-  search,
+  searchMatches,
   className,
   ref,
 }: ObjectKeyProps): JSX.Element {
-  const highlightedKey = useRenderedText(nodeKey, search);
-
   return (
     <span className={className}>
-      <span ref={ref}>{highlightedKey}</span>
+      <span ref={ref}>
+        <RenderedTextFromSearch text={nodeKey} searchMatches={searchMatches} />
+      </span>
       <span>:</span>
     </span>
   );

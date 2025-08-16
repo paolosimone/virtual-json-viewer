@@ -1,6 +1,6 @@
 import * as Json from "@/viewer/commons/Json";
-import { SearchMatch } from "../TreeWalker";
-export type { SearchMatch } from "../TreeWalker";
+import { NodeSearchMatch } from "../TreeWalker";
+export type { NodeSearchMatch } from "../TreeWalker";
 
 export type NodeId = number;
 
@@ -17,5 +17,5 @@ export type NodeState = {
   sibling: Nullable<NodeState>;
   isLeaf: boolean;
   isOpen: boolean;
-  searchMatch: Nullable<SearchMatch>;
+  searchMatch: Nullable<NodeSearchMatch>;
 };

@@ -33,8 +33,8 @@ export function TreeViewer({
   search,
   className,
 }: TreeViewerProps): JSX.Element {
-  // single line -> shown on its own
-  // multiple lines -> shown as an array
+  // Single line -> shown on its own
+  // Multiple lines -> shown as an array
   const json = useMemo(
     () => (jsonLines.length == 1 ? jsonLines[0] : jsonLines),
     [jsonLines],
@@ -42,27 +42,28 @@ export function TreeViewer({
 
   const { expandNodes } = useContext(SettingsContext);
 
-  // tree walker for building the tree
+  // Tree walker for building the tree
   const walker = useMemo(
     () => treeWalker(json, search, expandNodes),
     [json, search, expandNodes],
   );
 
-  // imperative reference to manipulate the tree
+  // Imperative reference to manipulate the tree.
+  // It changes when the
   const [tree, treeRef] = useReactiveRef<TreeHandler>();
 
-  // for some obscure reason AutoSizer doesn't work on Firefox when loaded as extension
+  // For some obscure reason AutoSizer doesn't work on Firefox when loaded as extension
   const [parent, parentRef] = useReactiveRef<HTMLDivElement>();
   const { height, width } = useElementSize(parent);
 
-  // global events
+  // Global events
   const expand = useCallback(() => tree?.openAll(), [tree]);
   useEventBusListener(EventType.Expand, expand);
 
   const collapse = useCallback(() => tree?.closeAll(), [tree]);
   useEventBusListener(EventType.Collapse, collapse);
 
-  // register global shortcut
+  // Register global shortcut
   const handleShortcut = useCallback(
     (e: KeydownEvent) => {
       if (e[CHORD_KEY] && e.key === "0") {
@@ -74,7 +75,7 @@ export function TreeViewer({
   );
   useGlobalKeydownEvent(handleShortcut);
 
-  // keyboard navigation
+  // Keyboard navigation
   const treeNavigator = useMemo(
     () => new TreeNavigator(tree, parent),
     [tree, parent],
@@ -89,7 +90,7 @@ export function TreeViewer({
     keypressDelay: 500,
   });
 
-  // fix tab navigation on firefox
+  // Fix tab navigation on firefox
   // Ref: https://github.com/bvaughn/react-window/issues/130
   const [treeDiv, treeDivRef] = useReactiveRef<HTMLDivElement>();
   if (treeDiv) treeDiv.tabIndex = -1;

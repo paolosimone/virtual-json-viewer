@@ -5,7 +5,6 @@ export * from "./UseJQ";
 export * from "./UseKeydownEvent";
 export * from "./UseMediaQuery";
 export * from "./UseReactiveRef";
-export * from "./UseRenderedText";
 export * from "./UseSessionStorage";
 export * from "./UseSettings";
 export * from "./UseStateObject";
