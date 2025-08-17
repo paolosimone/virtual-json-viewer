@@ -235,24 +235,24 @@ Always `yarn format` before creating a commit.
 *Disclaimer*: this is NOT a formal benchmark, just a few tests with syntethic data to give an idea of loading performance time.
 
 **Setup**
-- Virtual Json Viewer v1.0.0 
-- Macbook Pro 16 (2019) 2,6 GHz 16 GB
-- Chrome 106.0.5249.119 
-- Jsons are randomly generated using [this script](https://gist.github.com/paolosimone/437ba2e9675bafcc914b587d53fab0b3) (fixed dept: 10)
+- Virtual Json Viewer v2.0.0 
+- Macbook Pro 16 (Nov 2023) Apple M3 Pro 18 GB
+- Chrome 139.0.7258.128
+- Jsons are randomly generated using [this script](./samples/random_json.py) (fixed dept: 10)
 - Files are loaded from disk
 - Load time recorded with Chrome DevTool
     1. Open file in chrome
-    1. From "Performance insights" tab click "Measure page load"
+    1. From "Performance" -> "Insights" tab click "Record and reload"
     1. Take the "Largest Contentful Paint" (LCP)
 
 **Results**
 
 | Siblings per level | File Size      | Load time       |
 |--------------------|----------------|-----------------|
-| 110                | ~100 KB        | ~300 ms         |
-| 1100               | ~1 MB          | ~350 ms         |
-| 11000              | ~10 MB         | ~900 ms         |
-| 110000             | ~100 MB        | ~8000 ms        |
+| 10                 | ~100 KB        | ~150 ms         |
+| 100                | ~1 MB          | ~150 ms         |
+| 1000               | ~10 MB         | ~450 ms         |
+| 10000              | ~100 MB        | ~4000 ms        |
 
 ## References
 

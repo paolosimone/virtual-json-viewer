@@ -7,8 +7,8 @@ from random import randrange, choice, choices
 CURRENT_FOLDER = Path(__file__).absolute().parent
 OUTPUT_FILE = CURRENT_FOLDER / 'random.json'
 
-SIBLINGS = 10
-DEPTH = 20
+SIBLINGS = 1000
+DEPTH = 10
 
 def main():
     json_text = json.dumps(build_json(DEPTH), indent=2)
@@ -32,7 +32,7 @@ def random_value():
     return choices([random_array, random_literal], [1, 10])[0]()
 
 def random_array():
-    return [random_literal() for _ in range(randrange(1_000))] 
+    return [random_literal() for _ in range(randrange(700))] 
 
 def random_literal():
     return choice([random_string, random_number, random_boolean, null])()
