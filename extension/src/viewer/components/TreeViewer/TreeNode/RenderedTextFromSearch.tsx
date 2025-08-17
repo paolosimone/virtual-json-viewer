@@ -8,6 +8,11 @@ import {
 import { SettingsContext } from "@/viewer/state";
 import { ReactNode, Ref, useContext, useMemo } from "react";
 
+export type {
+  RenderedTextRef,
+  SearchMatchHandler,
+} from "@/viewer/components/RenderedText";
+
 export type RenderedTextFromSearchProps = Props<{
   text: string;
   searchMatches: SearchMatchRange[];

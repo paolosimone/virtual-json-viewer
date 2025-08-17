@@ -4,10 +4,15 @@ import { SearchMatchRange } from "@/viewer/commons/Searcher";
 import classNames from "classnames";
 import { JSX, Ref, useImperativeHandle, useRef } from "react";
 import { NodeState } from "../Tree";
-import { RenderedTextFromSearch } from "./RenderedTextFromSearch";
+import {
+  RenderedTextFromSearch,
+  RenderedTextRef,
+  SearchMatchHandler,
+} from "./RenderedTextFromSearch";
 
 export type ValueHandle = {
   selectText: () => void;
+  getMatchHandler: (index: number) => SearchMatchHandler | undefined;
 };
 
 export type ValueProps = Props<{
@@ -78,16 +83,20 @@ export function LiteralValue({
   className,
   ref,
 }: LiteralValueProps): JSX.Element {
-  const valueRef = useRef<HTMLSpanElement>(null);
+  const outerRef = useRef<HTMLSpanElement>(null);
+  const textRef = useRef<RenderedTextRef>(null);
 
   useImperativeHandle(
     ref,
     () => ({
       selectText() {
-        if (valueRef.current) DOM.selectAllText(valueRef.current);
+        if (outerRef.current) DOM.selectAllText(outerRef.current);
+      },
+      getMatchHandler(index: number): SearchMatchHandler | undefined {
+        return textRef.current?.searchMatches[index];
       },
     }),
-    [valueRef],
+    [outerRef, textRef],
   );
 
   const isString = Json.isString(value);
@@ -98,8 +107,9 @@ export function LiteralValue({
   return (
     <span className={classNames("whitespace-pre-wrap", textColor, className)}>
       {isString && <span>&quot;</span>}
-      <span ref={valueRef}>
+      <span ref={outerRef}>
         <RenderedTextFromSearch
+          ref={textRef}
           text={textValue}
           searchMatches={searchMatches}
         />

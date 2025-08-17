@@ -15,7 +15,7 @@ import {
 } from "@/viewer/hooks";
 import { Search, SearchNavigation, SettingsContext } from "@/viewer/state";
 import classNames from "classnames";
-import { JSX, useCallback, useContext, useMemo } from "react";
+import { JSX, useCallback, useContext, useEffect, useMemo } from "react";
 import { NodeId, Tree, TreeHandler } from "./Tree";
 import { TreeNavigator } from "./TreeNavigator";
 import { TreeNode } from "./TreeNode";
@@ -31,6 +31,7 @@ export type TreeViewerProps = Props<{
 export function TreeViewer({
   jsonLines,
   search,
+  searchNavigationState,
   className,
 }: TreeViewerProps): JSX.Element {
   // Single line -> shown on its own
@@ -49,7 +50,7 @@ export function TreeViewer({
   );
 
   // Imperative reference to manipulate the tree.
-  // It changes when the
+  // It changes when the content is (re)loaded.
   const [tree, treeRef] = useReactiveRef<TreeHandler>();
 
   // For some obscure reason AutoSizer doesn't work on Firefox when loaded as extension
@@ -75,12 +76,13 @@ export function TreeViewer({
   );
   useGlobalKeydownEvent(handleShortcut);
 
-  // Keyboard navigation
+  // Tree Navigator
   const treeNavigator = useMemo(
     () => new TreeNavigator(tree, parent),
     [tree, parent],
   );
 
+  // Keyboard navigation
   const navigate = useCallback(
     (e: KeydownBufferEvent) => handleNavigation(parent, treeNavigator, e),
     [parent, treeNavigator],
@@ -89,6 +91,26 @@ export function TreeViewer({
     bufferSize: 2,
     keypressDelay: 500,
   });
+
+  // Search navigation
+  useEffect(() => {
+    // Micro-optimization: avoid O(N) scan if search is not active
+    // No need to add search dependency, because the navigator is rebuilt when search changes
+    if (!search.text) return;
+    treeNavigator.enableSearchNavigation(searchNavigationState.setValue);
+  }, [treeNavigator]);
+
+  const goToPreviousMatch = useCallback(
+    () => treeNavigator.goToPreviousSearchMatch(),
+    [treeNavigator],
+  );
+  useEventBusListener(EventType.SearchNavigatePrevious, goToPreviousMatch);
+
+  const goToNextMatch = useCallback(
+    () => treeNavigator.goToNextSearchMatch(),
+    [treeNavigator],
+  );
+  useEventBusListener(EventType.SearchNavigateNext, goToNextMatch);
 
   // Fix tab navigation on firefox
   // Ref: https://github.com/bvaughn/react-window/issues/130

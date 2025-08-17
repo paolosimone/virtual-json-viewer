@@ -1,4 +1,6 @@
+import { SearchMatchHandler } from "@/viewer/components/RenderedText";
 import { RefCurrent } from "@/viewer/hooks";
+import { SearchNavigation } from "@/viewer/state";
 import { NodeId, TreeHandler } from "./Tree";
 
 export type NavigationOffset = {
@@ -6,13 +8,41 @@ export type NavigationOffset = {
   pages?: number;
 };
 
+export enum NodePart {
+  Key = "key",
+  Value = "value",
+}
+
+export interface TreeNavigatorNodeHandler {
+  focus(): void;
+  blur(): void;
+  registerOnFocus(callback: () => void): void;
+  getMatchHandler(
+    part: NodePart,
+    index: number,
+  ): SearchMatchHandler | undefined;
+}
+
+export type SearchNavigationCallback = (navigation: SearchNavigation) => void;
+
+type FlattenedSearchMatch = {
+  nodeId: NodeId;
+  nodePart: NodePart;
+  index: number;
+};
+
 export class TreeNavigator {
   private tree: RefCurrent<TreeHandler>;
   private treeElem: RefCurrent<HTMLElement>;
 
   // Nodes navigation
-  private elemById: Map<NodeId, HTMLElement> = new Map();
+  private handlerById: Map<NodeId, TreeNavigatorNodeHandler> = new Map();
   private lastFocused?: NodeId;
+
+  // Search navigation
+  private searchMatches: FlattenedSearchMatch[] = [];
+  private searchIndex: Nullable<number> = null;
+  private onSearchNavigation?: SearchNavigationCallback;
 
   constructor(
     tree: RefCurrent<TreeHandler>,
@@ -24,24 +54,30 @@ export class TreeNavigator {
 
   // Nodes lifecycle
 
-  public onElemShown(id: NodeId, elem: HTMLElement) {
-    this.elemById.set(id, elem);
+  public onNodeShown(id: NodeId, handler: TreeNavigatorNodeHandler) {
+    this.handlerById.set(id, handler);
 
-    // register to external focus event (e.g. by mouse click)
-    elem.onfocus = () => (this.lastFocused = id);
+    // Register to external focus event (e.g. by mouse click)
+    handler.registerOnFocus(() => (this.lastFocused = id));
 
-    // handle pending navigation
+    // Handle pending navigation
     if (id === this.lastFocused) {
-      elem.focus();
+      this.tryFocusCurrent();
+    }
+
+    // Handle previous search match selection
+    const searchNodeId = this.searchMatches[this.searchIndex ?? -1]?.nodeId;
+    if (id === searchNodeId) {
+      this.trySelectCurrentSearchMatch();
     }
   }
 
-  public onElemHidden(id: NodeId) {
-    this.elemById.delete(id);
+  public onNodeHidden(id: NodeId) {
+    this.handlerById.delete(id);
 
     // return focus to parent to avoid inconsistencies
     if (id === this.lastFocused) {
-      this.lastFocused = undefined;
+      this.tryBlurCurrent();
       this.treeElem?.focus();
     }
   }
@@ -109,7 +145,18 @@ export class TreeNavigator {
     this.lastFocused = id;
 
     this.tree?.scrollTo(id);
-    this.elemById.get(id)?.focus();
+    this.tryFocusCurrent();
+  }
+
+  private tryFocusCurrent() {
+    if (this.lastFocused === undefined) return;
+    this.handlerById.get(this.lastFocused)?.focus();
+  }
+
+  private tryBlurCurrent() {
+    if (this.lastFocused === undefined) return;
+    this.handlerById.get(this.lastFocused)?.blur();
+    this.lastFocused = undefined;
   }
 
   private gotoIndex(index: number) {
@@ -126,5 +173,97 @@ export class TreeNavigator {
     return pageHeight && itemHeight ? Math.ceil(pageHeight / itemHeight) : 1;
   }
 
-  // TODO Search navigation
+  // Search navigation
+
+  public enableSearchNavigation(callback: SearchNavigationCallback) {
+    if (!this.tree) return;
+    this.onSearchNavigation = callback;
+    this.searchMatches = flattenSearchMatches(this.tree);
+
+    if (this.searchMatches.length) {
+      this.goToSearchIndex(0);
+    } else {
+      this.notifySearchNavigation();
+    }
+  }
+
+  public goToPreviousSearchMatch() {
+    if (!this.searchMatches.length) return;
+    const previous = (this.searchIndex || this.searchMatches.length) - 1;
+    this.goToSearchIndex(previous);
+  }
+
+  public goToNextSearchMatch() {
+    if (!this.searchMatches.length) return;
+    const next = ((this.searchIndex ?? -1) + 1) % this.searchMatches.length;
+    this.goToSearchIndex(next);
+  }
+
+  private goToSearchIndex(index: number) {
+    // Deselect previous match
+    if (this.searchIndex !== null) {
+      this.getSearchHandler(this.searchIndex)?.setSelected(false);
+    }
+
+    // Update current index
+    this.searchIndex = index;
+
+    // Blur the current node if it was focused
+    this.tryBlurCurrent();
+
+    // Go to the next node
+    const nodeId = this.searchMatches[index]!.nodeId;
+    this.tree?.scrollTo(nodeId, "center");
+
+    // Select the match inside the node
+    this.trySelectCurrentSearchMatch();
+
+    // Notify the change
+    this.notifySearchNavigation();
+  }
+
+  private trySelectCurrentSearchMatch() {
+    if (this.searchIndex === null) return;
+    const handler = this.getSearchHandler(this.searchIndex);
+    handler?.setSelected(true);
+  }
+
+  private getSearchHandler(index: number): SearchMatchHandler | undefined {
+    const match = this.searchMatches[index];
+    if (!match) return undefined;
+    return this.handlerById
+      .get(match.nodeId)
+      ?.getMatchHandler(match.nodePart, match.index);
+  }
+
+  private notifySearchNavigation() {
+    if (this.onSearchNavigation) {
+      this.onSearchNavigation({
+        currentIndex: this.searchIndex,
+        totalCount: this.searchMatches.length,
+      });
+    }
+  }
+}
+
+function flattenSearchMatches(tree: TreeHandler): FlattenedSearchMatch[] {
+  return tree
+    .iterAll()
+    .flatMap((node) => {
+      if (!node.searchMatch) return [];
+
+      return [
+        ...node.searchMatch.keyMatches.map((_match, index) => ({
+          nodeId: node.id,
+          nodePart: NodePart.Key,
+          index,
+        })),
+        ...node.searchMatch.valueMatches.map((_match, index) => ({
+          nodeId: node.id,
+          nodePart: NodePart.Value,
+          index,
+        })),
+      ];
+    })
+    .toArray();
 }

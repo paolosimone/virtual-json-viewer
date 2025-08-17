@@ -3,10 +3,15 @@ import * as Json from "@/viewer/commons/Json";
 import { SearchMatchRange } from "@/viewer/commons/Searcher";
 import classNames from "classnames";
 import { JSX, Ref, useImperativeHandle, useRef } from "react";
-import { RenderedTextFromSearch } from "./RenderedTextFromSearch";
+import {
+  RenderedTextFromSearch,
+  RenderedTextRef,
+  SearchMatchHandler,
+} from "./RenderedTextFromSearch";
 
 export type KeyHandle = {
   selectText: () => void;
+  getMatchHandler: (index: number) => SearchMatchHandler | undefined;
 };
 
 export type KeyProps = Props<{
@@ -16,17 +21,6 @@ export type KeyProps = Props<{
 }>;
 
 export function Key(props: KeyProps): JSX.Element {
-  const keyRef = useRef<HTMLSpanElement>(null);
-  useImperativeHandle(
-    props.ref,
-    () => ({
-      selectText() {
-        if (keyRef.current) DOM.selectAllText(keyRef.current);
-      },
-    }),
-    [keyRef],
-  );
-
   if (props.nodeKey === null) {
     return <span />;
   }
@@ -45,7 +39,7 @@ export function Key(props: KeyProps): JSX.Element {
       className={className}
       nodeKey={props.nodeKey}
       searchMatches={props.searchMatches}
-      ref={keyRef}
+      ref={props.ref}
     />
   );
 }
@@ -66,7 +60,7 @@ function ArrayKey({ nodeKey, className }: ArrayKeyProps): JSX.Element {
 type ObjectKeyProps = Props<{
   nodeKey: string;
   searchMatches: SearchMatchRange[];
-  ref?: Ref<HTMLSpanElement>;
+  ref?: Ref<KeyHandle>;
 }>;
 
 function ObjectKey({
@@ -75,10 +69,30 @@ function ObjectKey({
   className,
   ref,
 }: ObjectKeyProps): JSX.Element {
+  const outerRef = useRef<HTMLSpanElement>(null);
+  const textRef = useRef<RenderedTextRef>(null);
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      selectText() {
+        if (outerRef.current) DOM.selectAllText(outerRef.current);
+      },
+      getMatchHandler(index: number): SearchMatchHandler | undefined {
+        return textRef.current?.searchMatches[index];
+      },
+    }),
+    [outerRef, textRef],
+  );
+
   return (
     <span className={className}>
-      <span ref={ref}>
-        <RenderedTextFromSearch text={nodeKey} searchMatches={searchMatches} />
+      <span ref={outerRef}>
+        <RenderedTextFromSearch
+          ref={textRef}
+          text={nodeKey}
+          searchMatches={searchMatches}
+        />
       </span>
       <span>:</span>
     </span>
