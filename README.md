@@ -26,7 +26,7 @@ Rightful question, and the answer is quite simple: the others weren't good enoug
     - [X] Option to sort JSON keys alphabetically
 - [X] Full text search
     - [X] Highlight search results
-    - [ ] Navigate to next/previous search match
+    - [X] Navigate to next/previous search match
     - [X] Option to completely hide subtrees without any search match
     - [X] Option to enable case sensitive search
 - [X] JQ filtering

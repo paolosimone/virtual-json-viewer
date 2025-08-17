@@ -1,5 +1,5 @@
 import { RefCurrent } from "@/viewer/hooks";
-import { VariableSizeList } from "react-window";
+import { Align, VariableSizeList } from "react-window";
 import { NodeId, NodeState } from "./NodeState";
 import { ItemData } from "./TreeItem";
 import { TreeState } from "./TreeState";
@@ -73,8 +73,8 @@ export class TreeHandler {
 
   // Navigation
 
-  public scrollTo(id: NodeId) {
+  public scrollTo(id: NodeId, align?: Align) {
     const index = this.tree.indexById(id);
-    this.list?.scrollToItem(index);
+    this.list?.scrollToItem(index, align);
   }
 }

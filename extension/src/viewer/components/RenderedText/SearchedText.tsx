@@ -32,7 +32,13 @@ export function SearchedText({
     ref,
     () => ({
       setSelected,
-      scrollIntoView: () => markRef.current?.scrollIntoView(),
+      scrollIntoView: () =>
+        markRef.current?.scrollIntoView({
+          // Vertical: center the match in the viewport
+          block: "center",
+          // Horizontal: show as much text on the left as possible
+          inline: "end",
+        }),
     }),
     [setSelected, markRef],
   );

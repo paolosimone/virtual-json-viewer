@@ -213,7 +213,7 @@ export class TreeNavigator {
 
     // Go to the next node
     const nodeId = this.searchMatches[index]!.nodeId;
-    this.tree?.scrollTo(nodeId);
+    this.tree?.scrollTo(nodeId, "center");
 
     // Select the match inside the node
     this.trySelectCurrentSearchMatch();
