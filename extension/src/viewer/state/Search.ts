@@ -12,7 +12,7 @@ export enum SearchVisibility {
 
 export const EmptySearch: Search = {
   text: "",
-  visibility: SearchVisibility.Subtree,
+  visibility: SearchVisibility.All,
   caseSensitive: false,
 };
 
