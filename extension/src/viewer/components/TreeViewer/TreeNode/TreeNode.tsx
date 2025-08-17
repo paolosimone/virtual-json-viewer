@@ -5,10 +5,9 @@ import {
   RefCurrent,
   useReactiveRef,
 } from "@/viewer/hooks";
-import { Search } from "@/viewer/state";
 import classNames from "classnames";
 import { JSX, useEffect, useLayoutEffect } from "react";
-import { NodeState, TreeNodeProps } from "../Tree";
+import { NodeSearchMatch, TreeNodeProps } from "../Tree";
 import { TreeNavigator } from "../TreeNavigator";
 import { Key, KeyHandle } from "./Key";
 import { OpenButton } from "./OpenButton";
@@ -24,11 +23,12 @@ export function TreeNode({
   const [key, keyRef] = useReactiveRef<KeyHandle>();
   const [value, valueRef] = useReactiveRef<ValueHandle>();
 
-  // resize the node to fit its content on every re-render
+  // Resize the node to fit its content on every re-render
   const resize = (height: number) => tree.resize(node.id, height);
   useFitContent(parent, content, resize);
 
-  // registers the node's html element in the navigator
+  // Registers the node's html element in the navigator
+  // TODO handler
   useLayoutEffect(() => {
     if (!parent) return;
     tree.onElemShown(node.id, parent);
@@ -39,9 +39,9 @@ export function TreeNode({
     handleShortcuts({ content, key, value }, e);
   };
 
-  const searchAnalysis = analyzeSearchMatch(node);
-  const fade = { "opacity-60": !searchAnalysis.inMatchingPath };
+  const fade = { "opacity-60": !inSearchMatchPath(node.searchMatch) };
 
+  // TODO rendered text handlers
   return (
     <div
       ref={parentRef}
@@ -61,13 +61,13 @@ export function TreeNode({
         <Key
           ref={keyRef}
           nodeKey={node.key}
-          search={searchAnalysis.keySearch}
+          searchMatches={node.searchMatch?.keyMatches ?? []}
         />
         <Value
           ref={valueRef}
           className="grow"
           node={node}
-          search={searchAnalysis.valueSearch}
+          searchMatches={node.searchMatch?.valueMatches ?? []}
         />
       </div>
     </div>
@@ -98,25 +98,13 @@ function useFitContent(
   useEffect(fitContent);
 }
 
-type SearchMatchAnalysis = {
-  inMatchingPath: boolean;
-  keySearch: Nullable<Search>;
-  valueSearch: Nullable<Search>;
-};
-
-function analyzeSearchMatch({
-  searchMatch,
-  isLeaf,
-}: NodeState): SearchMatchAnalysis {
-  if (!searchMatch) {
-    return { inMatchingPath: true, keySearch: null, valueSearch: null };
-  }
-
-  return {
-    inMatchingPath: searchMatch.inKey || searchMatch.inValue,
-    keySearch: searchMatch.inKey ? searchMatch.search : null,
-    valueSearch: isLeaf && searchMatch.inValue ? searchMatch.search : null,
-  };
+function inSearchMatchPath(searchMatch: Nullable<NodeSearchMatch>): boolean {
+  return (
+    !searchMatch ||
+    searchMatch.inKey ||
+    searchMatch.inDescendant ||
+    searchMatch.inValue
+  );
 }
 
 type NodeRefs = {

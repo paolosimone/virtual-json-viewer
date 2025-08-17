@@ -24,10 +24,6 @@ export class SearchMatchNavigator {
     this.onNavigation = callback;
   }
 
-  public matchesCount() {
-    return this.handlers.length;
-  }
-
   public goToPreviousMatch() {
     if (!this.handlers.length) return;
     const previous = (this.currentIndex || this.handlers.length) - 1;

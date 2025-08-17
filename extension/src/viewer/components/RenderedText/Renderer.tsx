@@ -1,7 +1,7 @@
-import { SEARCH_TYPE } from "./HighlightedText";
 import { LINK_TYPE } from "./LinkifiedText";
 import { MatchesResult } from "./Matcher";
 import { AnyMatch, NodeBuilder, RenderedNode } from "./RenderedNode";
+import { SEARCH_TYPE } from "./SearchedText";
 
 export type RenderedMatchesResult = {
   nodes: RenderedNode[];

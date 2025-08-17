@@ -16,7 +16,12 @@
       "array": [1, 2, 3, 4],
       "object": {"key_1": "match", "key_2": "miss"}
     },
-    "match_array": [1, 2, "match", 4]
+    "match_array": [1, 2, "match", 4],
+    "null_content": {
+      "null": "foo",
+      "array": [1, 2, 3, null],
+      "object": {"key_1": null, "key_2": "miss"}
+    }
   }
 }
 

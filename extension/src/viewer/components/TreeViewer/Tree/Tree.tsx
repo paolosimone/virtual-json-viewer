@@ -43,7 +43,8 @@ export function Tree<Context>({
   // Reference to the list component
   const [list, listRef] = useReactiveRef<VariableSizeList<ItemData<Context>>>();
 
-  // Expose an handler to manipulate the tree from outside
+  // Expose an handler to manipulate the tree from outside.
+  // The handler reference is updated when the tree content is (re)loaded.
   const [handler, setHandler] = useState<TreeHandler>(
     () => new TreeHandler(treeState, list),
   );

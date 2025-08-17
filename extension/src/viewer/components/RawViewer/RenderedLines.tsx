@@ -2,8 +2,9 @@ import { Search } from "@/viewer/state";
 import { ReactNode, useEffect, useMemo } from "react";
 import { uid } from "uid";
 import {
-  findMatches,
   MatchesResult,
+  matchLinks,
+  matchSearch,
   RenderedText,
   SearchMatchHandler,
 } from "../RenderedText";
@@ -100,3 +101,20 @@ const SEARCH_MATCH_HANDLER_PLACEHOLDER: SearchMatchHandler = {
   setSelected: () => {},
   scrollIntoView: () => {},
 };
+
+function findMatches(
+  text: string,
+  search: Nullable<Search>,
+  linkifyUrls: boolean,
+): MatchesResult {
+  const searchMatches = search?.text
+    ? matchSearch(text, search.text, search.caseSensitive)
+    : [];
+
+  const linkMatches = linkifyUrls ? matchLinks(text) : [];
+
+  return {
+    searchMatches,
+    linkMatches,
+  };
+}

@@ -1,3 +1,4 @@
+import { buildSearcher, SearchMatchRange } from "@/viewer/commons/Searcher";
 import classNames from "classnames";
 import { JSX, Ref, useImperativeHandle, useRef, useState } from "react";
 import { uid } from "uid";
@@ -11,19 +12,19 @@ export interface SearchMatch extends Match<EmptyObject> {
 
 // Rendering
 
-export interface HighlightedTextHandler {
+export interface SearchedTextHandler {
   setSelected: (selected: boolean) => void;
   scrollIntoView: () => void;
 }
 
-export type HighlightedTextProps = Props<{
-  ref?: Ref<HighlightedTextHandler>;
+export type SearchedTextProps = Props<{
+  ref?: Ref<SearchedTextHandler>;
 }>;
 
-export function HighlightedText({
+export function SearchedText({
   ref,
   children,
-}: HighlightedTextProps): JSX.Element {
+}: SearchedTextProps): JSX.Element {
   const [selected, setSelected] = useState(false);
   const markRef = useRef<HTMLElement>(null);
 
@@ -47,28 +48,21 @@ export function HighlightedText({
 
 // Matching
 
-export type SearchOptions = Props<{
-  searchText: string;
-  caseSensitive?: boolean;
-}>;
-
 export function matchSearch(
   text: string,
-  { searchText, caseSensitive }: SearchOptions,
+  searchText: string,
+  caseSensitive?: boolean,
 ): SearchMatch[] {
-  const flags = "g" + (caseSensitive ? "" : "i");
-  const matches = text.matchAll(new RegExp(escapeRegExp(searchText), flags));
-
-  return Array.from(matches, (match) => ({
-    id: uid(),
-    start: match.index!,
-    end: match.index! + searchText.length,
-    type: SEARCH_TYPE,
-    metadata: {},
-  }));
+  const searcher = buildSearcher(searchText, caseSensitive);
+  return searcher.findMatches(text).map(searchMatchFromSearcher);
 }
 
-// Source: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions#escaping
-function escapeRegExp(text: string): string {
-  return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+export function searchMatchFromSearcher(match: SearchMatchRange): SearchMatch {
+  return {
+    id: uid(),
+    start: match.start,
+    end: match.end,
+    type: SEARCH_TYPE,
+    metadata: {},
+  };
 }
