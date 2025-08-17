@@ -23,6 +23,7 @@ import {
   CHORD_KEY,
   JQResult,
   KeydownEvent,
+  SetValue,
   StateObject,
   useGlobalKeydownEvent,
   useJQ,
@@ -55,7 +56,7 @@ export type AppProps = {
 type ViewerProps = {
   jsonLines: Json.Lines;
   search: Search;
-  searchNavigationState: StateObject<SearchNavigation>;
+  setSearchNavigation: SetValue<SearchNavigation>;
   isLargeJson: boolean;
 };
 
@@ -103,7 +104,7 @@ export function App({ jsonText }: AppProps): JSX.Element {
     jsonLines,
     viewerModeState: state.viewerMode,
     searchState: state.search,
-    searchNavigationState: state.searchNavigation,
+    searchNavigation: state.searchNavigation.value,
     jqCommandState: jqEnabled ? state.jqCommand : undefined,
   };
 
@@ -203,11 +204,20 @@ function useTransitionViewerProps(
   jsonLines: Nullable<Json.Lines>,
 ): Nullable<ViewerProps> {
   const [nextProps, setNextProps] = useState<Nullable<ViewerProps>>(null);
-  const props = useDeferredValue<Nullable<ViewerProps>>(nextProps);
+  const deferredProps = useDeferredValue<Nullable<ViewerProps>>(nextProps);
 
   const isLargeJson = jsonText.length > LARGE_JSON_LENGTH;
 
-  // Note: viewerMode dependency is important to trigger transition between modes!
+  // Changes to these props will trigger a possibly expensive render of the viewer
+  const transitionDeps = [
+    // Transition between viewer modes
+    state.viewerMode.value,
+    // Viewer props
+    jsonLines,
+    state.search.value,
+    isLargeJson,
+  ];
+
   const targetProps = useMemo(() => {
     if (jsonLines === null) {
       // nothing to show
@@ -217,25 +227,24 @@ function useTransitionViewerProps(
     return {
       jsonLines,
       search: state.search.value,
-      searchNavigationState: state.searchNavigation,
+      setSearchNavigation: state.searchNavigation.setValue,
       isLargeJson,
     };
-  }, [
-    state.viewerMode.value,
-    jsonLines,
-    isLargeJson,
-    state.search.value,
-    state.searchNavigation,
-  ]);
+  }, transitionDeps);
 
   useEffect(() => {
     const updateTask = setTimeout(() => setNextProps(targetProps), 1);
     return () => clearTimeout(updateTask);
   }, [setNextProps, targetProps]);
 
-  const isTransition = props !== targetProps;
-  const deferredProps = isTransition ? null : props;
-  return isLargeJson ? deferredProps : targetProps;
+  // If the JSON is small, target props are applied immediately
+  if (!isLargeJson) {
+    return targetProps;
+  }
+
+  // The JSON is large, target props will be applied after a short delay
+  const isTransition = deferredProps !== targetProps;
+  return isTransition ? null : deferredProps;
 }
 
 function resolveJson(

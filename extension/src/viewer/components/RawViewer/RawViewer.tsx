@@ -4,7 +4,7 @@ import * as Json from "@/viewer/commons/Json";
 import {
   CHORD_KEY,
   KeydownEvent,
-  StateObject,
+  SetValue,
   useEventBusListener,
   useGlobalKeydownEvent,
 } from "@/viewer/hooks";
@@ -25,7 +25,7 @@ import { SearchMatchNavigator } from "./SearchMatchNavigator";
 export type RawViewerProps = Props<{
   jsonLines: Json.Lines;
   search: Search;
-  searchNavigationState: StateObject<SearchNavigation>;
+  setSearchNavigation: SetValue<SearchNavigation>;
   isLargeJson: boolean;
 }>;
 
@@ -33,7 +33,7 @@ export function RawViewer({
   jsonLines,
   search,
   isLargeJson,
-  searchNavigationState,
+  setSearchNavigation,
   className,
 }: RawViewerProps): JSX.Element {
   const { indentation, sortKeys } = useContext(SettingsContext);
@@ -60,7 +60,7 @@ export function RawViewer({
 
   // navigation
   const navigator = useRef<SearchMatchNavigator>(new SearchMatchNavigator());
-  navigator.current.observeNavigation(searchNavigationState.setValue);
+  navigator.current.observeNavigation(setSearchNavigation);
 
   const goToPreviousMatch = useCallback(
     () => navigator.current.goToPreviousMatch(),
