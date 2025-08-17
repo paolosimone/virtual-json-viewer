@@ -44,8 +44,7 @@ export function SearchBox({
         setText={(text) => updateSearch({ text })}
       />
 
-      {/* TODO search navigation for tree viewer */}
-      {!enableVisibility && search.text && (
+      {search.text && (
         <SearchNavigationPanel
           className="mx-3 h-6"
           currentIndex={navigation.currentIndex}

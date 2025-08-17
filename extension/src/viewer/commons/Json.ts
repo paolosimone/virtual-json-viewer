@@ -25,12 +25,6 @@ import stableStringify from "json-stable-stringify";
  * Javascript also offers a Map type that seems to fit our use case, why not use it?
  * The drawback of building a Map on JSON.parse would be to convert it back
  * to an object on serialization, since JSON.stringify works only with objects.
- * In our use case JSON.parse is called rarely (on first load and when running JQ filtering),
- * while JSON.stringify could be called a lot of times, since it's the core routine of
- * the search functionality.
- *
- * Anyway, the data structure used as object is an internal detail of this module
- * and could be easily swapped whithout too much impact on the rest of the codebase.
  *
  * __Stringify__
  *

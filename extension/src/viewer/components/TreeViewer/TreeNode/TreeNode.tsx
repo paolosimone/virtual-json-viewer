@@ -8,7 +8,11 @@ import {
 import classNames from "classnames";
 import { JSX, useEffect, useLayoutEffect } from "react";
 import { NodeSearchMatch, TreeNodeProps } from "../Tree";
-import { TreeNavigator } from "../TreeNavigator";
+import {
+  NodePart,
+  TreeNavigator,
+  TreeNavigatorNodeHandler,
+} from "../TreeNavigator";
 import { Key, KeyHandle } from "./Key";
 import { OpenButton } from "./OpenButton";
 import { Value, ValueHandle } from "./Value";
@@ -27,13 +31,29 @@ export function TreeNode({
   const resize = (height: number) => tree.resize(node.id, height);
   useFitContent(parent, content, resize);
 
-  // Registers the node's html element in the navigator
-  // TODO handler
+  // Registers the node's html handler in the navigator
   useLayoutEffect(() => {
     if (!parent) return;
-    tree.onElemShown(node.id, parent);
-    return () => tree.onElemHidden(node.id);
-  }, [node.id, parent, tree]);
+
+    const handler: TreeNavigatorNodeHandler = {
+      focus() {
+        parent.focus();
+      },
+      registerOnFocus(callback) {
+        parent.onfocus = callback;
+      },
+      blur() {
+        parent.blur();
+      },
+      getMatchHandler(part, index) {
+        const ref = part === NodePart.Key ? key : value;
+        return ref?.getMatchHandler(index);
+      },
+    };
+
+    tree.onNodeShown(node.id, handler);
+    return () => tree.onNodeHidden(node.id);
+  }, [tree, node.id, parent, key, value]);
 
   const onKeydown = (e: React.KeyboardEvent) => {
     handleShortcuts({ content, key, value }, e);
@@ -41,7 +61,6 @@ export function TreeNode({
 
   const fade = { "opacity-60": !inSearchMatchPath(node.searchMatch) };
 
-  // TODO rendered text handlers
   return (
     <div
       ref={parentRef}
