@@ -6,7 +6,7 @@ import {
   isUpperCaseKeypress,
   KeydownBufferEvent,
   KeydownEvent,
-  StateObject,
+  SetValue,
   useElementSize,
   useEventBusListener,
   useGlobalKeydownEvent,
@@ -24,14 +24,14 @@ import { treeWalker } from "./TreeWalker";
 export type TreeViewerProps = Props<{
   jsonLines: Json.Lines;
   search: Search;
-  searchNavigationState: StateObject<SearchNavigation>;
+  setSearchNavigation: SetValue<SearchNavigation>;
   isLargeJson: boolean;
 }>;
 
 export function TreeViewer({
   jsonLines,
   search,
-  searchNavigationState,
+  setSearchNavigation,
   className,
 }: TreeViewerProps): JSX.Element {
   // Single line -> shown on its own
@@ -97,7 +97,7 @@ export function TreeViewer({
     // Micro-optimization: avoid O(N) scan if search is not active
     // No need to add search dependency, because the navigator is rebuilt when search changes
     if (!search.text) return;
-    treeNavigator.enableSearchNavigation(searchNavigationState.setValue);
+    treeNavigator.enableSearchNavigation(setSearchNavigation);
   }, [treeNavigator]);
 
   const goToPreviousMatch = useCallback(

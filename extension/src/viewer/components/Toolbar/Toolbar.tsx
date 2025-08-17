@@ -18,7 +18,7 @@ export type ToolbarProps = Props<{
   jsonLines: Json.Lines;
   viewerModeState: StateObject<ViewerMode>;
   searchState: StateObject<Search>;
-  searchNavigationState: StateObject<SearchNavigation>;
+  searchNavigation: SearchNavigation;
   jqCommandState?: StateObject<JQCommand>;
 }>;
 
@@ -26,7 +26,7 @@ export function Toolbar({
   jsonLines,
   viewerModeState,
   searchState,
-  searchNavigationState,
+  searchNavigation,
   jqCommandState,
   className,
 }: ToolbarProps): JSX.Element {
@@ -58,7 +58,7 @@ export function Toolbar({
           className="ml-2 flex-1"
           search={searchState.value}
           setSearch={searchState.setValue}
-          navigation={searchNavigationState.value}
+          navigation={searchNavigation}
           enableVisibility={isTreeView}
         />
       </div>
