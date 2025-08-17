@@ -43,7 +43,8 @@ export function jsonLevelWalker<Meta>(root: Json.Root): JsonLevelWalker<Meta> {
 
 function* iterRoot(json: Json.Root): Generator<JsonWalkRootNode> {
   if (Json.isLeaf(json)) {
-    return { id: ".", key: null, value: json, parent: null };
+    yield { id: ".", key: null, value: json, parent: null };
+    return;
   }
 
   for (const [key, value] of Json.iterator(json)) {
