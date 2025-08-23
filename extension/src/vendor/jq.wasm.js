@@ -1,9 +1,15 @@
+// This code implements the `-sMODULARIZE` settings by taking the generated
+// JS program code (INNER_JS_CODE) and wrapping it in a factory function.
+
+// Single threaded MINIMAL_RUNTIME programs do not need access to
+// document.currentScript, so a simple export declaration is enough.
 var newJQ = (() => {
+  // When MODULARIZE this JS may be executed later,
+  // after document.currentScript is gone, so we save it.
+  // In EXPORT_ES6 mode we can just use 'import.meta.url'.
   var _scriptName = typeof document != 'undefined' ? document.currentScript?.src : undefined;
-  if (typeof __filename != 'undefined') _scriptName = _scriptName || __filename;
-  return (
-async function(moduleArg = {}) {
-  var moduleRtn;
+  return async function(moduleArg = {}) {
+    var moduleRtn;
 
 // include: shell.js
 // The Module object: Our interface to the outside world. We import
@@ -21,14 +27,6 @@ async function(moduleArg = {}) {
 // can continue to use Module afterwards as well.
 var Module = moduleArg;
 
-// Set up the promise that indicates the Module is initialized
-var readyPromiseResolve, readyPromiseReject;
-
-var readyPromise = new Promise((resolve, reject) => {
-  readyPromiseResolve = resolve;
-  readyPromiseReject = reject;
-});
-
 // Determine the runtime environment we are in. You can customize this by
 // setting the ENVIRONMENT setting at compile time (see settings.js).
 // Attempt to auto-detect the environment
@@ -38,9 +36,7 @@ var ENVIRONMENT_IS_WORKER = typeof WorkerGlobalScope != "undefined";
 
 // N.b. Electron.js environment is simultaneously a NODE-environment, but
 // also a web environment.
-var ENVIRONMENT_IS_NODE = typeof process == "object" && typeof process.versions == "object" && typeof process.versions.node == "string" && process.type != "renderer";
-
-if (ENVIRONMENT_IS_NODE) {}
+var ENVIRONMENT_IS_NODE = typeof process == "object" && process.versions?.node && process.type != "renderer";
 
 // --pre-jses are emitted after the Module integration code, so that they can
 // refer to Module (if they choose; they can also define Module)
@@ -128,6 +124,13 @@ var quit_ = (status, toThrow) => {
   throw toThrow;
 };
 
+if (typeof __filename != "undefined") {
+  // Node
+  _scriptName = __filename;
+} else if (ENVIRONMENT_IS_WORKER) {
+  _scriptName = self.location.href;
+}
+
 // `/` should be present at the end if `scriptDirectory` is not empty
 var scriptDirectory = "";
 
@@ -145,7 +148,6 @@ if (ENVIRONMENT_IS_NODE) {
   // These modules will usually be used on Node.js. Load them eagerly to avoid
   // the complexity of lazy-loading.
   var fs = require("fs");
-  var nodePath = require("path");
   scriptDirectory = __dirname + "/";
   // include: node_shell_read.js
   readBinary = filename => {
@@ -173,29 +175,9 @@ if (ENVIRONMENT_IS_NODE) {
 // Node.js workers are detected as a combination of ENVIRONMENT_IS_WORKER and
 // ENVIRONMENT_IS_NODE.
 if (ENVIRONMENT_IS_WEB || ENVIRONMENT_IS_WORKER) {
-  if (ENVIRONMENT_IS_WORKER) {
-    // Check worker, not web, since window could be polyfilled
-    scriptDirectory = self.location.href;
-  } else if (typeof document != "undefined" && document.currentScript) {
-    // web
-    scriptDirectory = document.currentScript.src;
-  }
-  // When MODULARIZE, this JS may be executed later, after document.currentScript
-  // is gone, so we saved it, and we use it here instead of any other info.
-  if (_scriptName) {
-    scriptDirectory = _scriptName;
-  }
-  // blob urls look like blob:http://site.com/etc/etc and we cannot infer anything from them.
-  // otherwise, slice off the final part of the url to find the script directory.
-  // if scriptDirectory does not contain a slash, lastIndexOf will return -1,
-  // and scriptDirectory will correctly be replaced with an empty string.
-  // If scriptDirectory contains a query (starting with ?) or a fragment (starting with #),
-  // they are removed because they could contain a slash.
-  if (scriptDirectory.startsWith("blob:")) {
-    scriptDirectory = "";
-  } else {
-    scriptDirectory = scriptDirectory.slice(0, scriptDirectory.replace(/[?#].*/, "").lastIndexOf("/") + 1);
-  }
+  try {
+    scriptDirectory = new URL(".", _scriptName).href;
+  } catch {}
   {
     // include: web_or_worker_shell_read.js
     if (ENVIRONMENT_IS_WORKER) {
@@ -257,8 +239,6 @@ var err = console.error.bind(console);
 var wasmBinary;
 
 // Wasm globals
-var wasmMemory;
-
 //========================================
 // Runtime essentials
 //========================================
@@ -271,29 +251,33 @@ var ABORT = false;
 // but only when noExitRuntime is false.
 var EXITSTATUS;
 
-// Memory management
-var /** @type {!Int8Array} */ HEAP8, /** @type {!Uint8Array} */ HEAPU8, /** @type {!Int16Array} */ HEAP16, /** @type {!Uint16Array} */ HEAPU16, /** @type {!Int32Array} */ HEAP32, /** @type {!Uint32Array} */ HEAPU32, /** @type {!Float32Array} */ HEAPF32, /* BigInt64Array type is not correctly defined in closure
-/** not-@type {!BigInt64Array} */ HEAP64, /* BigUint64Array type is not correctly defined in closure
-/** not-t@type {!BigUint64Array} */ HEAPU64, /** @type {!Float64Array} */ HEAPF64;
-
-var runtimeInitialized = false;
-
-var runtimeExited = false;
-
 /**
  * Indicates whether filename is delivered via file protocol (as opposed to http/https)
  * @noinline
  */ var isFileURI = filename => filename.startsWith("file://");
 
-// include: runtime_shared.js
+// include: runtime_common.js
 // include: runtime_stack_check.js
 // end include: runtime_stack_check.js
 // include: runtime_exceptions.js
 // end include: runtime_exceptions.js
 // include: runtime_debug.js
 // end include: runtime_debug.js
-// include: memoryprofiler.js
-// end include: memoryprofiler.js
+var readyPromiseResolve, readyPromiseReject;
+
+// Memory management
+var wasmMemory;
+
+var /** @type {!Int8Array} */ HEAP8, /** @type {!Uint8Array} */ HEAPU8, /** @type {!Int16Array} */ HEAP16, /** @type {!Uint16Array} */ HEAPU16, /** @type {!Int32Array} */ HEAP32, /** @type {!Uint32Array} */ HEAPU32, /** @type {!Float32Array} */ HEAPF32, /** @type {!Float64Array} */ HEAPF64;
+
+// BigInt64Array type is not correctly defined in closure
+var /** not-@type {!BigInt64Array} */ HEAP64, /* BigUint64Array type is not correctly defined in closure
+/** not-@type {!BigUint64Array} */ HEAPU64;
+
+var runtimeInitialized = false;
+
+var runtimeExited = false;
+
 function updateMemoryViews() {
   var b = wasmMemory.buffer;
   HEAP8 = new Int8Array(b);
@@ -308,7 +292,9 @@ function updateMemoryViews() {
   HEAPU64 = new BigUint64Array(b);
 }
 
-// end include: runtime_shared.js
+// include: memoryprofiler.js
+// end include: memoryprofiler.js
+// end include: runtime_common.js
 function preRun() {
   if (Module["preRun"]) {
     if (typeof Module["preRun"] == "function") Module["preRun"] = [ Module["preRun"] ];
@@ -326,7 +312,7 @@ function initRuntime() {
   if (!Module["noFSInit"] && !FS.initialized) FS.init();
   TTY.init();
   // End ATINITS hooks
-  wasmExports["E"]();
+  wasmExports["F"]();
   // Begin ATPOSTCTORS hooks
   FS.ignorePermissions = false;
 }
@@ -334,6 +320,7 @@ function initRuntime() {
 function preMain() {}
 
 function exitRuntime() {
+  // PThreads reuse the runtime from the main thread.
   ___funcs_on_exit();
   // Native atexit() functions
   // Begin ATEXITS hooks
@@ -344,6 +331,7 @@ function exitRuntime() {
 }
 
 function postRun() {
+  // PThreads reuse the runtime from the main thread.
   if (Module["postRun"]) {
     if (typeof Module["postRun"] == "function") Module["postRun"] = [ Module["postRun"] ];
     while (Module["postRun"].length) {
@@ -366,10 +354,6 @@ var runDependencies = 0;
 var dependenciesFulfilled = null;
 
 // overridden to take different actions when all run dependencies are fulfilled
-function getUniqueRunDependency(id) {
-  return id;
-}
-
 function addRunDependency(id) {
   runDependencies++;
   Module["monitorRunDependencies"]?.(runDependencies);
@@ -408,7 +392,7 @@ function removeRunDependency(id) {
   // though it can.
   // TODO(https://github.com/google/closure-compiler/pull/3913): Remove if/when upstream closure gets fixed.
   /** @suppress {checkTypes} */ var e = new WebAssembly.RuntimeError(what);
-  readyPromiseReject(e);
+  readyPromiseReject?.(e);
   // Throw the error whether or not MODULARIZE is set because abort is used
   // in code paths apart from instantiation where an exception is expected
   // to be thrown when abort is called.
@@ -456,7 +440,7 @@ async function instantiateArrayBuffer(binaryFile, imports) {
 }
 
 async function instantiateAsync(binary, binaryFile, imports) {
-  if (!binary && typeof WebAssembly.instantiateStreaming == "function" && !isFileURI(binaryFile) && !ENVIRONMENT_IS_NODE) {
+  if (!binary && !isFileURI(binaryFile) && !ENVIRONMENT_IS_NODE) {
     try {
       var response = fetch(binaryFile, {
         credentials: "same-origin"
@@ -488,9 +472,10 @@ async function createWasm() {
   // performing other necessary setup
   /** @param {WebAssembly.Module=} module*/ function receiveInstance(instance, module) {
     wasmExports = instance.exports;
-    wasmMemory = wasmExports["D"];
+    wasmMemory = wasmExports["E"];
     updateMemoryViews();
-    wasmTable = wasmExports["H"];
+    wasmTable = wasmExports["I"];
+    assignWasmExports(wasmExports);
     removeRunDependency("wasm-instantiate");
     return wasmExports;
   }
@@ -519,15 +504,9 @@ async function createWasm() {
     });
   }
   wasmBinaryFile ??= findWasmBinary();
-  try {
-    var result = await instantiateAsync(wasmBinary, wasmBinaryFile, info);
-    var exports = receiveInstantiationResult(result);
-    return exports;
-  } catch (e) {
-    // If instantiation fails, reject the module ready promise.
-    readyPromiseReject(e);
-    return Promise.reject(e);
-  }
+  var result = await instantiateAsync(wasmBinary, wasmBinaryFile, info);
+  var exports = receiveInstantiationResult(result);
+  return exports;
 }
 
 // end include: preamble.js
@@ -559,6 +538,17 @@ var noExitRuntime = false;
 
 var UTF8Decoder = typeof TextDecoder != "undefined" ? new TextDecoder : undefined;
 
+var findStringEnd = (heapOrArray, idx, maxBytesToRead, ignoreNul) => {
+  var maxIdx = idx + maxBytesToRead;
+  if (ignoreNul) return maxIdx;
+  // TextDecoder needs to know the byte length in advance, it doesn't stop on
+  // null terminator by itself.
+  // As a tiny code save trick, compare idx against maxIdx using a negation,
+  // so that maxBytesToRead=undefined/NaN means Infinity.
+  while (heapOrArray[idx] && !(idx >= maxIdx)) ++idx;
+  return idx;
+};
+
 /**
      * Given a pointer 'idx' to a null-terminated UTF8-encoded string in the given
      * array that contains uint8 values, returns a copy of that string as a
@@ -566,22 +556,15 @@ var UTF8Decoder = typeof TextDecoder != "undefined" ? new TextDecoder : undefine
      * heapOrArray is either a regular array, or a JavaScript typed array view.
      * @param {number=} idx
      * @param {number=} maxBytesToRead
+     * @param {boolean=} ignoreNul - If true, the function will not stop on a NUL character.
      * @return {string}
-     */ var UTF8ArrayToString = (heapOrArray, idx = 0, maxBytesToRead = NaN) => {
-  var endIdx = idx + maxBytesToRead;
-  var endPtr = idx;
-  // TextDecoder needs to know the byte length in advance, it doesn't stop on
-  // null terminator by itself.  Also, use the length info to avoid running tiny
-  // strings through TextDecoder, since .subarray() allocates garbage.
-  // (As a tiny code save trick, compare endPtr against endIdx using a negation,
-  // so that undefined/NaN means Infinity)
-  while (heapOrArray[endPtr] && !(endPtr >= endIdx)) ++endPtr;
+     */ var UTF8ArrayToString = (heapOrArray, idx = 0, maxBytesToRead, ignoreNul) => {
+  var endPtr = findStringEnd(heapOrArray, idx, maxBytesToRead, ignoreNul);
+  // When using conditional TextDecoder, skip it for short strings as the overhead of the native call is not worth it.
   if (endPtr - idx > 16 && heapOrArray.buffer && UTF8Decoder) {
     return UTF8Decoder.decode(heapOrArray.subarray(idx, endPtr));
   }
   var str = "";
-  // If building with TextDecoder, we have already computed the string length
-  // above, so test loop end condition against that
   while (idx < endPtr) {
     // For UTF8 byte structure, see:
     // http://en.wikipedia.org/wiki/UTF-8#Description
@@ -622,12 +605,10 @@ var UTF8Decoder = typeof TextDecoder != "undefined" ? new TextDecoder : undefine
      *   maximum number of bytes to read. You can omit this parameter to scan the
      *   string until the first 0 byte. If maxBytesToRead is passed, and the string
      *   at [ptr, ptr+maxBytesToReadr[ contains a null byte in the middle, then the
-     *   string will cut short at that byte index (i.e. maxBytesToRead will not
-     *   produce a string of exact length [ptr, ptr+maxBytesToRead[) N.B. mixing
-     *   frequent uses of UTF8ToString() with and without maxBytesToRead may throw
-     *   JS JIT optimizations off, so it is worth to consider consistently using one
+     *   string will cut short at that byte index.
+     * @param {boolean=} ignoreNul - If true, the function will not stop on a NUL character.
      * @return {string}
-     */ var UTF8ToString = (ptr, maxBytesToRead) => ptr ? UTF8ArrayToString(HEAPU8, ptr, maxBytesToRead) : "";
+     */ var UTF8ToString = (ptr, maxBytesToRead, ignoreNul) => ptr ? UTF8ArrayToString(HEAPU8, ptr, maxBytesToRead, ignoreNul) : "";
 
 var ___assert_fail = (condition, filename, line, func) => abort(`Assertion failed: ${UTF8ToString(condition)}, at: ` + [ filename ? UTF8ToString(filename) : "unknown filename", line, func ? UTF8ToString(func) : "unknown function" ]);
 
@@ -812,19 +793,10 @@ var stringToUTF8Array = (str, heap, outIdx, maxBytesToWrite) => {
   var endIdx = outIdx + maxBytesToWrite - 1;
   // -1 for string null terminator.
   for (var i = 0; i < str.length; ++i) {
-    // Gotcha: charCodeAt returns a 16-bit word that is a UTF-16 encoded code
-    // unit, not a Unicode code point of the character! So decode
-    // UTF16->UTF32->UTF8.
-    // See http://unicode.org/faq/utf_bom.html#utf16-3
     // For UTF8 byte structure, see http://en.wikipedia.org/wiki/UTF-8#Description
     // and https://www.ietf.org/rfc/rfc2279.txt
     // and https://tools.ietf.org/html/rfc3629
-    var u = str.charCodeAt(i);
-    // possibly a lead surrogate
-    if (u >= 55296 && u <= 57343) {
-      var u1 = str.charCodeAt(++i);
-      u = 65536 + ((u & 1023) << 10) | (u1 & 1023);
-    }
+    var u = str.codePointAt(i);
     if (u <= 127) {
       if (outIdx >= endIdx) break;
       heap[outIdx++] = u;
@@ -843,6 +815,9 @@ var stringToUTF8Array = (str, heap, outIdx, maxBytesToWrite) => {
       heap[outIdx++] = 128 | ((u >> 12) & 63);
       heap[outIdx++] = 128 | ((u >> 6) & 63);
       heap[outIdx++] = 128 | (u & 63);
+      // Gotcha: if codePoint is over 0xFFFF, it is represented as a surrogate pair in UTF-16.
+      // We need to manually skip over the second code unit for correct iteration.
+      i++;
     }
   }
   // Null-terminate the pointer to the buffer.
@@ -1190,6 +1165,12 @@ var MEMFS = {
       }
     },
     lookup(parent, name) {
+      // This error may happen quite a bit. To avoid overhead we reuse it (and
+      // suffer a lack of stack info).
+      if (!MEMFS.doesNotExistError) {
+        MEMFS.doesNotExistError = new FS.ErrnoError(44);
+        /** @suppress {checkTypes} */ MEMFS.doesNotExistError.stack = "<generic error, no stack>";
+      }
       throw MEMFS.doesNotExistError;
     },
     mknod(parent, name, mode, dev) {
@@ -1354,62 +1335,6 @@ var MEMFS = {
   }
 };
 
-var asyncLoad = async url => {
-  var arrayBuffer = await readAsync(url);
-  return new Uint8Array(arrayBuffer);
-};
-
-var FS_createDataFile = (parent, name, fileData, canRead, canWrite, canOwn) => {
-  FS.createDataFile(parent, name, fileData, canRead, canWrite, canOwn);
-};
-
-var preloadPlugins = [];
-
-var FS_handledByPreloadPlugin = (byteArray, fullname, finish, onerror) => {
-  // Ensure plugins are ready.
-  if (typeof Browser != "undefined") Browser.init();
-  var handled = false;
-  preloadPlugins.forEach(plugin => {
-    if (handled) return;
-    if (plugin["canHandle"](fullname)) {
-      plugin["handle"](byteArray, fullname, finish, onerror);
-      handled = true;
-    }
-  });
-  return handled;
-};
-
-var FS_createPreloadedFile = (parent, name, url, canRead, canWrite, onload, onerror, dontCreateFile, canOwn, preFinish) => {
-  // TODO we should allow people to just pass in a complete filename instead
-  // of parent and name being that we just join them anyways
-  var fullname = name ? PATH_FS.resolve(PATH.join2(parent, name)) : parent;
-  var dep = getUniqueRunDependency(`cp ${fullname}`);
-  // might have several active requests for the same fullname
-  function processData(byteArray) {
-    function finish(byteArray) {
-      preFinish?.();
-      if (!dontCreateFile) {
-        FS_createDataFile(parent, name, byteArray, canRead, canWrite, canOwn);
-      }
-      onload?.();
-      removeRunDependency(dep);
-    }
-    if (FS_handledByPreloadPlugin(byteArray, fullname, finish, () => {
-      onerror?.();
-      removeRunDependency(dep);
-    })) {
-      return;
-    }
-    finish(byteArray);
-  }
-  addRunDependency(dep);
-  if (typeof url == "string") {
-    asyncLoad(url).then(processData, onerror);
-  } else {
-    processData(url);
-  }
-};
-
 var FS_modeStringToFlags = str => {
   var flagModes = {
     "r": 0,
@@ -1431,6 +1356,56 @@ var FS_getMode = (canRead, canWrite) => {
   if (canRead) mode |= 292 | 73;
   if (canWrite) mode |= 146;
   return mode;
+};
+
+var asyncLoad = async url => {
+  var arrayBuffer = await readAsync(url);
+  return new Uint8Array(arrayBuffer);
+};
+
+var FS_createDataFile = (...args) => FS.createDataFile(...args);
+
+var getUniqueRunDependency = id => id;
+
+var preloadPlugins = [];
+
+var FS_handledByPreloadPlugin = async (byteArray, fullname) => {
+  // Ensure plugins are ready.
+  if (typeof Browser != "undefined") Browser.init();
+  for (var plugin of preloadPlugins) {
+    if (plugin["canHandle"](fullname)) {
+      return plugin["handle"](byteArray, fullname);
+    }
+  }
+  // In no plugin handled this file then return the original/unmodified
+  // byteArray.
+  return byteArray;
+};
+
+var FS_preloadFile = async (parent, name, url, canRead, canWrite, dontCreateFile, canOwn, preFinish) => {
+  // TODO we should allow people to just pass in a complete filename instead
+  // of parent and name being that we just join them anyways
+  var fullname = name ? PATH_FS.resolve(PATH.join2(parent, name)) : parent;
+  var dep = getUniqueRunDependency(`cp ${fullname}`);
+  // might have several active requests for the same fullname
+  addRunDependency(dep);
+  try {
+    var byteArray = url;
+    if (typeof url == "string") {
+      byteArray = await asyncLoad(url);
+    }
+    byteArray = await FS_handledByPreloadPlugin(byteArray, fullname);
+    preFinish?.();
+    if (!dontCreateFile) {
+      FS_createDataFile(parent, name, byteArray, canRead, canWrite, canOwn);
+    }
+  } finally {
+    removeRunDependency(dep);
+  }
+};
+
+var FS_createPreloadedFile = (parent, name, url, canRead, canWrite, onload, onerror, dontCreateFile, canOwn, preFinish) => {
+  FS_preloadFile(parent, name, url, canRead, canWrite, dontCreateFile, canOwn, preFinish).then(onload).catch(onerror);
 };
 
 var FS = {
@@ -1553,6 +1528,9 @@ var FS = {
           current_path = PATH.dirname(current_path);
           if (FS.isRoot(current)) {
             path = current_path + "/" + parts.slice(i + 1).join("/");
+            // We're making progress here, don't let many consecutive ..'s
+            // lead to ELOOP
+            nlinks--;
             continue linkloop;
           } else {
             current = current.parent;
@@ -2551,28 +2529,24 @@ var FS = {
     if (opts.encoding !== "utf8" && opts.encoding !== "binary") {
       throw new Error(`Invalid encoding type "${opts.encoding}"`);
     }
-    var ret;
     var stream = FS.open(path, opts.flags);
     var stat = FS.stat(path);
     var length = stat.size;
     var buf = new Uint8Array(length);
     FS.read(stream, buf, 0, length, 0);
     if (opts.encoding === "utf8") {
-      ret = UTF8ArrayToString(buf);
-    } else if (opts.encoding === "binary") {
-      ret = buf;
+      buf = UTF8ArrayToString(buf);
     }
     FS.close(stream);
-    return ret;
+    return buf;
   },
   writeFile(path, data, opts = {}) {
     opts.flags = opts.flags || 577;
     var stream = FS.open(path, opts.flags, opts.mode);
     if (typeof data == "string") {
-      var buf = new Uint8Array(lengthBytesUTF8(data) + 1);
-      var actualNumBytes = stringToUTF8Array(data, buf, 0, buf.length);
-      FS.write(stream, buf, 0, actualNumBytes, undefined, opts.canOwn);
-    } else if (ArrayBuffer.isView(data)) {
+      data = new Uint8Array(intArrayFromString(data, true));
+    }
+    if (ArrayBuffer.isView(data)) {
       FS.write(stream, data, 0, data.byteLength, undefined, opts.canOwn);
     } else {
       throw new Error("Unsupported data type");
@@ -3081,12 +3055,12 @@ var SYSCALLS = {
     return dir + "/" + path;
   },
   writeStat(buf, stat) {
-    HEAP32[((buf) >> 2)] = stat.dev;
-    HEAP32[(((buf) + (4)) >> 2)] = stat.mode;
+    HEAPU32[((buf) >> 2)] = stat.dev;
+    HEAPU32[(((buf) + (4)) >> 2)] = stat.mode;
     HEAPU32[(((buf) + (8)) >> 2)] = stat.nlink;
-    HEAP32[(((buf) + (12)) >> 2)] = stat.uid;
-    HEAP32[(((buf) + (16)) >> 2)] = stat.gid;
-    HEAP32[(((buf) + (20)) >> 2)] = stat.rdev;
+    HEAPU32[(((buf) + (12)) >> 2)] = stat.uid;
+    HEAPU32[(((buf) + (16)) >> 2)] = stat.gid;
+    HEAPU32[(((buf) + (20)) >> 2)] = stat.rdev;
     HEAP64[(((buf) + (24)) >> 3)] = BigInt(stat.size);
     HEAP32[(((buf) + (32)) >> 2)] = 4096;
     HEAP32[(((buf) + (36)) >> 2)] = stat.blocks;
@@ -3103,17 +3077,17 @@ var SYSCALLS = {
     return 0;
   },
   writeStatFs(buf, stats) {
-    HEAP32[(((buf) + (4)) >> 2)] = stats.bsize;
-    HEAP32[(((buf) + (40)) >> 2)] = stats.bsize;
-    HEAP32[(((buf) + (8)) >> 2)] = stats.blocks;
-    HEAP32[(((buf) + (12)) >> 2)] = stats.bfree;
-    HEAP32[(((buf) + (16)) >> 2)] = stats.bavail;
-    HEAP32[(((buf) + (20)) >> 2)] = stats.files;
-    HEAP32[(((buf) + (24)) >> 2)] = stats.ffree;
-    HEAP32[(((buf) + (28)) >> 2)] = stats.fsid;
-    HEAP32[(((buf) + (44)) >> 2)] = stats.flags;
+    HEAPU32[(((buf) + (4)) >> 2)] = stats.bsize;
+    HEAPU32[(((buf) + (60)) >> 2)] = stats.bsize;
+    HEAP64[(((buf) + (8)) >> 3)] = BigInt(stats.blocks);
+    HEAP64[(((buf) + (16)) >> 3)] = BigInt(stats.bfree);
+    HEAP64[(((buf) + (24)) >> 3)] = BigInt(stats.bavail);
+    HEAP64[(((buf) + (32)) >> 3)] = BigInt(stats.files);
+    HEAP64[(((buf) + (40)) >> 3)] = BigInt(stats.ffree);
+    HEAPU32[(((buf) + (48)) >> 2)] = stats.fsid;
+    HEAPU32[(((buf) + (64)) >> 2)] = stats.flags;
     // ST_NOSUID
-    HEAP32[(((buf) + (36)) >> 2)] = stats.namelen;
+    HEAPU32[(((buf) + (56)) >> 2)] = stats.namelen;
   },
   doMsync(addr, stream, len, flags, offset) {
     if (!FS.isFile(stream.node.mode)) {
@@ -3297,6 +3271,7 @@ function ___syscall_ioctl(fd, op, varargs) {
         return -28;
       }
 
+     case 21537:
      case 21531:
       {
         var argp = syscallGetVarargP();
@@ -3472,6 +3447,48 @@ function __localtime_js(time, tmPtr) {
   HEAP32[(((tmPtr) + (32)) >> 2)] = dst;
 }
 
+var __mktime_js = function(tmPtr) {
+  var ret = (() => {
+    var date = new Date(HEAP32[(((tmPtr) + (20)) >> 2)] + 1900, HEAP32[(((tmPtr) + (16)) >> 2)], HEAP32[(((tmPtr) + (12)) >> 2)], HEAP32[(((tmPtr) + (8)) >> 2)], HEAP32[(((tmPtr) + (4)) >> 2)], HEAP32[((tmPtr) >> 2)], 0);
+    // There's an ambiguous hour when the time goes back; the tm_isdst field is
+    // used to disambiguate it.  Date() basically guesses, so we fix it up if it
+    // guessed wrong, or fill in tm_isdst with the guess if it's -1.
+    var dst = HEAP32[(((tmPtr) + (32)) >> 2)];
+    var guessedOffset = date.getTimezoneOffset();
+    var start = new Date(date.getFullYear(), 0, 1);
+    var summerOffset = new Date(date.getFullYear(), 6, 1).getTimezoneOffset();
+    var winterOffset = start.getTimezoneOffset();
+    var dstOffset = Math.min(winterOffset, summerOffset);
+    // DST is in December in South
+    if (dst < 0) {
+      // Attention: some regions don't have DST at all.
+      HEAP32[(((tmPtr) + (32)) >> 2)] = Number(summerOffset != winterOffset && dstOffset == guessedOffset);
+    } else if ((dst > 0) != (dstOffset == guessedOffset)) {
+      var nonDstOffset = Math.max(winterOffset, summerOffset);
+      var trueOffset = dst > 0 ? dstOffset : nonDstOffset;
+      // Don't try setMinutes(date.getMinutes() + ...) -- it's messed up.
+      date.setTime(date.getTime() + (trueOffset - guessedOffset) * 6e4);
+    }
+    HEAP32[(((tmPtr) + (24)) >> 2)] = date.getDay();
+    var yday = ydayFromDate(date) | 0;
+    HEAP32[(((tmPtr) + (28)) >> 2)] = yday;
+    // To match expected behavior, update fields from date
+    HEAP32[((tmPtr) >> 2)] = date.getSeconds();
+    HEAP32[(((tmPtr) + (4)) >> 2)] = date.getMinutes();
+    HEAP32[(((tmPtr) + (8)) >> 2)] = date.getHours();
+    HEAP32[(((tmPtr) + (12)) >> 2)] = date.getDate();
+    HEAP32[(((tmPtr) + (16)) >> 2)] = date.getMonth();
+    HEAP32[(((tmPtr) + (20)) >> 2)] = date.getYear();
+    var timeMs = date.getTime();
+    if (isNaN(timeMs)) {
+      return -1;
+    }
+    // Return time in microseconds
+    return timeMs / 1e3;
+  })();
+  return BigInt(ret);
+};
+
 var __timegm_js = function(tmPtr) {
   var ret = (() => {
     var time = Date.UTC(HEAP32[(((tmPtr) + (20)) >> 2)] + 1900, HEAP32[(((tmPtr) + (16)) >> 2)], HEAP32[(((tmPtr) + (12)) >> 2)], HEAP32[(((tmPtr) + (8)) >> 2)], HEAP32[(((tmPtr) + (4)) >> 2)], HEAP32[((tmPtr) >> 2)], 0);
@@ -3538,8 +3555,8 @@ var getHeapMax = () => // Stay one Wasm page short of 4GB: while e.g. Chrome is 
 var alignMemory = (size, alignment) => Math.ceil(size / alignment) * alignment;
 
 var growMemory = size => {
-  var b = wasmMemory.buffer;
-  var pages = ((size - b.byteLength + 65535) / 65536) | 0;
+  var oldHeapSize = wasmMemory.buffer.byteLength;
+  var pages = ((size - oldHeapSize + 65535) / 65536) | 0;
   try {
     // round size grow request up to wasm page size (fixed 64KB per spec)
     wasmMemory.grow(pages);
@@ -3602,7 +3619,7 @@ var getEnvStrings = () => {
   if (!getEnvStrings.strings) {
     // Default values.
     // Browser language detection #8751
-    var lang = ((typeof navigator == "object" && navigator.languages && navigator.languages[0]) || "C").replace("-", "_") + ".UTF-8";
+    var lang = ((typeof navigator == "object" && navigator.language) || "C").replace("-", "_") + ".UTF-8";
     var env = {
       "USER": "web_user",
       "LOGNAME": "web_user",
@@ -4071,7 +4088,7 @@ var _strptime = (buf, format, tm) => {
     HEAP32[(((tm) + (36)) >> 2)] = date.gmtoff;
     // we need to convert the matched sequence into an integer array to take care of UTF-8 characters > 0x7F
     // TODO: not sure that intArrayFromString handles all unicode characters correctly
-    return buf + intArrayFromString(matches[0]).length - 1;
+    return buf + lengthBytesUTF8(matches[0]);
   }
   return 0;
 };
@@ -4099,13 +4116,9 @@ var stringToUTF8OnStack = str => {
 
 FS.createPreloadedFile = FS_createPreloadedFile;
 
+FS.preloadFile = FS_preloadFile;
+
 FS.staticInit();
-
-// This error may happen quite a bit. To avoid overhead we reuse it (and
-// suffer a lack of stack info).
-MEMFS.doesNotExistError = new FS.ErrnoError(44);
-
-/** @suppress {checkTypes} */ MEMFS.doesNotExistError.stack = "<generic error, no stack>";
 
 // End JS library code
 // include: postlibrary.js
@@ -4128,49 +4141,50 @@ MEMFS.doesNotExistError = new FS.ErrnoError(44);
 // Begin JS library exports
 // End JS library exports
 // end include: postlibrary.js
+// Imports from the Wasm binary.
+var _main, _fflush, ___funcs_on_exit, __emscripten_stack_alloc;
+
+function assignWasmExports(wasmExports) {
+  Module["_main"] = _main = wasmExports["G"];
+  _fflush = wasmExports["H"];
+  ___funcs_on_exit = wasmExports["J"];
+  __emscripten_stack_alloc = wasmExports["K"];
+}
+
 var wasmImports = {
   /** @export */ a: ___assert_fail,
-  /** @export */ C: ___call_sighandler,
+  /** @export */ D: ___call_sighandler,
   /** @export */ g: ___syscall_fcntl64,
-  /** @export */ B: ___syscall_fstat64,
-  /** @export */ A: ___syscall_getcwd,
-  /** @export */ z: ___syscall_ioctl,
-  /** @export */ y: ___syscall_lstat64,
-  /** @export */ x: ___syscall_newfstatat,
+  /** @export */ C: ___syscall_fstat64,
+  /** @export */ B: ___syscall_getcwd,
+  /** @export */ A: ___syscall_ioctl,
+  /** @export */ z: ___syscall_lstat64,
+  /** @export */ y: ___syscall_newfstatat,
   /** @export */ f: ___syscall_openat,
-  /** @export */ w: ___syscall_readlinkat,
-  /** @export */ v: ___syscall_stat64,
-  /** @export */ o: __abort_js,
-  /** @export */ n: __emscripten_runtime_keepalive_clear,
-  /** @export */ m: __gmtime_js,
-  /** @export */ l: __localtime_js,
+  /** @export */ x: ___syscall_readlinkat,
+  /** @export */ w: ___syscall_stat64,
+  /** @export */ p: __abort_js,
+  /** @export */ o: __emscripten_runtime_keepalive_clear,
+  /** @export */ n: __gmtime_js,
+  /** @export */ m: __localtime_js,
+  /** @export */ l: __mktime_js,
   /** @export */ k: __timegm_js,
   /** @export */ j: __tzset_js,
   /** @export */ d: _emscripten_date_now,
   /** @export */ i: _emscripten_resize_heap,
-  /** @export */ u: _environ_get,
-  /** @export */ t: _environ_sizes_get,
+  /** @export */ v: _environ_get,
+  /** @export */ u: _environ_sizes_get,
   /** @export */ b: _exit,
   /** @export */ c: _fd_close,
-  /** @export */ s: _fd_fdstat_get,
-  /** @export */ r: _fd_read,
-  /** @export */ q: _fd_seek,
+  /** @export */ t: _fd_fdstat_get,
+  /** @export */ s: _fd_read,
+  /** @export */ r: _fd_seek,
   /** @export */ e: _fd_write,
-  /** @export */ p: _proc_exit,
+  /** @export */ q: _proc_exit,
   /** @export */ h: _strptime
 };
 
 var wasmExports = await createWasm();
-
-var ___wasm_call_ctors = wasmExports["E"];
-
-var _main = Module["_main"] = wasmExports["F"];
-
-var _fflush = wasmExports["G"];
-
-var ___funcs_on_exit = wasmExports["I"];
-
-var __emscripten_stack_alloc = wasmExports["J"];
 
 // include: postamble.js
 // === Auto-generated postamble setup entry stuff ===
@@ -4213,7 +4227,7 @@ function run(args = arguments_) {
     if (ABORT) return;
     initRuntime();
     preMain();
-    readyPromiseResolve(Module);
+    readyPromiseResolve?.(Module);
     Module["onRuntimeInitialized"]?.();
     var noInitialRun = Module["noInitialRun"] || true;
     if (!noInitialRun) callMain(args);
@@ -4249,12 +4263,21 @@ run();
 // and return either the Module itself, or a promise of the module.
 // We assign to the `moduleRtn` global here and configure closure to see
 // this as and extern so it won't get minified.
-moduleRtn = readyPromise;
-
-
-  return moduleRtn;
+if (runtimeInitialized) {
+  moduleRtn = Module;
+} else {
+  // Set up the promise that indicates the Module is initialized
+  moduleRtn = new Promise((resolve, reject) => {
+    readyPromiseResolve = resolve;
+    readyPromiseReject = reject;
+  });
 }
-);
+
+
+    return moduleRtn;
+  };
 })();
+
 // WARN: added manually because vite does not support CommonJS exports
 export default newJQ;
+
