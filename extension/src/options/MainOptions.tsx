@@ -141,6 +141,13 @@ export function MainOptions({ className }: MainOptionsProps): JSX.Element {
         setChecked={(checked: boolean) => updateSettings({ enableJQ: checked })}
       />
 
+      <Label {...labels.jqSlurp} />
+      <Checkbox
+        disabled={!settings.enableJQ}
+        checked={settings.jqSlurp}
+        setChecked={(checked: boolean) => updateSettings({ jqSlurp: checked })}
+      />
+
       {/* SUPPORT */}
       <h2 className="col-span-2 text-center font-semibold">
         {t.settings.sections.support}

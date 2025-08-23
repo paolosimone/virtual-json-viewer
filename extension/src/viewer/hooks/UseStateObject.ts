@@ -18,3 +18,11 @@ export function useStateObjectAdapter<S>([value, setValue]: [
 ]): StateObject<S> {
   return useMemo(() => ({ value, setValue }), [value, setValue]);
 }
+
+export function updateField<S>(
+  key: keyof S,
+  value: S[keyof S],
+): (current: S) => S {
+  return (current) =>
+    Object.is(current[key], value) ? current : { ...current, [key]: value };
+}

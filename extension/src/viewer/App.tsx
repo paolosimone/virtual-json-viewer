@@ -25,6 +25,7 @@ import {
   KeydownEvent,
   SetValue,
   StateObject,
+  updateField,
   useGlobalKeydownEvent,
   useJQ,
   useSessionStorage,
@@ -61,25 +62,28 @@ type ViewerProps = {
 };
 
 export function App({ jsonText }: AppProps): JSX.Element {
-  // global settings
+  // Global settings
   const [_colors] = useTheme();
   const [translation] = useLocalization();
   const [settings] = useSettings();
 
-  // application state
-  const state = useApplicationState(settings);
-
-  // parse json
+  // Parse json
   const jsonResult = useMemo(
     () => Json.tryParseLines(jsonText, { sortKeys: settings.sortKeys }),
     [jsonText, settings.sortKeys],
   );
+  const isInputMultiline = isMultipleJsonLines(jsonResult);
+
+  // Application state
+  const state = useApplicationState(settings, isInputMultiline);
+
+  // Apply jq filter
   const [jqEnabled, jqResult] = useJQ(jsonText, state.jqCommand.value);
   const [jsonLines, error] = resolveJson(jsonResult, jqResult);
 
   const viewerProps = useTransitionViewerProps(state, jsonText, jsonLines);
 
-  // browser default's "select all" behavior is not meaningful in the viewer,
+  // Browser default's "select all" behavior is not meaningful in the viewer,
   // children components should handle their own selection (except for standard input elements)
   const disableSelectAll = useCallback((e: KeydownEvent) => {
     if (e[CHORD_KEY] && e.key === "a" && !isActiveElementEditable()) {
@@ -88,9 +92,9 @@ export function App({ jsonText }: AppProps): JSX.Element {
   }, []);
   useGlobalKeydownEvent(disableSelectAll);
 
-  // -- no hooks below -- //
+  // -- No hooks below -- //
 
-  // fatal error page
+  // Fatal error page
   if (jsonLines === null) {
     return (
       <div className="flex h-full flex-col font-mono">
@@ -156,7 +160,11 @@ type ApplicationState = {
 // Default state is customizable in settings but not available on first render,
 // so we need to subscribe to update the state when settings are loaded,
 // unless of course the state was already loaded from an existing session.
-function useApplicationState(settings: Settings): ApplicationState {
+function useApplicationState(
+  settings: Settings,
+  isInputMultiline: boolean,
+): ApplicationState {
+  // Viewer mode
   const [viewer, setViewer, viewerWasInSession] = useSessionStorage(
     "viewer",
     settings.viewerMode,
@@ -165,26 +173,32 @@ function useApplicationState(settings: Settings): ApplicationState {
     useEffect(() => setViewer(settings.viewerMode), [settings]);
   }
 
+  // Search
   const [search, setSearch, searchWasInSession] = useSessionStorage(
     "search",
     EmptySearch,
   );
   if (!searchWasInSession) {
     useEffect(
-      () =>
-        setSearch((search) => ({
-          ...search,
-          visibility: settings.searchVisibility,
-        })),
+      () => setSearch(updateField("visibility", settings.searchVisibility)),
       [settings],
     );
   }
 
+  // Search navigation
   const [searchNavigation, setSearchNavigation] = useState(
     EmptySearchNavigation,
   );
 
+  // JQ
   const [jq, setJQ] = useSessionStorage("jq", EmptyJQCommand);
+  const [sessionSlurp] = useState<Nullable<boolean>>(jq.slurp);
+  useEffect(() => {
+    // Read default flag from settings if not already set in the session.
+    const chosenSlurp = sessionSlurp ?? settings.jqSlurp;
+    // Make sure slurp is null if input is not multiline
+    setJQ(updateField("slurp", isInputMultiline ? chosenSlurp : null));
+  }, [settings, isInputMultiline]);
 
   return {
     viewerMode: useStateObjectAdapter([viewer, setViewer]),
@@ -264,6 +278,12 @@ function resolveJson(
   }
 
   return [jqResult, null];
+}
+
+function isMultipleJsonLines(
+  result: Json.Lines | Error | undefined | null,
+): result is Json.Lines {
+  return Array.isArray(result) && result.length > 1;
 }
 
 type JqErrorTitleProps = Props<{

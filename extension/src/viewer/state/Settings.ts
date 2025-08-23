@@ -11,6 +11,7 @@ export type Settings = {
   enableJQ: boolean;
   expandNodes: boolean;
   indentation: number;
+  jqSlurp: boolean;
   linkifyUrls: boolean;
   searchDelay: number;
   searchVisibility: SearchVisibility;
@@ -51,6 +52,7 @@ export const DefaultSettings: Settings = {
   enableJQ: true,
   expandNodes: false,
   indentation: 4,
+  jqSlurp: true,
   linkifyUrls: true,
   searchDelay: 300,
   searchVisibility: EmptySearch.visibility,

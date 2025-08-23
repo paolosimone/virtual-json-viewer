@@ -3,6 +3,7 @@ import {
   CHORD_KEY,
   KeydownEvent,
   isUpperCaseKeypress,
+  updateField,
   useGlobalKeydownEvent,
   useReactiveRef,
 } from "@/viewer/hooks";
@@ -31,13 +32,15 @@ export function JQCommandBox({
   const t = useContext(TranslationContext);
   const [filter, setFilter] = useState(command.filter);
 
-  function applyFilter() {
-    setCommand((command: JQCommand) => ({ ...command, filter: filter }));
+  function setCommandFilter(value: string) {
+    setCommand(updateField("filter", value));
   }
+
+  const applyFilter = () => setCommandFilter(filter);
 
   function clearFilter() {
     setFilter("");
-    setCommand((command: JQCommand) => ({ ...command, filter: "" }));
+    setCommandFilter("");
   }
 
   const isEmpty = filter === "";
@@ -70,8 +73,17 @@ export function JQCommandBox({
           onSubmit={applyFilter}
         />
 
+        {command.slurp !== null && (
+          <IconButton
+            className="fill-input-foreground hover:bg-input-focus mx-1 h-5 w-5"
+            title={t.toolbar.jq.slurp[command.slurp ? "on" : "off"]}
+            icon={command.slurp ? Icon.SymbolFile : Icon.Files}
+            onClick={() => setCommand(updateField("slurp", !command.slurp))}
+          />
+        )}
+
         <IconButton
-          className="fill-input-foreground hover:bg-input-focus h-5 w-5"
+          className="fill-input-foreground hover:bg-input-focus h-6 w-6"
           title={t.toolbar.jq.run}
           icon={Icon.Run}
           onClick={applyFilter}

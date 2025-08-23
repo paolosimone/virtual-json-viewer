@@ -4,11 +4,13 @@ import { Dispatch, FormEvent, JSX } from "react";
 export type CheckboxProps = Props<{
   setChecked: Dispatch<boolean>;
   checked?: boolean;
+  disabled?: boolean;
 }>;
 
 export function Checkbox({
   setChecked,
   checked,
+  disabled,
   className,
 }: CheckboxProps): JSX.Element {
   const setNewChecked = (e: FormEvent<HTMLInputElement>) => {
@@ -23,6 +25,7 @@ export function Checkbox({
         "bg-input-background cursor-pointer pl-1 focus:outline-hidden",
         className,
       )}
+      disabled={disabled}
       onChange={setNewChecked}
       checked={checked}
     />
