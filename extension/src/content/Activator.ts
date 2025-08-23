@@ -1,12 +1,21 @@
 import { STORAGE } from "@/viewer/commons/Storage";
 import { Settings, SETTINGS_KEY } from "@/viewer/state";
 
-// see: https://www.iana.org/assignments/media-types/media-types.xhtml
+const MIME_TYPE_JSON_SUFFIXES = [
+  // Official: https://www.iana.org/assignments/media-types/media-types.xhtml
+  "json",
+  "json-seq",
+  // Candidates: https://github.com/wardi/jsonlines/issues/19
+  "jsonl",
+  "jsonlines",
+];
+
 export function isJsonContentType(): boolean {
   return (
     document.contentType.startsWith("application/") &&
-    (document.contentType.endsWith("json") ||
-      document.contentType.endsWith("json-seq"))
+    MIME_TYPE_JSON_SUFFIXES.some((suffix) =>
+      document.contentType.endsWith(suffix),
+    )
   );
 }
 
