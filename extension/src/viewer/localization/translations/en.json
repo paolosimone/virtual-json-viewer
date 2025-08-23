@@ -14,6 +14,10 @@
         "text": "Enable JQ",
         "tooltip": "Shows JQ toolbar. Only works on websites that allow WASM execution in their Content Security Policy."
       },
+      "jqSlurp": {
+        "text": "JQ multiline \"slurp\"",
+        "tooltip": "Default state for the \"slurp\" toggle. Only works if JQ is enabled and the input is multiline."
+      },
       "forceActivation": {
         "text": "Force extension activation",
         "tooltip": "Try parsing the page content as JSON on URLs matching the regex, even if they don't have a JSON Content-Type."
@@ -134,6 +138,10 @@
     "jq": {
       "clear": "Clear",
       "manual": "JQ Manual",
+      "slurp": {
+        "on": "Slurp: On",
+        "off": "Slurp: Off"
+      },
       "run": "Run command",
       "genericError": "JQ command failed"
     }

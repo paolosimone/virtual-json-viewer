@@ -9,7 +9,7 @@ export type JQResult = Json.Lines | Error | undefined;
 
 export function useJQ(
   jsonText: string,
-  { filter }: JQCommand,
+  command: JQCommand,
 ): [JQEnabled, JQResult] {
   // it's called outside settings context
   const [{ enableJQ, sortKeys }] = useSettings();
@@ -36,7 +36,7 @@ export function useJQ(
         }
       }
     },
-    [enableJQ, setJQEnabled],
+    [enableJQ],
   );
 
   // execute command and parse result
@@ -48,24 +48,39 @@ export function useJQ(
         return;
       }
 
-      if (!jqEnabled || !filter || filter === ".") {
+      if (!jqEnabled || !command.filter) {
         setResult(undefined);
         return;
       }
 
       try {
-        const jq = await loadJQ();
-        const output = await jq.invoke(jsonText, filter, ["--compact-output"]);
-        const result = Json.tryParseLines(output, { sortKeys });
+        const result = await invokeJQ(jsonText, command, sortKeys);
         if (mutex.hasLock()) setResult(result);
       } catch (e) {
         if (mutex.hasLock()) setResult(e as Error);
       }
     },
-    [jqEnabled, jsonText, filter, sortKeys, setResult],
+    [jqEnabled, jsonText, command, sortKeys],
   );
 
   return [jqEnabled, result];
+}
+
+async function invokeJQ(
+  jsonText: string,
+  command: JQCommand,
+  sortKeys: boolean,
+): Promise<JQResult> {
+  const jq = await loadJQ();
+
+  // One JSON per line in output
+  const options = ["--compact-output"];
+  // Whole input text as array, if multiline
+  if (command.slurp) options.push("--slurp");
+
+  const output = await jq.invoke(jsonText, command.filter, options);
+
+  return Json.tryParseLines(output, { sortKeys });
 }
 
 const JQ_WASM_FILE = getURL("assets/jq.wasm");
