@@ -178,7 +178,7 @@ export function MainOptions({ className }: MainOptionsProps): JSX.Element {
       {/* RESET */}
       <div className="col-span-2 mt-4 flex flex-col place-items-center">
         <button
-          className="red-alert hover:bg-opacity-80 rounded-lg p-2"
+          className="red-alert hover:bg-opacity-80 rounded-lg p-2 cursor-pointer"
           onClick={() => {
             setTheme(DefaultTheme);
             setLanguage(SystemLanguage);
