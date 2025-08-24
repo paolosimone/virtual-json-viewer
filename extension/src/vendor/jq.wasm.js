@@ -41,23 +41,8 @@ var ENVIRONMENT_IS_NODE = typeof process == "object" && process.versions?.node &
 // --pre-jses are emitted after the Module integration code, so that they can
 // refer to Module (if they choose; they can also define Module)
 // include: /src/pre.js
-// load a string and emit one byte at a time
-var InputBuffer = function() {
-  var module = {};
-  var bytes = [];
-  var cursor = 0;
-  module.load = function(text) {
-    bytes = (new TextEncoder).encode(text);
-    cursor = 0;
-  };
-  module.next = function() {
-    return cursor < bytes.length ? bytes[cursor++] : null;
-  };
-  return module;
-};
-
-// receive a byte at a time and convert the result to a string
-var OutputBuffer = function() {
+// Receive a byte at a time and convert the result to a string
+const OutputBuffer = function() {
   var module = {};
   var bytes = [];
   module.flush = function() {
@@ -72,26 +57,29 @@ var OutputBuffer = function() {
   return module;
 };
 
-// I/O buffers are initialized only once, so
-// we need to keep the same instance between consecutive runs
-var stdin = InputBuffer();
+// I/O buffers are initialized only once
+// and reused acrosse consecutive runs.
+// Stdin is not used as file is read directly from FS.
+const stdinNext = () => {};
 
-var stdout = OutputBuffer();
+const stdout = OutputBuffer();
 
-var stderr = OutputBuffer();
+const stderr = OutputBuffer();
 
-// initialize I/O buffers 
+// Initialize I/O buffers.
 Module["preRun"] = function() {
-  FS.init(stdin.next, stdout.push, stderr.push);
+  FS.init(stdinNext, stdout.push, stderr.push);
 };
 
-// invoke the jq command like in terminal
-// echo {jsonString} | jq {options} {filter}
+// Invoke the jq command like in terminal
+// echo {jsonString} > INPUT && jq {options} {filter} INPUT
+const JQ_INPUT = "input.json";
+
 Module["invoke"] = function(jsonString, filter, options = []) {
   return new Promise(function(resolve, reject) {
     try {
-      stdin.load(jsonString);
-      callMain(options.concat(filter));
+      FS.writeFile(JQ_INPUT, jsonString);
+      callMain(options.concat(filter, JQ_INPUT));
       if (EXITSTATUS) {
         reject(new Error(stderr.toString()));
       } else {
@@ -100,7 +88,7 @@ Module["invoke"] = function(jsonString, filter, options = []) {
     } catch (e) {
       reject(e);
     } finally {
-      stdin.load("");
+      FS.unlink(JQ_INPUT);
       stdout.flush();
       stderr.flush();
     }
