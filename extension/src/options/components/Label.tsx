@@ -21,7 +21,7 @@ export function Label({ text, tooltip, className }: LabelProps): JSX.Element {
         <span
           className={classNames(
             style["tooltip"],
-            "rounded-sm bg-black/80 text-white",
+            "rounded-sm bg-black/90 text-white",
           )}
         >
           {tooltip}
