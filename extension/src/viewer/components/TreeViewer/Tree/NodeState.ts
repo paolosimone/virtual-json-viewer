@@ -9,6 +9,7 @@ export type NodeWalkId = string;
 export type NodeState = {
   id: NodeId;
   walkId: NodeWalkId;
+  // The key can be null only if the root node is a leaf
   key: Nullable<Json.Key>;
   value: Json.Root;
   nesting: number;

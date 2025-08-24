@@ -3,44 +3,49 @@ import {
   CHORD_KEY,
   isUpperCaseKeypress,
   RefCurrent,
+  useFocus,
+  useHover,
   useReactiveRef,
 } from "@/viewer/hooks";
 import classNames from "classnames";
-import { JSX, useEffect, useLayoutEffect } from "react";
+import { JSX, useEffect } from "react";
 import { NodeSearchMatch, TreeNodeProps } from "../Tree";
-import {
-  NodePart,
-  TreeNavigator,
-  TreeNavigatorNodeHandler,
-} from "../TreeNavigator";
+import { TreeContext } from "../TreeContext";
+import { NodePart, TreeNavigatorNodeHandler } from "../TreeNavigator";
+import { EnterButton, EnterButtonHandle } from "./EnterButton";
 import { Key, KeyHandle } from "./Key";
 import { OpenButton } from "./OpenButton";
 import { Value, ValueHandle } from "./Value";
 
 export function TreeNode({
-  context: tree,
+  context: { tree, enableEnterNode },
   node,
   style,
-}: TreeNodeProps<TreeNavigator>): JSX.Element {
+}: TreeNodeProps<TreeContext>): JSX.Element {
   const [parent, parentRef] = useReactiveRef<HTMLDivElement>();
   const [content, contentRef] = useReactiveRef<HTMLDivElement>();
   const [key, keyRef] = useReactiveRef<KeyHandle>();
   const [value, valueRef] = useReactiveRef<ValueHandle>();
+  const [enter, enterRef] = useReactiveRef<EnterButtonHandle>();
+
+  // Track DOM events
+  const hasFocus = useFocus(parent);
+  const isHovered = useHover(parent);
 
   // Resize the node to fit its content on every re-render
   const resize = (height: number) => tree.resize(node.id, height);
   useFitContent(parent, content, resize);
 
   // Registers the node's html handler in the navigator
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (!parent) return;
 
     const handler: TreeNavigatorNodeHandler = {
       focus() {
         parent.focus();
       },
-      registerOnFocus(callback) {
-        parent.onfocus = callback;
+      listenOnFocus(callback) {
+        parent.addEventListener("focus", callback);
       },
       blur() {
         parent.blur();
@@ -55,8 +60,12 @@ export function TreeNode({
     return () => tree.onNodeHidden(node.id);
   }, [tree, node.id, parent, key, value]);
 
+  // Enter button visibility
+  const enterEnabled = enableEnterNode && (hasFocus || isHovered);
+
+  // Shortcuts
   const onKeydown = (e: React.KeyboardEvent) => {
-    handleShortcuts({ content, key, value }, e);
+    handleShortcuts({ content, key, value, enter }, e);
   };
 
   const fade = { "opacity-60": !inSearchMatchPath(node.searchMatch) };
@@ -64,7 +73,10 @@ export function TreeNode({
   return (
     <div
       ref={parentRef}
-      className="focus:bg-viewer-focus focus:outline-hidden"
+      className={classNames(
+        "focus:outline-viewer-foreground focus:outline-1 focus:-outline-offset-1 focus:outline-solid",
+        "hover:bg-viewer-focus",
+      )}
       style={{ ...style, paddingLeft: `${node.nesting}em` }}
       tabIndex={-1}
       onClick={() => parent?.focus()}
@@ -87,6 +99,12 @@ export function TreeNode({
           className="grow"
           node={node}
           searchMatches={node.searchMatch?.valueMatches ?? []}
+        />
+        <EnterButton
+          ref={enterRef}
+          className="shrink-0"
+          enabled={enterEnabled}
+          node={node}
         />
       </div>
     </div>
@@ -130,10 +148,11 @@ type NodeRefs = {
   content: RefCurrent<HTMLDivElement>;
   key: RefCurrent<KeyHandle>;
   value: RefCurrent<ValueHandle>;
+  enter: RefCurrent<EnterButtonHandle>;
 };
 
 function handleShortcuts(
-  { content, key, value }: NodeRefs,
+  { content, key, value, enter }: NodeRefs,
   e: React.KeyboardEvent,
 ) {
   if (e[CHORD_KEY] && e.key === "a") {
@@ -151,6 +170,12 @@ function handleShortcuts(
   if ((e.shiftKey && e.key == "ArrowRight") || isUpperCaseKeypress(e, "L")) {
     e.preventDefault();
     value?.selectText();
+    return;
+  }
+
+  if (e.key === "Enter") {
+    e.preventDefault();
+    enter?.enter();
     return;
   }
 }

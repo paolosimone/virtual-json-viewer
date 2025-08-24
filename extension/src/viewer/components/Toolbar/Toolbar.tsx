@@ -68,6 +68,7 @@ export function Toolbar({
           <JQCommandBox
             command={jqCommandState.value}
             setCommand={jqCommandState.setValue}
+            isMultilineOutput={jsonLines.length > 1}
           />
         </div>
       )}

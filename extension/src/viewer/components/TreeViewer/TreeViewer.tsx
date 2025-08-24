@@ -1,5 +1,5 @@
 import * as DOM from "@/viewer/commons/Dom";
-import { EventType } from "@/viewer/commons/EventBus";
+import { ViewerEventType } from "@/viewer/commons/EventBus";
 import * as Json from "@/viewer/commons/Json";
 import {
   CHORD_KEY,
@@ -17,19 +17,21 @@ import { Search, SearchNavigation, SettingsContext } from "@/viewer/state";
 import classNames from "classnames";
 import { JSX, useCallback, useContext, useEffect, useMemo } from "react";
 import { NodeId, Tree, TreeHandler } from "./Tree";
+import { TreeContext } from "./TreeContext";
 import { TreeNavigator } from "./TreeNavigator";
 import { TreeNode } from "./TreeNode";
 import { treeWalker } from "./TreeWalker";
 
 export type TreeViewerProps = Props<{
   jsonLines: Json.Lines;
+  enableEnterNode: boolean;
   search: Search;
   setSearchNavigation: SetValue<SearchNavigation>;
-  isLargeJson: boolean;
 }>;
 
 export function TreeViewer({
   jsonLines,
+  enableEnterNode,
   search,
   setSearchNavigation,
   className,
@@ -59,10 +61,10 @@ export function TreeViewer({
 
   // Global events
   const expand = useCallback(() => tree?.openAll(), [tree]);
-  useEventBusListener(EventType.Expand, expand);
+  useEventBusListener(ViewerEventType.Expand, expand);
 
   const collapse = useCallback(() => tree?.closeAll(), [tree]);
-  useEventBusListener(EventType.Collapse, collapse);
+  useEventBusListener(ViewerEventType.Collapse, collapse);
 
   // Register global shortcut
   const handleShortcut = useCallback(
@@ -104,13 +106,22 @@ export function TreeViewer({
     () => treeNavigator.goToPreviousSearchMatch(),
     [treeNavigator],
   );
-  useEventBusListener(EventType.SearchNavigatePrevious, goToPreviousMatch);
+  useEventBusListener(
+    ViewerEventType.SearchNavigatePrevious,
+    goToPreviousMatch,
+  );
 
   const goToNextMatch = useCallback(
     () => treeNavigator.goToNextSearchMatch(),
     [treeNavigator],
   );
-  useEventBusListener(EventType.SearchNavigateNext, goToNextMatch);
+  useEventBusListener(ViewerEventType.SearchNavigateNext, goToNextMatch);
+
+  // Tree context for nodes
+  const context: TreeContext = useMemo(
+    () => ({ tree: treeNavigator, enableEnterNode }),
+    [treeNavigator, enableEnterNode],
+  );
 
   // Fix tab navigation on firefox
   // Ref: https://github.com/bvaughn/react-window/issues/130
@@ -130,7 +141,7 @@ export function TreeViewer({
         treeWalker={walker}
         ref={treeRef}
         outerRef={treeDivRef}
-        context={treeNavigator}
+        context={context}
       >
         {TreeNode}
       </Tree>

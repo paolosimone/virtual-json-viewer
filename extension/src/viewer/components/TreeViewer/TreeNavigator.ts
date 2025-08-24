@@ -16,7 +16,7 @@ export enum NodePart {
 export interface TreeNavigatorNodeHandler {
   focus(): void;
   blur(): void;
-  registerOnFocus(callback: () => void): void;
+  listenOnFocus(callback: () => void): void;
   getMatchHandler(
     part: NodePart,
     index: number,
@@ -57,8 +57,8 @@ export class TreeNavigator {
   public onNodeShown(id: NodeId, handler: TreeNavigatorNodeHandler) {
     this.handlerById.set(id, handler);
 
-    // Register to external focus event (e.g. by mouse click)
-    handler.registerOnFocus(() => (this.lastFocused = id));
+    // Listen to external focus event (e.g. by mouse click)
+    handler.listenOnFocus(() => (this.lastFocused = id));
 
     // Handle pending navigation
     if (id === this.lastFocused) {
@@ -73,13 +73,13 @@ export class TreeNavigator {
   }
 
   public onNodeHidden(id: NodeId) {
-    this.handlerById.delete(id);
-
     // return focus to parent to avoid inconsistencies
     if (id === this.lastFocused) {
       this.tryBlurCurrent();
       this.treeElem?.focus();
     }
+
+    this.handlerById.delete(id);
   }
 
   public resize(id: NodeId, height: number) {

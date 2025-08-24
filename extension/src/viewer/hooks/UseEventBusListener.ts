@@ -1,9 +1,14 @@
 import { useEffect } from "react";
-import { EventType, subscribe, unsubscribe } from "../commons/EventBus";
+import {
+  ViewerEventListener,
+  ViewerEventType,
+  subscribe,
+  unsubscribe,
+} from "../commons/EventBus";
 
-export function useEventBusListener(
-  event: EventType,
-  listener: EventListener,
+export function useEventBusListener<K extends ViewerEventType>(
+  event: K,
+  listener: ViewerEventListener<K>,
 ): void {
   useEffect(() => {
     subscribe(event, listener);

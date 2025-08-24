@@ -10,6 +10,7 @@
     "bump": "yarn upgrade --latest",
     "build:chrome": "yarn tsx vite.build.ts chrome",
     "build:firefox": "yarn tsx vite.build.ts firefox",
+    "build:all": "yarn build:chrome && yarn build:firefox",
     "package:chrome": "yarn build:chrome && cd dist/chrome && zip ../virtual-json-viewer-v$npm_package_version-chrome.zip -r .",
     "package:firefox": "yarn build:firefox && cd dist/firefox && zip ../virtual-json-viewer-v$npm_package_version-firefox.zip -r .",
     "package:src": "cd .. && git archive -o extension/dist/virtual-json-viewer-v$npm_package_version-src.zip HEAD README.md extension",

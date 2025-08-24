@@ -14,8 +14,10 @@ import { isActiveElementEditable } from "./commons/Dom";
 import {
   Alert,
   RawViewer,
+  RawViewerProps,
   Toolbar,
   TreeViewer,
+  TreeViewerProps,
   ViewerPlaceholder,
 } from "./components";
 import { MultiContextProvider } from "./components/MultiContextProvider";
@@ -23,7 +25,6 @@ import {
   CHORD_KEY,
   JQResult,
   KeydownEvent,
-  SetValue,
   StateObject,
   updateField,
   useGlobalKeydownEvent,
@@ -54,12 +55,7 @@ export type AppProps = {
   jsonText: string;
 };
 
-type ViewerProps = {
-  jsonLines: Json.Lines;
-  search: Search;
-  setSearchNavigation: SetValue<SearchNavigation>;
-  isLargeJson: boolean;
-};
+type ViewerProps = TreeViewerProps & RawViewerProps;
 
 export function App({ jsonText }: AppProps): JSX.Element {
   // Global settings
@@ -81,7 +77,14 @@ export function App({ jsonText }: AppProps): JSX.Element {
   const [jqEnabled, jqResult] = useJQ(jsonText, state.jqCommand.value);
   const [jsonLines, error] = resolveJson(jsonResult, jqResult);
 
-  const viewerProps = useTransitionViewerProps(state, jsonText, jsonLines);
+  // Build props for the viewer, with deferred transition for large JSON
+  const viewerPropsParams = {
+    state,
+    jsonLines,
+    isLargeJson: jsonText.length > LARGE_JSON_LENGTH,
+    enableEnterNode: jqEnabled && error === null,
+  };
+  const viewerProps = useTransitionViewerProps(viewerPropsParams);
 
   // Browser default's "select all" behavior is not meaningful in the viewer,
   // children components should handle their own selection (except for standard input elements)
@@ -211,16 +214,22 @@ function useApplicationState(
   };
 }
 
+type ViewerPropsParams = {
+  state: ApplicationState;
+  jsonLines: Nullable<Json.Lines>;
+  isLargeJson: boolean;
+  enableEnterNode: boolean;
+};
+
 // Defer state transition in case of large JSON in order to show loading placeholder
-function useTransitionViewerProps(
-  state: ApplicationState,
-  jsonText: string,
-  jsonLines: Nullable<Json.Lines>,
-): Nullable<ViewerProps> {
+function useTransitionViewerProps({
+  state,
+  jsonLines,
+  isLargeJson,
+  enableEnterNode,
+}: ViewerPropsParams): Nullable<ViewerProps> {
   const [nextProps, setNextProps] = useState<Nullable<ViewerProps>>(null);
   const deferredProps = useDeferredValue<Nullable<ViewerProps>>(nextProps);
-
-  const isLargeJson = jsonText.length > LARGE_JSON_LENGTH;
 
   // Changes to these props will trigger a possibly expensive render of the viewer
   const transitionDeps = [
@@ -230,6 +239,7 @@ function useTransitionViewerProps(
     jsonLines,
     state.search.value,
     isLargeJson,
+    enableEnterNode,
   ];
 
   const targetProps = useMemo(() => {
@@ -243,6 +253,7 @@ function useTransitionViewerProps(
       search: state.search.value,
       setSearchNavigation: state.searchNavigation.setValue,
       isLargeJson,
+      enableEnterNode,
     };
   }, transitionDeps);
 

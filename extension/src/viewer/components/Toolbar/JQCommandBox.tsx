@@ -1,9 +1,15 @@
+import {
+  EnterNodeEvent,
+  NodePath,
+  ViewerEventType,
+} from "@/viewer/commons/EventBus";
 import { Icon, IconButton } from "@/viewer/components";
 import {
   CHORD_KEY,
-  KeydownEvent,
   isUpperCaseKeypress,
+  KeydownEvent,
   updateField,
+  useEventBusListener,
   useGlobalKeydownEvent,
   useReactiveRef,
 } from "@/viewer/hooks";
@@ -23,11 +29,13 @@ import {
 export type JQCommandBoxProps = Props<{
   command: JQCommand;
   setCommand: Dispatch<SetStateAction<JQCommand>>;
+  isMultilineOutput: boolean;
 }>;
 
 export function JQCommandBox({
   command,
   setCommand,
+  isMultilineOutput,
 }: JQCommandBoxProps): JSX.Element {
   const t = useContext(TranslationContext);
   const [filter, setFilter] = useState(command.filter);
@@ -42,6 +50,17 @@ export function JQCommandBox({
     setFilter("");
     setCommandFilter("");
   }
+
+  // Listen to enter node event
+  const onEnterNode = useCallback(
+    (event: EnterNodeEvent) => {
+      const newFilter = enterNodeFilter(command, event.path, isMultilineOutput);
+      setFilter(newFilter);
+      setCommandFilter(newFilter);
+    },
+    [command, isMultilineOutput],
+  );
+  useEventBusListener(ViewerEventType.EnterNode, onEnterNode);
 
   const isEmpty = filter === "";
 
@@ -146,4 +165,41 @@ function FilterInput({
 
 function openJQManual() {
   window.open("https://jqlang.org/manual/v1.8/", "_blank");
+}
+
+function enterNodeFilter(
+  command: JQCommand,
+  nodePath: NodePath,
+  isMultilineOutput: boolean,
+): string {
+  // If input JSON is multiline but slurp is off, the array root key must be removed.
+  // The filter will be applied to each line independently.
+  // Example: .[0].key  ->  .key
+  const applyToEachLine = command.slurp === false;
+  if (applyToEachLine) {
+    nodePath = nodePath.slice(1);
+  }
+
+  // Defensive to avoid keep adding "| ."
+  if (!nodePath.length) {
+    return command.filter || ".";
+  }
+
+  // Build the jq filter for the node path
+  const nodeFilter = nodePath.map(jsonKeyToJQ).join(".");
+
+  // If no filter is set, just return the node filter.
+  if (!command.filter) {
+    return `.${nodeFilter}`;
+  }
+
+  // If output JSON is multiline, existing filter must be wrapped in array.
+  /// ...Unless input JSON is already multiline and slurp is off.
+  const wrapInArray = isMultilineOutput && !applyToEachLine;
+  const commandfilter = wrapInArray ? `[${command.filter}]` : command.filter;
+  return `${commandfilter} | .${nodeFilter}`;
+}
+
+function jsonKeyToJQ(key: string | number): string {
+  return typeof key === "number" ? `[${key}]` : JSON.stringify(key);
 }
