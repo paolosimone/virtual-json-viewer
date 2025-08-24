@@ -8,6 +8,7 @@ import {
   useState,
 } from "react";
 import { VariableSizeList } from "react-window";
+import { uid } from "uid";
 import { TreeWalker } from "../TreeWalker";
 import { TreeHandler } from "./TreeHandler";
 import { ItemData, TreeItem } from "./TreeItem";
@@ -33,12 +34,19 @@ export function Tree<Context>({
   ref,
   outerRef,
 }: TreeProps<Context>): JSX.Element {
+  // TreeId uniquely identifies the tree instance.
+  // It is used to re-render list elements when the tree content is reloaded.
+  const [treeId, setTreeId] = useState("");
+
   // TreeState is a reference to the mutable state of the tree.
   // The reference gets updated whenever the state changes to trigger reactive updates.
   // The underlying data structure is mutable, so any reference points to the latest state.
   const [treeState, setTreeState] = useState<TreeState>(() => new TreeState());
   useEffect(() => treeState.observeStateChange(setTreeState), []);
-  useEffect(() => treeState.load(treeWalker), [treeWalker]);
+  useEffect(() => {
+    treeState.load(treeWalker);
+    setTreeId(uid());
+  }, [treeWalker]);
 
   // Reference to the list component
   const [list, listRef] = useReactiveRef<VariableSizeList<ItemData<Context>>>();
@@ -67,7 +75,9 @@ export function Tree<Context>({
       width={width}
       itemCount={itemData.treeState.length()}
       itemData={itemData}
-      itemKey={(index, itemData) => itemData.treeState.idByIndex(index)}
+      itemKey={(index, itemData) =>
+        `${treeId}-${itemData.treeState.idByIndex(index)}`
+      }
       itemSize={(index) => handler.getHeight(treeState.idByIndex(index))}
       overscanCount={20}
     >
