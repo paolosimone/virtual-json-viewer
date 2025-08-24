@@ -175,7 +175,8 @@ function enterNodeFilter(
   // If input JSON is multiline but slurp is off, the array root key must be removed.
   // The filter will be applied to each line independently.
   // Example: .[0].key  ->  .key
-  if (command.slurp === false) {
+  const applyToEachLine = command.slurp === false;
+  if (applyToEachLine) {
     nodePath = nodePath.slice(1);
   }
 
@@ -184,9 +185,8 @@ function enterNodeFilter(
     return command.filter || ".";
   }
 
-  const nodeFilter = nodePath
-    .map((key) => (typeof key === "string" ? `"${key}"` : `[${key}]`))
-    .join(".");
+  // Build the jq filter for the node path
+  const nodeFilter = nodePath.map(jsonKeyToJQ).join(".");
 
   // If no filter is set, just return the node filter.
   if (!command.filter) {
@@ -194,6 +194,12 @@ function enterNodeFilter(
   }
 
   // If output JSON is multiline, existing filter must be wrapped in array.
-  const filter = isMultilineOutput ? `[${command.filter}]` : command.filter;
-  return `${filter} | .${nodeFilter}`;
+  /// ...Unless input JSON is already multiline and slurp is off.
+  const wrapInArray = isMultilineOutput && !applyToEachLine;
+  const commandfilter = wrapInArray ? `[${command.filter}]` : command.filter;
+  return `${commandfilter} | .${nodeFilter}`;
+}
+
+function jsonKeyToJQ(key: string | number): string {
+  return typeof key === "number" ? `[${key}]` : JSON.stringify(key);
 }

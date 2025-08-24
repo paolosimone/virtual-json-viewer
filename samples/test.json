@@ -1,6 +1,9 @@
 {
   "correct_value:80402000000790837": 80402000000790837,
   "number_string": "53061",
+  "\"quoted_key\"": "\"quoted_value\"",
+  "backslask\\key": "backslask\\value",
+  "dollar$key": "dollar$value",
   "float": 122.80,
   "big_float": 1.5034464E+9,
   "boolean": true,
