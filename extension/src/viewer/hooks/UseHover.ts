@@ -7,8 +7,15 @@ export function useHover<E extends HTMLElement>(
   const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
-    element?.addEventListener("mouseenter", () => setIsHovered(true));
-    element?.addEventListener("mouseleave", () => setIsHovered(false));
+    if (!element) return;
+    const hover = () => setIsHovered(true);
+    const leave = () => setIsHovered(false);
+    element.addEventListener("mouseenter", hover);
+    element.addEventListener("mouseleave", leave);
+    return () => {
+      element.removeEventListener("mouseenter", hover);
+      element.removeEventListener("mouseleave", leave);
+    };
   }, [element]);
 
   // JS misses events when moving the mouse too fast,

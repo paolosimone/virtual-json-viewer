@@ -6,8 +6,15 @@ export function useFocus<E extends HTMLElement>(
 ): boolean {
   const [hasFocus, setHasFocus] = useState(false);
   useEffect(() => {
-    element?.addEventListener("focus", () => setHasFocus(true));
-    element?.addEventListener("blur", () => setHasFocus(false));
+    if (!element) return;
+    const focus = () => setHasFocus(true);
+    const blur = () => setHasFocus(false);
+    element.addEventListener("focus", focus);
+    element.addEventListener("blur", blur);
+    return () => {
+      element.removeEventListener("focus", focus);
+      element.removeEventListener("blur", blur);
+    };
   }, [element]);
   return hasFocus;
 }
