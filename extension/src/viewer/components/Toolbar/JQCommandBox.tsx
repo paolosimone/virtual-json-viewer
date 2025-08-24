@@ -1,7 +1,6 @@
 import {
   EnterNodeEvent,
   NodePath,
-  subscribe,
   ViewerEventType,
 } from "@/viewer/commons/EventBus";
 import { Icon, IconButton } from "@/viewer/components";
@@ -10,6 +9,7 @@ import {
   isUpperCaseKeypress,
   KeydownEvent,
   updateField,
+  useEventBusListener,
   useGlobalKeydownEvent,
   useReactiveRef,
 } from "@/viewer/hooks";
@@ -60,7 +60,7 @@ export function JQCommandBox({
     },
     [command, isMultilineOutput],
   );
-  subscribe(ViewerEventType.EnterNode, onEnterNode);
+  useEventBusListener(ViewerEventType.EnterNode, onEnterNode);
 
   const isEmpty = filter === "";
 
