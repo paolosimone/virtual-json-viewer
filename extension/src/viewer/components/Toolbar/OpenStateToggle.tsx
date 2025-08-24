@@ -1,4 +1,4 @@
-import { EventType, dispatch } from "@/viewer/commons/EventBus";
+import { ViewerEventType, dispatch } from "@/viewer/commons/EventBus";
 import { Icon, IconButton } from "@/viewer/components";
 import {
   CHORD_KEY,
@@ -49,9 +49,9 @@ export function OpenStateToggle({
 }
 
 function expand() {
-  dispatch(EventType.Expand);
+  dispatch(ViewerEventType.Expand);
 }
 
 function collapse() {
-  dispatch(EventType.Collapse);
+  dispatch(ViewerEventType.Collapse);
 }

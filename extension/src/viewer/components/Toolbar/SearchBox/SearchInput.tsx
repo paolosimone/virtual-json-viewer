@@ -1,5 +1,5 @@
 import { isActiveElementEditable } from "@/viewer/commons/Dom";
-import { dispatch, EventType } from "@/viewer/commons/EventBus";
+import { dispatch, ViewerEventType } from "@/viewer/commons/EventBus";
 import {
   CHORD_KEY,
   KeydownEvent,
@@ -50,7 +50,7 @@ export function SearchInput({
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      dispatch(EventType.SearchNavigateNext);
+      dispatch(ViewerEventType.SearchNavigateNext);
     }
   };
 

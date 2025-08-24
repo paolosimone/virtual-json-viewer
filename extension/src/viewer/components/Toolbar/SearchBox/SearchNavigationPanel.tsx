@@ -1,5 +1,5 @@
 import { isActiveElementEditable } from "@/viewer/commons/Dom";
-import { dispatch, EventType } from "@/viewer/commons/EventBus";
+import { dispatch, ViewerEventType } from "@/viewer/commons/EventBus";
 import { Icon, IconButton } from "@/viewer/components";
 import {
   CHORD_KEY,
@@ -42,7 +42,7 @@ export function SearchNavigationPanel({
         title={t.toolbar.search.navigation.previous}
         disabled={buttonDisabled}
         icon={Icon.ChevronUp}
-        onClick={() => dispatch(EventType.SearchNavigatePrevious)}
+        onClick={() => dispatch(ViewerEventType.SearchNavigatePrevious)}
       />
 
       <IconButton
@@ -50,7 +50,7 @@ export function SearchNavigationPanel({
         title={t.toolbar.search.navigation.next}
         disabled={buttonDisabled}
         icon={Icon.ChevronDown}
-        onClick={() => dispatch(EventType.SearchNavigateNext)}
+        onClick={() => dispatch(ViewerEventType.SearchNavigateNext)}
       />
     </span>
   );
@@ -62,7 +62,7 @@ function handleShortcut(e: KeydownEvent) {
     (isUpperCaseKeypress(e, "n") && !isActiveElementEditable())
   ) {
     e.preventDefault();
-    dispatch(EventType.SearchNavigatePrevious);
+    dispatch(ViewerEventType.SearchNavigatePrevious);
     return;
   }
 
@@ -71,7 +71,7 @@ function handleShortcut(e: KeydownEvent) {
     (e.key === "n" && !isActiveElementEditable())
   ) {
     e.preventDefault();
-    dispatch(EventType.SearchNavigateNext);
+    dispatch(ViewerEventType.SearchNavigateNext);
     return;
   }
 }

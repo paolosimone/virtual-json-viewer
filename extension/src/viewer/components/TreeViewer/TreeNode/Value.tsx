@@ -28,7 +28,7 @@ export function Value({
   ref,
 }: ValueProps): JSX.Element {
   if (isOpen) {
-    return <span />;
+    return <span className={className} />;
   }
 
   if (Json.isCollection(value)) {

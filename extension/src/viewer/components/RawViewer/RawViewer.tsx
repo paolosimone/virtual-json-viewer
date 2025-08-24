@@ -1,5 +1,5 @@
 import * as DOM from "@/viewer/commons/Dom";
-import { EventType } from "@/viewer/commons/EventBus";
+import { ViewerEventType } from "@/viewer/commons/EventBus";
 import * as Json from "@/viewer/commons/Json";
 import {
   CHORD_KEY,
@@ -42,10 +42,10 @@ export function RawViewer({
   const [minify, setMinify] = useState(false);
 
   const expand = useCallback(() => setMinify(false), [setMinify]);
-  useEventBusListener(EventType.Expand, expand);
+  useEventBusListener(ViewerEventType.Expand, expand);
 
   const collapse = useCallback(() => setMinify(true), [setMinify]);
-  useEventBusListener(EventType.Collapse, collapse);
+  useEventBusListener(ViewerEventType.Collapse, collapse);
 
   // linkify URLs
   const linkifyUrls = useLinkifyUrls(isLargeJson, minify);
@@ -66,13 +66,16 @@ export function RawViewer({
     () => navigator.current.goToPreviousMatch(),
     [navigator],
   );
-  useEventBusListener(EventType.SearchNavigatePrevious, goToPreviousMatch);
+  useEventBusListener(
+    ViewerEventType.SearchNavigatePrevious,
+    goToPreviousMatch,
+  );
 
   const goToNextMatch = useCallback(
     () => navigator.current.goToNextMatch(),
     [navigator],
   );
-  useEventBusListener(EventType.SearchNavigateNext, goToNextMatch);
+  useEventBusListener(ViewerEventType.SearchNavigateNext, goToNextMatch);
 
   // register shortcuts
   const ref = useRef<Nullable<HTMLDivElement>>(null);
