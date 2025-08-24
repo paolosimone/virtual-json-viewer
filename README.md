@@ -81,6 +81,7 @@ Rightful question, and the answer is quite simple: the others weren't good enoug
 | Open node                    | `ArrowRight`         | `l`               |
 | Close node                   | `ArrowLeft`          | `h`               |
 | Toggle node open/close       | `Spacebar`           |                   |
+| Enter node (requires JQ)     | `Enter`              |                   |
 | Select key text              | `Shift + ArrowLeft`  | `Shift + h`       |
 | Select value text            | `Shift + ArrowRight` | `Shift + l`       |
 | Select node text             | `Ctrl + a`           |                   |
