@@ -40,12 +40,15 @@ export function TreeNode({
   useEffect(() => {
     if (!parent) return;
 
+    let focusCallback = () => {};
+    const stableFocusCallback = () => focusCallback();
+
     const handler: TreeNavigatorNodeHandler = {
       focus() {
         parent.focus();
       },
       listenOnFocus(callback) {
-        parent.addEventListener("focus", callback);
+        focusCallback = callback;
       },
       blur() {
         parent.blur();
@@ -56,8 +59,12 @@ export function TreeNode({
       },
     };
 
+    parent.addEventListener("focus", stableFocusCallback);
     tree.onNodeShown(node.id, handler);
-    return () => tree.onNodeHidden(node.id);
+    return () => {
+      tree.onNodeHidden(node.id);
+      parent.removeEventListener("focus", stableFocusCallback);
+    };
   }, [tree, node.id, parent, key, value]);
 
   // Enter button visibility
