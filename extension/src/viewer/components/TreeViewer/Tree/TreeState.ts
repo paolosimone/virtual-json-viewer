@@ -221,7 +221,7 @@ export class TreeState {
   }
 
   private close(node: NodeState) {
-    const nextNode = node.sibling || node.parent?.sibling;
+    const nextNode = findNextSibling(node);
     const nextIndex = nextNode ? this.indexById(nextNode.id) : Infinity;
 
     const deleteFrom = this.indexById(node.id) + 1;
@@ -229,6 +229,17 @@ export class TreeState {
 
     this.visibleNodes.splice(deleteFrom, deleteCount);
   }
+}
+
+function findNextSibling(node: NodeState): Nullable<NodeState> {
+  let current: Nullable<NodeState> = node;
+  while (current) {
+    if (current.sibling) {
+      return current.sibling;
+    }
+    current = current.parent;
+  }
+  return null;
 }
 
 function* walkFromNode(
