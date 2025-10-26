@@ -20,7 +20,7 @@ export function OpenButton({
         <IconButton
           icon={isOpen ? Icon.ChevronDown : Icon.ChevronRight}
           onClick={toggleOpen}
-          className="fill-viewer-foreground h-4 w-4 align-middle"
+          className="fill-viewer-foreground size-4 align-middle"
           tabIndex={-1}
         />
       )}
