@@ -1,21 +1,21 @@
 import { JSX } from "react";
-import { ListChildComponentProps } from "react-window";
+import { type RowComponentProps } from "react-window";
 import { TreeNodeComponent } from "./TreeNodeComponent";
 import { TreeState } from "./TreeState";
 
-export type ItemData<Context> = {
+export type TreeRowProps<Context> = {
   treeState: TreeState;
   context: Context;
   TreeNode: TreeNodeComponent<Context>;
 };
 
-export type TreeItemProps<Context> = ListChildComponentProps<ItemData<Context>>;
-
-export function TreeItem<Context>({
+export function TreeRow<Context>({
   index,
-  data: { treeState, TreeNode, context },
   style,
-}: TreeItemProps<Context>): JSX.Element {
+  treeState,
+  context,
+  TreeNode,
+}: RowComponentProps<TreeRowProps<Context>>): JSX.Element {
   const nodeState = treeState.nodeByIndex(index);
   return <TreeNode style={style} node={nodeState} context={context} />;
 }

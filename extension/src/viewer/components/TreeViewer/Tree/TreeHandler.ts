@@ -1,18 +1,14 @@
 import { RefCurrent } from "@/viewer/hooks";
-import { Align, VariableSizeList } from "react-window";
+import { Align, ListImperativeAPI } from "react-window";
 import { NodeId, NodeState } from "./NodeState";
-import { ItemData } from "./TreeItem";
 import { TreeState } from "./TreeState";
 
 // context is any because it's not used in the handler
-export type TreeListCurrent = RefCurrent<VariableSizeList<ItemData<any>>>;
-
-const DEFAULT_ITEM_HEIGHT = 30;
+export type TreeListCurrent = RefCurrent<ListImperativeAPI>;
 
 export class TreeHandler {
   private tree: TreeState;
   private list: TreeListCurrent;
-  private itemsHeight: Map<NodeId, number> = new Map();
 
   constructor(tree: TreeState, list: TreeListCurrent) {
     this.tree = tree;
@@ -59,22 +55,10 @@ export class TreeHandler {
     this.tree.closeAll();
   }
 
-  // Height
-
-  public getHeight(id: NodeId): number {
-    return this.itemsHeight.get(id) ?? DEFAULT_ITEM_HEIGHT;
-  }
-
-  public resize(id: NodeId, height: number) {
-    this.itemsHeight.set(id, height);
-    const index = this.tree.indexById(id);
-    this.list?.resetAfterIndex(index, true);
-  }
-
   // Navigation
 
   public scrollTo(id: NodeId, align?: Align) {
     const index = this.tree.indexById(id);
-    this.list?.scrollToItem(index, align);
+    this.list?.scrollToRow({ index, align });
   }
 }

@@ -32,10 +32,6 @@ export function TreeNode({
   const hasFocus = useFocus(parent);
   const isHovered = useHover(parent);
 
-  // Resize the node to fit its content on every re-render
-  const resize = (height: number) => tree.resize(node.id, height);
-  useFitContent(parent, content, resize);
-
   // Registers the node's html handler in the navigator
   useEffect(() => {
     if (!parent) return;
@@ -116,30 +112,6 @@ export function TreeNode({
       </div>
     </div>
   );
-}
-
-type Resize = (height: number) => void;
-
-function useFitContent(
-  parent: RefCurrent<HTMLElement>,
-  content: RefCurrent<HTMLElement>,
-  resize: Resize,
-) {
-  const PADDING_HEIGHT = 4;
-  const TOLERANCE = 2;
-
-  const fitContent = () => {
-    if (!parent || !content) return;
-    const parentHeight = parent.clientHeight;
-    const contentHeight = content.clientHeight + PADDING_HEIGHT;
-    const delta = Math.abs(contentHeight - parentHeight);
-    if (delta > TOLERANCE) {
-      resize(contentHeight);
-    }
-  };
-
-  // fit content on *every* component update
-  useEffect(fitContent);
 }
 
 function inSearchMatchPath(searchMatch: Nullable<NodeSearchMatch>): boolean {

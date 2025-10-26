@@ -236,6 +236,7 @@ Always `yarn format` before creating a commit.
 *Disclaimer*: this is NOT a formal benchmark, just a few tests with syntethic data to give an idea of loading performance time.
 
 **Setup**
+
 - Virtual Json Viewer v2.0.0 
 - Macbook Pro 16 (Nov 2023) Apple M3 Pro 18 GB
 - Chrome 139.0.7258.128
