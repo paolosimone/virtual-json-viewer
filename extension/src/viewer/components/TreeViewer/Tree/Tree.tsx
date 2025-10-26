@@ -62,7 +62,7 @@ export function Tree<Context>({
     <List<TreeRowProps<Context>>
       tabIndex={-1}
       listRef={listRef}
-      style={{ height: height, width: width }}
+      style={{ height, width }}
       rowComponent={TreeRow}
       rowCount={rowProps.treeState.length()}
       rowHeight={rowHeight}
