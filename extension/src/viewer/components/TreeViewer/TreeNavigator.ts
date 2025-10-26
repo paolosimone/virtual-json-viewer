@@ -167,7 +167,7 @@ export class TreeNavigator {
     const listElem = this.treeElem?.firstElementChild;
     const pageHeight = listElem?.clientHeight;
     const rowHeight = listElem?.firstElementChild?.clientHeight;
-    return pageHeight && rowHeight ? Math.ceil(pageHeight / rowHeight) : 0;
+    return pageHeight && rowHeight ? Math.ceil(pageHeight / rowHeight) : 1;
   }
 
   // Search navigation
