@@ -1,7 +1,8 @@
 import { dispatch, EnterNodeEvent, NodePath } from "@/viewer/commons/EventBus";
 import { Icon, IconButton } from "@/viewer/components";
+import { SettingsContext, TextSize } from "@/viewer/state";
 import classNames from "classnames";
-import { JSX, Ref, useImperativeHandle, useMemo } from "react";
+import { JSX, Ref, useContext, useImperativeHandle, useMemo } from "react";
 import { NodeState } from "../Tree";
 
 export type EnterButtonHandle = {
@@ -35,13 +36,22 @@ export function EnterButton({
     [enabled, path],
   );
 
+  // Adjust arrow icon size based on line height
+  const { textSize } = useContext(SettingsContext);
+  const iconSize = [TextSize.ExtraSmall, TextSize.Small].includes(textSize)
+    ? "size-4"
+    : "size-5";
+
   return (
     <span className={classNames("mr-1 w-5 min-w-5", className)}>
       {enabled && (
         <IconButton
           icon={Icon.ArrowRight}
           onClick={() => enterNode(path)}
-          className="fill-viewer-foreground h-5 w-5 align-middle"
+          className={classNames(
+            "fill-viewer-foreground align-middle",
+            iconSize,
+          )}
           tabIndex={-1}
         />
       )}
