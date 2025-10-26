@@ -3,11 +3,6 @@ import { RefCurrent } from "@/viewer/hooks";
 import { SearchNavigation } from "@/viewer/state";
 import { NodeId, TreeHandler } from "./Tree";
 
-export type NavigationOffset = {
-  rows?: number;
-  pages?: number;
-};
-
 export enum NodePart {
   Key = "key",
   Value = "value",
@@ -82,10 +77,6 @@ export class TreeNavigator {
     this.handlerById.delete(id);
   }
 
-  public resize(id: NodeId, height: number) {
-    this.tree?.resize(id, height);
-  }
-
   // Openness
 
   public toggleOpen(id: NodeId) {
@@ -112,11 +103,17 @@ export class TreeNavigator {
 
   // Nodes navigation
 
-  public gotoOffset(id: NodeId, { rows, pages }: NavigationOffset) {
+  public gotoRowsOffset(id: NodeId, rows: number) {
     const index = this.tree?.indexById(id);
     if (index !== undefined) {
-      const target = index + (rows ?? 0) + (pages ?? 0) * this.pageRows();
-      this.gotoIndex(target);
+      this.gotoIndex(index + rows);
+    }
+  }
+
+  public gotoPagesOffset(id: NodeId, pages: number) {
+    const index = this.tree?.indexById(id);
+    if (index !== undefined) {
+      this.gotoIndex(index + pages * this.pageRows());
     }
   }
 
@@ -167,10 +164,10 @@ export class TreeNavigator {
   }
 
   private pageRows(): number {
-    if (!this.tree?.length()) return 0;
-    const pageHeight = this.treeElem?.clientHeight;
-    const itemHeight = this.tree.getHeight(this.tree.getByIndex(0).id);
-    return pageHeight && itemHeight ? Math.ceil(pageHeight / itemHeight) : 1;
+    const listElem = this.treeElem?.firstElementChild;
+    const pageHeight = listElem?.clientHeight;
+    const rowHeight = listElem?.firstElementChild?.clientHeight;
+    return pageHeight && rowHeight ? Math.ceil(pageHeight / rowHeight) : 1;
   }
 
   // Search navigation

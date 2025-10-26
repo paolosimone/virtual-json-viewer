@@ -1,4 +1,3 @@
-import { useReactiveRef } from "@/viewer/hooks";
 import {
   JSX,
   Ref,
@@ -7,12 +6,11 @@ import {
   useMemo,
   useState,
 } from "react";
-import { VariableSizeList } from "react-window";
-import { uid } from "uid";
+import { List, useDynamicRowHeight, useListCallbackRef } from "react-window";
 import { TreeWalker } from "../TreeWalker";
 import { TreeHandler } from "./TreeHandler";
-import { ItemData, TreeItem } from "./TreeItem";
 import { TreeNodeComponent } from "./TreeNodeComponent";
+import { TreeRow, TreeRowProps } from "./TreeRow";
 import { TreeState } from "./TreeState";
 
 export type TreeProps<Context> = {
@@ -22,7 +20,6 @@ export type TreeProps<Context> = {
   context: Context;
   children: TreeNodeComponent<Context>;
   ref?: Ref<TreeHandler>;
-  outerRef?: Ref<HTMLDivElement>;
 };
 
 export function Tree<Context>({
@@ -32,24 +29,16 @@ export function Tree<Context>({
   context,
   children: TreeNode,
   ref,
-  outerRef,
 }: TreeProps<Context>): JSX.Element {
-  // TreeId uniquely identifies the tree instance.
-  // It is used to re-render list elements when the tree content is reloaded.
-  const [treeId, setTreeId] = useState("");
-
   // TreeState is a reference to the mutable state of the tree.
   // The reference gets updated whenever the state changes to trigger reactive updates.
   // The underlying data structure is mutable, so any reference points to the latest state.
   const [treeState, setTreeState] = useState<TreeState>(() => new TreeState());
   useEffect(() => treeState.observeStateChange(setTreeState), []);
-  useEffect(() => {
-    treeState.load(treeWalker);
-    setTreeId(uid());
-  }, [treeWalker]);
+  useEffect(() => treeState.load(treeWalker), [treeWalker]);
 
   // Reference to the list component
-  const [list, listRef] = useReactiveRef<VariableSizeList<ItemData<Context>>>();
+  const [list, listRef] = useListCallbackRef(null);
 
   // Expose an handler to manipulate the tree from outside.
   // The handler reference is updated when the tree content is (re)loaded.
@@ -62,26 +51,23 @@ export function Tree<Context>({
   );
   useImperativeHandle(ref, () => handler, [handler]);
 
-  const itemData: ItemData<Context> = useMemo(
+  const rowProps: TreeRowProps<Context> = useMemo(
     () => ({ treeState, context, TreeNode }),
     [treeState, context, TreeNode],
   );
 
+  const rowHeight = useDynamicRowHeight({ defaultRowHeight: 30 });
+
   return (
-    <VariableSizeList<ItemData<Context>>
-      ref={listRef}
-      outerRef={outerRef}
-      height={height}
-      width={width}
-      itemCount={itemData.treeState.length()}
-      itemData={itemData}
-      itemKey={(index, itemData) =>
-        `${treeId}-${itemData.treeState.idByIndex(index)}`
-      }
-      itemSize={(index) => handler.getHeight(treeState.idByIndex(index))}
+    <List<TreeRowProps<Context>>
+      tabIndex={-1}
+      listRef={listRef}
+      style={{ height, width }}
+      rowComponent={TreeRow}
+      rowCount={rowProps.treeState.length()}
+      rowHeight={rowHeight}
+      rowProps={rowProps}
       overscanCount={20}
-    >
-      {TreeItem}
-    </VariableSizeList>
+    />
   );
 }

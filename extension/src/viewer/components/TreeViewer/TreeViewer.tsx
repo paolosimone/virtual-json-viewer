@@ -55,7 +55,7 @@ export function TreeViewer({
   // It changes when the content is (re)loaded.
   const [tree, treeRef] = useReactiveRef<TreeHandler>();
 
-  // For some obscure reason AutoSizer doesn't work on Firefox when loaded as extension
+  // Track tree element size
   const [parent, parentRef] = useReactiveRef<HTMLDivElement>();
   const { height, width } = useElementSize(parent);
 
@@ -123,11 +123,7 @@ export function TreeViewer({
     [treeNavigator, enableEnterNode],
   );
 
-  // Fix tab navigation on firefox
-  // Ref: https://github.com/bvaughn/react-window/issues/130
-  const [treeDiv, treeDivRef] = useReactiveRef<HTMLDivElement>();
-  if (treeDiv) treeDiv.tabIndex = -1;
-
+  // Wrap the Tree in a div to handle resize, focus and navigation
   return (
     <div
       ref={parentRef}
@@ -140,7 +136,6 @@ export function TreeViewer({
         width={width}
         treeWalker={walker}
         ref={treeRef}
-        outerRef={treeDivRef}
         context={context}
       >
         {TreeNode}
@@ -178,13 +173,13 @@ function handleNavigation(
 
   if (e.key == "ArrowDown" || e.key == "j") {
     e.preventDefault();
-    from((id) => tree.gotoOffset(id, { rows: 1 }));
+    from((id) => tree.gotoRowsOffset(id, 1));
     return;
   }
 
   if (e.key == "ArrowUp" || e.key == "k") {
     e.preventDefault();
-    from((id) => tree.gotoOffset(id, { rows: -1 }));
+    from((id) => tree.gotoRowsOffset(id, -1));
     return;
   }
 
@@ -192,13 +187,13 @@ function handleNavigation(
 
   if (e.key == "PageDown" || isUpperCaseKeypress(e, "J")) {
     e.preventDefault();
-    from((id) => tree.gotoOffset(id, { pages: 1 }));
+    from((id) => tree.gotoPagesOffset(id, 1));
     return;
   }
 
   if (e.key == "PageUp" || isUpperCaseKeypress(e, "K")) {
     e.preventDefault();
-    from((id) => tree.gotoOffset(id, { pages: -1 }));
+    from((id) => tree.gotoPagesOffset(id, -1));
     return;
   }
 
