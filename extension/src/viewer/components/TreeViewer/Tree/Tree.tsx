@@ -1,6 +1,8 @@
+import { SettingsContext, TextSize } from "@/viewer/state";
 import {
   JSX,
   Ref,
+  useContext,
   useEffect,
   useImperativeHandle,
   useMemo,
@@ -56,7 +58,8 @@ export function Tree<Context>({
     [treeState, context, TreeNode],
   );
 
-  const rowHeight = useDynamicRowHeight({ defaultRowHeight: 30 });
+  const defaultRowHeight = useDefaultRowHeight();
+  const rowHeight = useDynamicRowHeight({ defaultRowHeight });
 
   return (
     <List<TreeRowProps<Context>>
@@ -70,4 +73,18 @@ export function Tree<Context>({
       overscanCount={20}
     />
   );
+}
+
+// Heuristic to reduce layout shifts
+const DEFAULT_ROW_HEIGHTS: Record<TextSize, number> = {
+  [TextSize.ExtraSmall]: 16,
+  [TextSize.Small]: 20,
+  [TextSize.Medium]: 24,
+  [TextSize.Large]: 28,
+  [TextSize.ExtraLarge]: 28,
+};
+
+function useDefaultRowHeight(): number {
+  const { textSize } = useContext(SettingsContext);
+  return DEFAULT_ROW_HEIGHTS[textSize];
 }
