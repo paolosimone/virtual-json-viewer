@@ -198,6 +198,7 @@ function useTransitionViewerProps({
     state.search.value,
     isLargeJson,
     enableEnterNode,
+    // searchStartingIndex MUST not trigger re-render: changes are meaningful only if search-related props change
   ];
 
   const targetProps = useMemo(() => {
@@ -206,10 +207,12 @@ function useTransitionViewerProps({
       return null;
     }
 
+    // Remember to add expensive props to transitionDeps
     return {
       jsonLines,
       search: state.search.value,
       setSearchNavigation: state.searchNavigation.setValue,
+      searchStartingIndex: state.searchStartingIndex,
       isLargeJson,
       enableEnterNode,
     };

@@ -59,6 +59,8 @@ export class TreeHandler {
 
   public scrollTo(id: NodeId, align?: Align) {
     const index = this.tree.indexById(id);
-    this.list?.scrollToRow({ index, align });
+    if (0 <= index && index < this.tree.length()) {
+      this.list?.scrollToRow({ index, align });
+    }
   }
 }

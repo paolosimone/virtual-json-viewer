@@ -15,7 +15,7 @@ export function useEffectAsync(
     return () => {
       mutex.release();
     };
-  }, deps ?? []);
+  }, deps);
 }
 
 export type SynchronizedEffect = (mutex: Mutex) => Promise<void>;

@@ -19,6 +19,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { SearchMatchHandler } from "../RenderedText";
 import { RenderedLines } from "./RenderedLines";
 import { SearchMatchNavigator } from "./SearchMatchNavigator";
 
@@ -26,6 +27,7 @@ export type RawViewerProps = Props<{
   jsonLines: Json.Lines;
   search: Search;
   setSearchNavigation: SetValue<SearchNavigation>;
+  searchStartingIndex: number;
   isLargeJson: boolean;
 }>;
 
@@ -34,11 +36,12 @@ export function RawViewer({
   search,
   isLargeJson,
   setSearchNavigation,
+  searchStartingIndex,
   className,
 }: RawViewerProps): JSX.Element {
   const { indentation, sortKeys } = useContext(SettingsContext);
 
-  // collapse/expand state
+  // Collapse/expand state
   const [minify, setMinify] = useState(false);
 
   const expand = useCallback(() => setMinify(false), [setMinify]);
@@ -47,10 +50,10 @@ export function RawViewer({
   const collapse = useCallback(() => setMinify(true), [setMinify]);
   useEventBusListener(ViewerEventType.Collapse, collapse);
 
-  // linkify URLs
+  // Linkify URLs
   const linkifyUrls = useLinkifyUrls(isLargeJson, minify);
 
-  // raw text
+  // Raw text
   const space = minify ? undefined : indentation;
 
   const rawLines = useMemo(
@@ -58,7 +61,7 @@ export function RawViewer({
     [jsonLines, sortKeys, space],
   );
 
-  // navigation
+  // Navigation
   const navigator = useRef<SearchMatchNavigator>(new SearchMatchNavigator());
   navigator.current.observeNavigation(setSearchNavigation);
 
@@ -77,7 +80,7 @@ export function RawViewer({
   );
   useEventBusListener(ViewerEventType.SearchNavigateNext, goToNextMatch);
 
-  // register shortcuts
+  // Register shortcuts
   const ref = useRef<Nullable<HTMLDivElement>>(null);
   const handleNavigation = useCallback(
     (e: KeydownEvent) => {
@@ -106,6 +109,17 @@ export function RawViewer({
 
   const wrap = minify ? "break-all" : "whitespace-pre";
 
+  // Reset the navigator when search matches change.
+  // Starting index is not a dependency, because it must not trigger a reset.
+  // It's important that the effect lives here to use the most updated starting index props.
+  const [searchMatches, setSearchMatches] =
+    useState<Nullable<SearchMatchHandler[]>>(null);
+  useEffect(() => {
+    if (searchMatches) {
+      navigator.current.reset(searchMatches, searchStartingIndex);
+    }
+  }, [navigator, searchMatches]);
+
   return (
     <div
       ref={ref}
@@ -118,7 +132,7 @@ export function RawViewer({
         rawLines={rawLines}
         search={search}
         linkifyUrls={linkifyUrls}
-        onSearchMatchesUpdate={(handlers) => navigator.current.reset(handlers)}
+        onSearchMatchesUpdate={setSearchMatches}
       />
     </div>
   );
