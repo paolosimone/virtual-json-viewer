@@ -70,12 +70,12 @@ export function Tree<Context>({
       rowCount={rowProps.treeState.length()}
       rowHeight={rowHeight}
       rowProps={rowProps}
-      overscanCount={20}
+      overscanCount={50} // ~page size with default settings
     />
   );
 }
 
-// Heuristic to reduce layout shifts
+// Heuristic to reduce layout shifts assuming 1rem = 16px
 const DEFAULT_ROW_HEIGHTS: Record<TextSize, number> = {
   [TextSize.ExtraSmall]: 16,
   [TextSize.Small]: 20,

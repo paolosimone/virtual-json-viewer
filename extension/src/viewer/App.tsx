@@ -196,6 +196,7 @@ function useTransitionViewerProps({
     // Viewer props
     jsonLines,
     state.search.value,
+    state.searchStartingIndex,
     isLargeJson,
     enableEnterNode,
   ];
@@ -206,10 +207,12 @@ function useTransitionViewerProps({
       return null;
     }
 
+    // Remember to add props to transitionDeps
     return {
       jsonLines,
       search: state.search.value,
       setSearchNavigation: state.searchNavigation.setValue,
+      searchStartingIndex: state.searchStartingIndex,
       isLargeJson,
       enableEnterNode,
     };
