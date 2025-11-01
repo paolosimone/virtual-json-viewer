@@ -44,7 +44,7 @@ export function EnterButton({
 
   return (
     <span className={classNames("mr-1 w-5 min-w-5", className)}>
-      {enabled && (
+      {enabled ? (
         <IconButton
           icon={Icon.ArrowRight}
           onClick={() => enterNode(path)}
@@ -54,6 +54,9 @@ export function EnterButton({
           )}
           tabIndex={-1}
         />
+      ) : (
+        // Placeholder to maintain layout
+        <div className={classNames("inline-block align-middle", iconSize)} />
       )}
     </span>
   );
