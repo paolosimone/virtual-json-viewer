@@ -1,4 +1,4 @@
-import { Runtime, RUNTIME } from "@/viewer/state";
+import { Runtime, getRuntime } from "@/viewer/state";
 
 export type RemoveListener = () => void;
 export type OnItemChange<T> = (item: T) => void;
@@ -9,11 +9,11 @@ export interface Storage {
   addListener<T>(key: string, onChange: OnItemChange<T>): RemoveListener;
 }
 
-class SessionStorage implements Storage {
+class LocalStorage implements Storage {
   get<T>(key: string): Promise<Nullable<T>> {
     return new Promise((resolve, reject) => {
       try {
-        const value = sessionStorage.getItem(key);
+        const value = localStorage.getItem(key);
         resolve(value !== null ? JSON.parse(value) : null);
       } catch (e) {
         reject(e);
@@ -24,7 +24,7 @@ class SessionStorage implements Storage {
   set<T>(key: string, item: T): Promise<void> {
     return new Promise((resolve, reject) => {
       try {
-        sessionStorage.setItem(key, JSON.stringify(item));
+        localStorage.setItem(key, JSON.stringify(item));
         resolve();
       } catch (e) {
         reject(e);
@@ -78,5 +78,8 @@ class SyncStorage implements Storage {
   }
 }
 
-export const STORAGE =
-  RUNTIME === Runtime.Extension ? new SyncStorage() : new SessionStorage();
+export function getStorage(): Storage {
+  return getRuntime() === Runtime.Extension
+    ? new SyncStorage()
+    : new LocalStorage();
+}

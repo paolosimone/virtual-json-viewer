@@ -17,7 +17,6 @@ export enum OptionsPage {
 
 // don't try this at home
 export type OptionsContext = {
-  gotoPage: Dispatch<OptionsPage>;
   theme: Theme;
   setTheme: Dispatch<Theme>;
   t: Translation;
@@ -28,7 +27,6 @@ export type OptionsContext = {
 };
 
 export const GlobalOptionsContext = createContext<OptionsContext>({
-  gotoPage: doNothing,
   theme: DefaultTheme,
   setTheme: doNothing,
   t: languageTranslations[FallbackLanguage],

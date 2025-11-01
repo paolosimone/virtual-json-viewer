@@ -8,7 +8,7 @@ import {
   ViewerMode,
 } from "@/viewer/state";
 import classNames from "classnames";
-import { JSX, useContext } from "react";
+import { Dispatch, JSX, useContext } from "react";
 import { GlobalOptionsContext, OptionsPage } from "./Context";
 import {
   Checkbox,
@@ -21,10 +21,15 @@ import {
 import { ForceActivationSelect } from "./components/ForceActivationSelect";
 import { NodeStateSelect } from "./components/NodeStateSelect";
 
-export type MainOptionsProps = BaseProps;
+export type MainOptionsProps = Props<{
+  gotoPage: Dispatch<OptionsPage>;
+}>;
 
-export function MainOptions({ className }: MainOptionsProps): JSX.Element {
-  const { gotoPage, t, setTheme, settings, updateSettings, setLanguage } =
+export function MainOptions({
+  gotoPage,
+  className,
+}: MainOptionsProps): JSX.Element {
+  const { t, setTheme, settings, updateSettings, setLanguage } =
     useContext(GlobalOptionsContext);
 
   const labels = t.settings.labels;
@@ -207,7 +212,7 @@ function LinkButton({
   return (
     <a
       className={classNames(
-        "hover:border-viewer-foreground rounded-lg border border-transparent px-2 py-1",
+        "hover:border-viewer-foreground cursor-pointer rounded-lg border border-transparent px-2 py-1",
         className,
       )}
       href={link}

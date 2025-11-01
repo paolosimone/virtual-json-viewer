@@ -8,7 +8,7 @@ import { ViewerWrapper } from "./ViewerWrapper";
 type Page = "launcher" | "viewer" | "options";
 
 export function App(): JSX.Element {
-  const [_colors] = useTheme();
+  const [theme] = useTheme();
   const [page, setPage] = useState<Page>("launcher");
 
   // extremely basic routing
@@ -18,7 +18,7 @@ export function App(): JSX.Element {
     case "options":
       return <OptionsWrapper />;
     default:
-      return <PagePicker setPage={setPage} />;
+      return theme ? <PagePicker setPage={setPage} /> : <div />;
   }
 }
 

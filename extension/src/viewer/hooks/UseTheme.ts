@@ -8,40 +8,38 @@ import {
   ThemeColors,
   ThemeName,
 } from "@/viewer/state";
-import { Dispatch, useLayoutEffect, useMemo } from "react";
+import { Dispatch, useLayoutEffect } from "react";
 import tinycolor from "tinycolor2";
 import { useMediaQuery, useStorage } from ".";
 
 const KEY = "settings-theme";
 
-export function useTheme(): [ThemeColors, Theme, Dispatch<Theme>] {
+export function useTheme(): [Nullable<Theme>, Dispatch<Theme>] {
   const [theme, setTheme] = useStorage<Theme>(KEY, DefaultTheme);
-
-  const resolvedTheme = useResolvedTheme(theme);
-
-  // apply theme on first render and every time it's updated
-  useLayoutEffect(() => applyTheme(resolvedTheme), [resolvedTheme]);
-
-  return [resolvedTheme, theme, setTheme];
-}
-
-function useResolvedTheme(theme: Theme): ThemeColors {
   const isSystemThemeDark = useMediaQuery("(prefers-color-scheme: dark)");
 
-  return useMemo(() => {
-    if (theme.name === ThemeName.Custom) {
-      return theme.customColors;
-    }
-
-    const darkThemeEnabled =
-      theme.name === ThemeName.Dark ||
-      (theme.name === ThemeName.System && isSystemThemeDark);
-
-    return darkThemeEnabled ? DarkColors : LightColors;
+  // apply theme on first render and every time it's updated
+  useLayoutEffect(() => {
+    if (!theme) return;
+    applyColors(resolveColors(theme, isSystemThemeDark));
   }, [theme, isSystemThemeDark]);
+
+  return [theme, setTheme];
 }
 
-function applyTheme(colors: ThemeColors) {
+function resolveColors(theme: Theme, isSystemThemeDark: boolean): ThemeColors {
+  if (theme.name === ThemeName.Custom) {
+    return theme.customColors;
+  }
+
+  const darkThemeEnabled =
+    theme.name === ThemeName.Dark ||
+    (theme.name === ThemeName.System && isSystemThemeDark);
+
+  return darkThemeEnabled ? DarkColors : LightColors;
+}
+
+function applyColors(colors: ThemeColors) {
   const root: Nullable<HTMLElement> = document.querySelector(":root");
   if (!root) return;
 

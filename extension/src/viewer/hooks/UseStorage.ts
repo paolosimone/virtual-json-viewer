@@ -1,19 +1,23 @@
-import { STORAGE } from "@/viewer/commons/Storage";
-import { Dispatch, useEffect, useMemo, useState } from "react";
+import { getStorage } from "@/viewer/commons/Storage";
+import { Dispatch, useCallback, useEffect, useState } from "react";
 import { Mutex, useEffectAsync } from ".";
 
-export function useStorage<T>(key: string, defaultValue: T): [T, Dispatch<T>] {
-  const [value, setValue] = useState(defaultValue);
+export function useStorage<T>(
+  key: string,
+  defaultValue: T,
+): [Nullable<T>, Dispatch<T>] {
+  const [value, setValue] = useState<Nullable<T>>(null);
+  const [storage] = useState(() => getStorage());
 
   // initialize value on first render
   useEffectAsync(
     async (mutex: Mutex) => {
-      let value: Nullable<T> = await STORAGE.get<T>(key);
+      let value: Nullable<T> = await storage.get<T>(key);
       if (!mutex.hasLock()) {
         return;
       }
       if (value === null) {
-        await STORAGE.set(key, defaultValue);
+        await storage.set(key, defaultValue);
         value = defaultValue;
       }
       setValue(value);
@@ -22,14 +26,14 @@ export function useStorage<T>(key: string, defaultValue: T): [T, Dispatch<T>] {
   );
 
   // subscribe to external changes
-  useEffect(() => STORAGE.addListener(key, setValue), [key, setValue]);
+  useEffect(() => storage.addListener(key, setValue), [key, setValue]);
 
   // function to update both storage and internal state
-  const setValueAndStorage = useMemo(
-    () => (newValue: T) => {
-      STORAGE.set(key, newValue).then(() => setValue(newValue));
+  const setValueAndStorage = useCallback(
+    (newValue: T) => {
+      storage.set(key, newValue).then(() => setValue(newValue));
     },
-    [key, setValue],
+    [key],
   );
 
   return [value, setValueAndStorage];

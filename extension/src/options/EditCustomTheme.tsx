@@ -6,14 +6,17 @@ import { Dispatch, JSX, useContext, useState } from "react";
 import { ChromePicker } from "react-color";
 import { GlobalOptionsContext, OptionsPage } from "./Context";
 
-export type EditCustomThemeProps = BaseProps;
+export type EditCustomThemeProps = Props<{
+  gotoPage: Dispatch<OptionsPage>;
+}>;
 
 type ColorSection = keyof typeof FallbackTranslation.settings.colors.sections;
 
 export function EditCustomTheme({
+  gotoPage,
   className,
 }: EditCustomThemeProps): JSX.Element {
-  const { t, gotoPage, theme, setTheme } = useContext(GlobalOptionsContext);
+  const { t, theme, setTheme } = useContext(GlobalOptionsContext);
 
   const [pickerColorKey, setPickerColorKey] =
     useState<Nullable<ColorKey>>(null);
