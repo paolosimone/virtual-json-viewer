@@ -1,22 +1,26 @@
 import { DefaultSettings, Settings, SETTINGS_KEY } from "@/viewer/state";
-import { useMemo } from "react";
+import { useCallback } from "react";
 import { useStorage } from ".";
 
 export type DispatchSettings = (newSettings: Partial<Settings>) => void;
 
-export function useSettings(): [Settings, DispatchSettings] {
+export function useSettings(): [Nullable<Settings>, DispatchSettings] {
   const [settings, setSettings] = useStorage<Settings>(
     SETTINGS_KEY,
     DefaultSettings,
   );
 
-  const upgraded = maybeUpgrade(settings);
-  if (!Object.is(settings, upgraded)) {
-    setSettings(upgraded);
+  // upgrade settings if an old version was stored
+  if (settings) {
+    const upgraded = maybeUpgrade(settings);
+    if (!Object.is(settings, upgraded)) {
+      setSettings(upgraded);
+    }
   }
 
-  const updateSettings = useMemo(
-    () => (newSettings: Partial<Settings>) => {
+  const updateSettings = useCallback(
+    (newSettings: Partial<Settings>) => {
+      if (!settings) return;
       setSettings({ ...settings, ...newSettings });
     },
     [settings, setSettings],

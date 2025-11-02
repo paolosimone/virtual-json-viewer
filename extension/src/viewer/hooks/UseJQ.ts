@@ -1,6 +1,6 @@
 import newJQ, { JQ } from "@/vendor/jq.wasm";
 import * as Json from "@/viewer/commons/Json";
-import { getURL, JQCommand } from "@/viewer/state";
+import { DefaultSettings, getURL, JQCommand } from "@/viewer/state";
 import { useState } from "react";
 import { Mutex, useEffectAsync, useReactiveRef, useSettings } from ".";
 
@@ -12,7 +12,8 @@ export function useJQ(
   command: JQCommand,
 ): [JQEnabled, JQResult] {
   // it's called outside settings context
-  const [{ enableJQ, sortKeys }] = useSettings();
+  const [settings] = useSettings();
+  const { enableJQ, sortKeys } = settings ?? DefaultSettings;
 
   // check if wasm is enabled on first load
   const [jq, setJQ] = useReactiveRef<JQ>();
@@ -85,11 +86,9 @@ async function invokeJQ(
   return Json.tryParseLines(output, { sortKeys });
 }
 
-const JQ_WASM_FILE = getURL("assets/jq.wasm");
-
 function loadJQ(): Promise<JQ> {
   return newJQ({
-    locateFile: () => JQ_WASM_FILE,
+    locateFile: () => getURL("assets/jq.wasm"),
     print: devNull,
     printErr: devNull,
     noExitRuntime: true,

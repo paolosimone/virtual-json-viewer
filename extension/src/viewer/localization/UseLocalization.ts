@@ -1,5 +1,5 @@
 import { useStorage } from "@/viewer/hooks";
-import { Dispatch } from "react";
+import { Dispatch, useMemo } from "react";
 import {
   FallbackLanguage,
   Language,
@@ -12,15 +12,20 @@ import {
 const KEY = "language";
 
 export function useLocalization(): [
-  Translation,
-  LanguageSetting,
+  Nullable<Translation>,
+  Nullable<LanguageSetting>,
   Dispatch<LanguageSetting>,
 ] {
   const [language, setLanguage] = useStorage<LanguageSetting>(
     KEY,
     SystemLanguage,
   );
-  const translation = resolveTranslation(language);
+
+  const translation = useMemo(
+    () => (language ? resolveTranslation(language) : null),
+    [language],
+  );
+
   return [translation, language, setLanguage];
 }
 

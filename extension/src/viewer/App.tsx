@@ -25,27 +25,23 @@ import {
   CHORD_KEY,
   JQResult,
   KeydownEvent,
-  StateObject,
-  updateField,
   useGlobalKeydownEvent,
   useJQ,
-  useSessionStorage,
   useSettings,
-  useStateObjectAdapter,
   useTheme,
 } from "./hooks";
-import { TranslationContext, useLocalization } from "./localization";
 import {
-  EmptyJQCommand,
-  EmptySearch,
-  EmptySearchNavigation,
-  JQCommand,
-  Search,
-  SearchNavigation,
+  Translation,
+  TranslationContext,
+  useLocalization,
+} from "./localization";
+import {
+  ApplicationState,
   Settings,
   SettingsContext,
   ViewerMode,
   resolveTextSizeClass,
+  useApplicationState,
 } from "./state";
 
 // heuristic: https://media.tenor.com/6PFS7ABeJGEAAAAC/dr-evil-one-billion-dollars.gif
@@ -59,10 +55,34 @@ type ViewerProps = TreeViewerProps & RawViewerProps;
 
 export function App({ jsonText }: AppProps): JSX.Element {
   // Global settings
-  const [_colors] = useTheme();
+  const [theme] = useTheme();
   const [translation] = useLocalization();
   const [settings] = useSettings();
 
+  const isLoaded = theme != null && translation != null && settings != null;
+
+  return isLoaded ? (
+    <LoadedApp
+      jsonText={jsonText}
+      settings={settings}
+      translation={translation}
+    />
+  ) : (
+    <div />
+  );
+}
+
+type LoadedAppProps = {
+  jsonText: string;
+  settings: Settings;
+  translation: Translation;
+};
+
+function LoadedApp({
+  jsonText,
+  settings,
+  translation,
+}: LoadedAppProps): JSX.Element {
   // Parse json
   const jsonResult = useMemo(
     () => Json.tryParseLines(jsonText, { sortKeys: settings.sortKeys }),
@@ -150,68 +170,6 @@ export function App({ jsonText }: AppProps): JSX.Element {
       </div>
     </MultiContextProvider>
   );
-}
-
-type ApplicationState = {
-  viewerMode: StateObject<ViewerMode>;
-  search: StateObject<Search>;
-  searchNavigation: StateObject<SearchNavigation>;
-  jqCommand: StateObject<JQCommand>;
-};
-
-// Application state is stored in session and kept on page reload.
-// Default state is customizable in settings but not available on first render,
-// so we need to subscribe to update the state when settings are loaded,
-// unless of course the state was already loaded from an existing session.
-function useApplicationState(
-  settings: Settings,
-  isInputMultiline: boolean,
-): ApplicationState {
-  // Viewer mode
-  const [viewer, setViewer, viewerWasInSession] = useSessionStorage(
-    "viewer",
-    settings.viewerMode,
-  );
-  if (!viewerWasInSession) {
-    useEffect(() => setViewer(settings.viewerMode), [settings]);
-  }
-
-  // Search
-  const [search, setSearch, searchWasInSession] = useSessionStorage(
-    "search",
-    EmptySearch,
-  );
-  if (!searchWasInSession) {
-    useEffect(
-      () => setSearch(updateField("visibility", settings.searchVisibility)),
-      [settings],
-    );
-  }
-
-  // Search navigation
-  const [searchNavigation, setSearchNavigation] = useState(
-    EmptySearchNavigation,
-  );
-
-  // JQ
-  const [jq, setJQ] = useSessionStorage("jq", EmptyJQCommand);
-  const [sessionSlurp] = useState<Nullable<boolean>>(jq.slurp);
-  useEffect(() => {
-    // Read default flag from settings if not already set in the session.
-    const chosenSlurp = sessionSlurp ?? settings.jqSlurp;
-    // Make sure slurp is null if input is not multiline
-    setJQ(updateField("slurp", isInputMultiline ? chosenSlurp : null));
-  }, [settings, isInputMultiline]);
-
-  return {
-    viewerMode: useStateObjectAdapter([viewer, setViewer]),
-    search: useStateObjectAdapter([search, setSearch]),
-    searchNavigation: useStateObjectAdapter([
-      searchNavigation,
-      setSearchNavigation,
-    ]),
-    jqCommand: useStateObjectAdapter([jq, setJQ]),
-  };
 }
 
 type ViewerPropsParams = {

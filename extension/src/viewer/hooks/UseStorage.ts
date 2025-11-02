@@ -1,9 +1,12 @@
 import { STORAGE } from "@/viewer/commons/Storage";
-import { Dispatch, useEffect, useMemo, useState } from "react";
+import { Dispatch, useCallback, useEffect, useState } from "react";
 import { Mutex, useEffectAsync } from ".";
 
-export function useStorage<T>(key: string, defaultValue: T): [T, Dispatch<T>] {
-  const [value, setValue] = useState(defaultValue);
+export function useStorage<T>(
+  key: string,
+  defaultValue: T,
+): [Nullable<T>, Dispatch<T>] {
+  const [value, setValue] = useState<Nullable<T>>(null);
 
   // initialize value on first render
   useEffectAsync(
@@ -25,11 +28,11 @@ export function useStorage<T>(key: string, defaultValue: T): [T, Dispatch<T>] {
   useEffect(() => STORAGE.addListener(key, setValue), [key, setValue]);
 
   // function to update both storage and internal state
-  const setValueAndStorage = useMemo(
-    () => (newValue: T) => {
+  const setValueAndStorage = useCallback(
+    (newValue: T) => {
       STORAGE.set(key, newValue).then(() => setValue(newValue));
     },
-    [key, setValue],
+    [key],
   );
 
   return [value, setValueAndStorage];
