@@ -3,7 +3,7 @@ export enum Runtime {
   Web = "web",
 }
 
-export function getRuntime(): Runtime {
+function detectRuntime(): Runtime {
   try {
     return chrome.runtime.id ? Runtime.Extension : Runtime.Web;
   } catch {
@@ -11,8 +11,8 @@ export function getRuntime(): Runtime {
   }
 }
 
+export const RUNTIME = detectRuntime();
+
 export function getURL(path: string): string {
-  return getRuntime() === Runtime.Extension
-    ? chrome.runtime.getURL(path)
-    : path;
+  return RUNTIME === Runtime.Extension ? chrome.runtime.getURL(path) : path;
 }

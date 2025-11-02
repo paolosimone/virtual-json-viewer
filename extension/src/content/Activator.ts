@@ -1,4 +1,4 @@
-import { getStorage } from "@/viewer/commons/Storage";
+import { STORAGE } from "@/viewer/commons/Storage";
 import { Settings, SETTINGS_KEY } from "@/viewer/state";
 
 const MIME_TYPE_JSON_SUFFIXES = [
@@ -20,7 +20,7 @@ export function isJsonContentType(): boolean {
 }
 
 export async function checkActivationSetting(): Promise<boolean> {
-  const settings = await getStorage().get<Settings>(SETTINGS_KEY);
+  const settings = await STORAGE.get<Settings>(SETTINGS_KEY);
   const activationUrlRegex = settings?.activationUrlRegex || null;
 
   if (activationUrlRegex === null) {

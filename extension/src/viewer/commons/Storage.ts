@@ -1,4 +1,4 @@
-import { Runtime, getRuntime } from "@/viewer/state";
+import { Runtime, RUNTIME } from "@/viewer/state";
 
 export type RemoveListener = () => void;
 export type OnItemChange<T> = (item: T) => void;
@@ -78,8 +78,8 @@ class SyncStorage implements Storage {
   }
 }
 
-export function getStorage(): Storage {
-  return getRuntime() === Runtime.Extension
-    ? new SyncStorage()
-    : new LocalStorage();
+function getStorage(): Storage {
+  return RUNTIME === Runtime.Extension ? new SyncStorage() : new LocalStorage();
 }
+
+export const STORAGE = getStorage();
