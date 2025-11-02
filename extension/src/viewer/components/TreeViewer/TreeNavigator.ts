@@ -201,6 +201,7 @@ export class TreeNavigator {
 
   public goToSearchIndex(index: number) {
     // Defensive boundaries check
+    if (!this.tree?.length()) return;
     index = Math.max(0, Math.min(index, this.searchMatches.length - 1));
 
     // Deselect previous match

@@ -37,6 +37,7 @@ export class SearchMatchNavigator {
 
   private goToIndex(index: number) {
     // Defensive boundaries check
+    if (!this.handlers.length) return;
     index = Math.max(0, Math.min(index, this.handlers.length - 1));
 
     // Deselect previous match
