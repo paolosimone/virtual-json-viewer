@@ -62,7 +62,7 @@ export function useApplicationState(
   let syncSearchStartingIndex = searchStartingIndex;
 
   // Reset to 0 when parameters affecting search results change.
-  // It's done without useeffect to make sure it's applied synchronously to the changes.
+  // It's done without useEffect to make sure it's applied synchronously to the changes.
   const searchParams = `${jq.filter}|${jq.slurp}|${search.text}|${search.caseSensitive}`;
   const oldSearchParams = useDeferredValue<string>(searchParams);
   if (searchParams !== oldSearchParams && searchStartingIndex !== 0) {
