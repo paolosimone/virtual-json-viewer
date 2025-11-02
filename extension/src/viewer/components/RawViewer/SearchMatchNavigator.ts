@@ -8,13 +8,12 @@ export class SearchMatchNavigator {
   private currentIndex: Nullable<number> = null;
   private onNavigation?: SearchNavigationCallback;
 
-  public reset(handlers: SearchMatchHandler[]) {
+  public reset(handlers: SearchMatchHandler[], startingIndex: number) {
     this.handlers = handlers;
     this.currentIndex = null;
 
-    // Automatically select the first match if available
     if (this.handlers.length) {
-      this.goToIndex(0);
+      this.goToIndex(startingIndex);
     } else {
       this.notifyNavigation();
     }
@@ -37,6 +36,10 @@ export class SearchMatchNavigator {
   }
 
   private goToIndex(index: number) {
+    // Defensive boundaries check
+    if (!this.handlers.length) return;
+    index = Math.max(0, Math.min(index, this.handlers.length - 1));
+
     // Deselect previous match
     if (this.currentIndex !== null) {
       this.handlers[this.currentIndex].setSelected(false);

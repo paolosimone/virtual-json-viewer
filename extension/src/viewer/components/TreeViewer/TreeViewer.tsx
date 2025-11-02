@@ -27,6 +27,7 @@ export type TreeViewerProps = Props<{
   enableEnterNode: boolean;
   search: Search;
   setSearchNavigation: SetValue<SearchNavigation>;
+  searchStartingIndex: number;
 }>;
 
 export function TreeViewer({
@@ -34,6 +35,7 @@ export function TreeViewer({
   enableEnterNode,
   search,
   setSearchNavigation,
+  searchStartingIndex,
   className,
 }: TreeViewerProps): JSX.Element {
   // Single line -> shown on its own
@@ -95,13 +97,6 @@ export function TreeViewer({
   });
 
   // Search navigation
-  useEffect(() => {
-    // Micro-optimization: avoid O(N) scan if search is not active
-    // No need to add search dependency, because the navigator is rebuilt when search changes
-    if (!search.text) return;
-    treeNavigator.enableSearchNavigation(setSearchNavigation);
-  }, [treeNavigator]);
-
   const goToPreviousMatch = useCallback(
     () => treeNavigator.goToPreviousSearchMatch(),
     [treeNavigator],
@@ -116,6 +111,18 @@ export function TreeViewer({
     [treeNavigator],
   );
   useEventBusListener(ViewerEventType.SearchNavigateNext, goToNextMatch);
+
+  // Enable search navigation when search is active
+  // Starting index is not a dependency, because it must not trigger a reset.
+  useEffect(() => {
+    // Micro-optimization: avoid O(N) scan if search is not active
+    // No search dependency, because the navigator is rebuilt when search changes
+    if (!search.text) return;
+    treeNavigator.enableSearchNavigation(
+      setSearchNavigation,
+      searchStartingIndex,
+    );
+  }, [treeNavigator]);
 
   // Tree context for nodes
   const context: TreeContext = useMemo(

@@ -7,6 +7,9 @@ import { GlobalOptionsContext, OptionsContext, OptionsPage } from "./Context";
 import { EditCustomTheme } from "./EditCustomTheme";
 import { MainOptions } from "./MainOptions";
 
+// Dimensions are required by Chrome to properly size the options panel
+const OPTIONS_PANEL = "min-h-[400px] min-w-[500px]";
+
 export function App(): JSX.Element {
   // global context
   const [theme, setTheme] = useTheme();
@@ -18,6 +21,7 @@ export function App(): JSX.Element {
 
   return isLoaded ? (
     <LoadedApp
+      className={OPTIONS_PANEL}
       context={{
         theme,
         setTheme,
@@ -29,15 +33,15 @@ export function App(): JSX.Element {
       }}
     />
   ) : (
-    <div />
+    <div className={OPTIONS_PANEL} />
   );
 }
 
-type LoadedAppProps = {
+type LoadedAppProps = Props<{
   context: OptionsContext;
-};
+}>;
 
-function LoadedApp({ context }: LoadedAppProps): JSX.Element {
+function LoadedApp({ className, context }: LoadedAppProps): JSX.Element {
   // extremely basic navigation inside options page
   const [page, gotoPage] = useState(OptionsPage.Main);
 
@@ -48,8 +52,9 @@ function LoadedApp({ context }: LoadedAppProps): JSX.Element {
       <CurrentPage
         gotoPage={gotoPage}
         className={classNames(
-          "bg-viewer-background text-viewer-foreground min-h-[400px] min-w-[500px]",
+          "bg-viewer-background text-viewer-foreground",
           resolveTextSizeClass(context.settings.textSize),
+          className,
         )}
       />
     </GlobalOptionsContext.Provider>

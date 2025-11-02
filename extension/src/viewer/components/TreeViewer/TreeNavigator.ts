@@ -172,13 +172,16 @@ export class TreeNavigator {
 
   // Search navigation
 
-  public enableSearchNavigation(callback: SearchNavigationCallback) {
+  public enableSearchNavigation(
+    callback: SearchNavigationCallback,
+    searchStartingIndex: number,
+  ) {
     if (!this.tree) return;
     this.onSearchNavigation = callback;
     this.searchMatches = flattenSearchMatches(this.tree);
 
     if (this.searchMatches.length) {
-      this.goToSearchIndex(0);
+      this.goToSearchIndex(searchStartingIndex);
     } else {
       this.notifySearchNavigation();
     }
@@ -196,7 +199,11 @@ export class TreeNavigator {
     this.goToSearchIndex(next);
   }
 
-  private goToSearchIndex(index: number) {
+  public goToSearchIndex(index: number) {
+    // Defensive boundaries check
+    if (!this.tree?.length()) return;
+    index = Math.max(0, Math.min(index, this.searchMatches.length - 1));
+
     // Deselect previous match
     if (this.searchIndex !== null) {
       this.getSearchHandler(this.searchIndex)?.setSelected(false);

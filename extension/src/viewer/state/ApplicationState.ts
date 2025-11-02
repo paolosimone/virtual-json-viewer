@@ -1,6 +1,7 @@
 import {
   StateObject,
   updateField,
+  useEffectMount,
   useSessionStorage,
   useStateObjectAdapter,
 } from "@/viewer/hooks";
@@ -14,12 +15,13 @@ import {
   Settings,
   ViewerMode,
 } from "@/viewer/state";
-import { useEffect, useState } from "react";
+import { useDeferredValue, useEffect, useState } from "react";
 
 export type ApplicationState = {
   viewerMode: StateObject<ViewerMode>;
   search: StateObject<Search>;
   searchNavigation: StateObject<SearchNavigation>;
+  searchStartingIndex: number;
   jqCommand: StateObject<JQCommand>;
 };
 
@@ -33,17 +35,6 @@ export function useApplicationState(
   // Viewer mode
   const [viewer, setViewer] = useSessionStorage("viewer", settings.viewerMode);
 
-  // Search
-  const [search, setSearch] = useSessionStorage("search", {
-    ...EmptySearch,
-    visibility: settings.searchVisibility,
-  });
-
-  // Search navigation - Can't store in session because it gets reset on viewer load.
-  const [searchNavigation, setSearchNavigation] = useState(
-    EmptySearchNavigation,
-  );
-
   // JQ
   const [jq, setJQ] = useSessionStorage("jq", EmptyJQCommand);
   const [sessionSlurp] = useState<Nullable<boolean>>(jq.slurp);
@@ -54,6 +45,41 @@ export function useApplicationState(
     setJQ(updateField("slurp", isInputMultiline ? chosenSlurp : null));
   }, [settings, isInputMultiline]);
 
+  // Search
+  const [search, setSearch] = useSessionStorage("search", {
+    ...EmptySearch,
+    visibility: settings.searchVisibility,
+  });
+
+  // Search navigation
+  const [searchNavigation, setSearchNavigation] = useState(
+    EmptySearchNavigation,
+  );
+
+  // Preserve the selected search index on reloads
+  const [searchStartingIndex, setSearchStartingIndex] =
+    useSessionStorage<number>("search-index", 0);
+  let syncSearchStartingIndex = searchStartingIndex;
+
+  // Reset to 0 when parameters affecting search results change.
+  // It's done without useEffect to make sure it's applied synchronously to the changes.
+  const searchParams = `${jq.filter}|${jq.slurp}|${search.text}|${search.caseSensitive}`;
+  const oldSearchParams = useDeferredValue<string>(searchParams);
+  if (searchParams !== oldSearchParams && searchStartingIndex !== 0) {
+    syncSearchStartingIndex = 0;
+    setSearchStartingIndex(0);
+  }
+
+  // Update when navigation changes from user interaction (i.e. not on first load)
+  useEffectMount(
+    (isMount) => {
+      if (!isMount) {
+        setSearchStartingIndex(searchNavigation.currentIndex ?? 0);
+      }
+    },
+    [searchNavigation.currentIndex],
+  );
+
   return {
     viewerMode: useStateObjectAdapter([viewer, setViewer]),
     search: useStateObjectAdapter([search, setSearch]),
@@ -61,6 +87,7 @@ export function useApplicationState(
       searchNavigation,
       setSearchNavigation,
     ]),
+    searchStartingIndex: syncSearchStartingIndex,
     jqCommand: useStateObjectAdapter([jq, setJQ]),
   };
 }
