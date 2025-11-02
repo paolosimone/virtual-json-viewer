@@ -22,18 +22,18 @@ export function useStorage<T>(
       }
       setValue(value);
     },
-    [key, defaultValue],
+    [storage, key, defaultValue],
   );
 
   // subscribe to external changes
-  useEffect(() => storage.addListener(key, setValue), [key, setValue]);
+  useEffect(() => storage.addListener(key, setValue), [storage, key, setValue]);
 
   // function to update both storage and internal state
   const setValueAndStorage = useCallback(
     (newValue: T) => {
       storage.set(key, newValue).then(() => setValue(newValue));
     },
-    [key],
+    [storage, key],
   );
 
   return [value, setValueAndStorage];

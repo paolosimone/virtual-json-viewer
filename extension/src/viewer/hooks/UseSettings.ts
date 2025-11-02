@@ -1,5 +1,5 @@
 import { DefaultSettings, Settings, SETTINGS_KEY } from "@/viewer/state";
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import { useStorage } from ".";
 
 export type DispatchSettings = (newSettings: Partial<Settings>) => void;
@@ -11,20 +11,19 @@ export function useSettings(): [Nullable<Settings>, DispatchSettings] {
   );
 
   // upgrade settings if an old version was stored
-  useEffect(() => {
-    if (!settings) return;
+  if (settings) {
     const upgraded = maybeUpgrade(settings);
     if (!Object.is(settings, upgraded)) {
       setSettings(upgraded);
     }
-  }, [settings]);
+  }
 
   const updateSettings = useCallback(
     (newSettings: Partial<Settings>) => {
       if (!settings) return;
       setSettings({ ...settings, ...newSettings });
     },
-    [settings],
+    [settings, setSettings],
   );
 
   return [settings, updateSettings];
