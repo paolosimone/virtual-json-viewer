@@ -23,30 +23,30 @@
     "react": "^19.1.1",
     "react-color": "^2.19.3",
     "react-dom": "^19.1.1",
-    "react-window": "^2.2.2",
+    "react-window": "^2.2.3",
     "uid": "^2.0.2"
   },
   "devDependencies": {
-    "@eslint/js": "^9.39.0",
-    "@tailwindcss/vite": "^4.1.16",
+    "@eslint/js": "^9.39.1",
+    "@tailwindcss/vite": "^4.1.17",
     "@types/chrome": "^0.1.27",
-    "@types/node": "^24.9.2",
+    "@types/node": "^24.10.0",
     "@types/react": "^19.1.11",
     "@types/react-color": "^3.0.13",
     "@types/react-dom": "^19.2.2",
     "@types/tinycolor2": "^1.4.6",
     "@vitejs/plugin-react": "^5.1.0",
     "classnames": "^2.5.1",
-    "eslint": "^9.39.0",
+    "eslint": "^9.39.1",
     "eslint-plugin-react": "^7.37.5",
     "globals": "^16.5.0",
     "prettier": "^3.6.2",
     "prettier-plugin-organize-imports": "^4.2.0",
     "prettier-plugin-tailwindcss": "^0.7.1",
-    "tailwindcss": "^4.1.16",
+    "tailwindcss": "^4.1.17",
     "tsx": "^4.20.4",
     "typescript": "^5.9.2",
-    "typescript-eslint": "^8.46.2",
-    "vite": "^7.1.12"
+    "typescript-eslint": "^8.46.3",
+    "vite": "^7.2.2"
   }
 }
