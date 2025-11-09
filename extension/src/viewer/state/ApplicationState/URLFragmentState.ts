@@ -2,6 +2,14 @@ import { Dispatch, useEffect, useState } from "react";
 import { JQCommand } from "../JQCommand";
 import { Search, SearchVisibility } from "../Search";
 import { ViewerMode } from "../ViewerMode";
+import {
+  BooleanSerializer,
+  EnumSerializer,
+  NullableSerializer,
+  NumberSerializer,
+  SerializerFor,
+  StringSerializer,
+} from "./URLFragmentSerializer";
 
 // All fields are optional because we don't have control over the URL fragment content.
 export type URLFragmentState = {
@@ -32,11 +40,6 @@ export function useURLFragmentState(): [
   }, [fragmentState]);
 
   return [fragmentState, setFragmentState];
-}
-
-interface SerializerFor<T> {
-  serialize(value: T): string;
-  deserialize(text: string): T;
 }
 
 const URLFragmentStateSerializer: SerializerFor<URLFragmentState> = {
@@ -117,92 +120,6 @@ const URLKeySerializer: SerializerFor<keyof URLFragmentState> = {
     throw new Error(`Unknown URL fragment key: ${text}`);
   },
 };
-
-const StringSerializer: SerializerFor<string> = {
-  serialize(value: string): string {
-    return value;
-  },
-
-  deserialize(text: string): string {
-    return text;
-  },
-};
-
-const BooleanSerializer: SerializerFor<boolean> = {
-  serialize(value: boolean): string {
-    return value ? "true" : "false";
-  },
-
-  deserialize(text: string): boolean {
-    switch (text.toLowerCase()) {
-      case "true":
-        return true;
-      case "false":
-        return false;
-      default:
-        throw new Error(`Invalid boolean value: ${text}`);
-    }
-  },
-};
-
-const NumberSerializer: SerializerFor<number> = {
-  serialize(value: number): string {
-    return value.toString();
-  },
-
-  deserialize(text: string): number {
-    const parsed = Number(text);
-    if (isNaN(parsed)) {
-      throw new Error(`Invalid number value: ${text}`);
-    }
-    return parsed;
-  },
-};
-
-class NullableSerializer<T> implements SerializerFor<Nullable<T>> {
-  private innerSerializer: SerializerFor<T>;
-
-  constructor(innerSerializer: SerializerFor<T>) {
-    this.innerSerializer = innerSerializer;
-  }
-
-  serialize(value: Nullable<T>): string {
-    if (value === null) {
-      return "";
-    }
-    return this.innerSerializer.serialize(value);
-  }
-
-  deserialize(text: string): Nullable<T> {
-    if (text === "") {
-      return null;
-    }
-    return this.innerSerializer.deserialize(text);
-  }
-}
-
-class EnumSerializer<T extends StringEnumType>
-  implements SerializerFor<ValueOf<T>>
-{
-  private enumType: T;
-
-  constructor(enumType: T) {
-    this.enumType = enumType;
-  }
-
-  serialize(value: ValueOf<T>): string {
-    return value;
-  }
-
-  deserialize(text: string): ValueOf<T> {
-    if (Object.values(this.enumType).includes(text)) {
-      return text as ValueOf<T>;
-    }
-    throw new Error(
-      `Invalid enum value for enum ${this.enumType.constructor.name}: ${text}`,
-    );
-  }
-}
 
 type URLFragmentStateFieldsSerializer = {
   [K in keyof URLFragmentState]-?: SerializerFor<
