@@ -27,8 +27,6 @@ import {
   KeydownEvent,
   useGlobalKeydownEvent,
   useJQ,
-  useSettings,
-  useTheme,
 } from "./hooks";
 import {
   Translation,
@@ -42,6 +40,8 @@ import {
   ViewerMode,
   resolveTextSizeClass,
   useApplicationState,
+  useSettings,
+  useTheme,
 } from "./state";
 
 // heuristic: https://media.tenor.com/6PFS7ABeJGEAAAAC/dr-evil-one-billion-dollars.gif

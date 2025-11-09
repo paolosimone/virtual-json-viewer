@@ -1,6 +1,6 @@
-import { DefaultSettings, Settings, SETTINGS_KEY } from "@/viewer/state";
+import { useStorage } from "@/viewer/hooks";
 import { useCallback } from "react";
-import { useStorage } from ".";
+import { DefaultSettings, Settings, SETTINGS_KEY } from "./Settings";
 
 export type DispatchSettings = (newSettings: Partial<Settings>) => void;
 

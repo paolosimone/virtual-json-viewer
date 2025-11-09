@@ -9,7 +9,5 @@ export * from "./UseKeydownEvent";
 export * from "./UseMediaQuery";
 export * from "./UseReactiveRef";
 export * from "./UseSessionStorage";
-export * from "./UseSettings";
 export * from "./UseStateObject";
 export * from "./UseStorage";
-export * from "./UseTheme";
