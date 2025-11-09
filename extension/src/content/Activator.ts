@@ -28,6 +28,6 @@ export async function checkActivationSetting(): Promise<boolean> {
   }
 
   const activationRegex = new RegExp(activationUrlRegex);
-  const url = location.origin + location.pathname;
+  const url = window.location.origin + window.location.pathname;
   return activationRegex.test(url);
 }

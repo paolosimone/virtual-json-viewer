@@ -1,17 +1,14 @@
 import { Select } from "@/viewer/components";
 import { Dispatch, JSX } from "react";
 
-export type EnumType = { [key: string]: string };
-export type ValueOf<T> = T[keyof T];
-
-export type EnumSelectProps<T extends EnumType> = Props<{
+export type EnumSelectProps<T extends StringEnumType> = Props<{
   enumType: T;
   labels: Record<ValueOf<T>, string>;
   value: ValueOf<T>;
   setValue: Dispatch<ValueOf<T>>;
 }>;
 
-export function EnumSelect<T extends EnumType>({
+export function EnumSelect<T extends StringEnumType>({
   enumType,
   labels,
   value,
