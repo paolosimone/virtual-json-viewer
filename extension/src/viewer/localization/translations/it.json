@@ -18,6 +18,10 @@
         "text": "JQ \"slurp\" se multilinea",
         "tooltip": "Valore iniziale dell'opzione \"slurp\". Funziona solo se JQ è abilitato e l'input è multilinea."
       },
+      "enableURLState": {
+        "text": "URL condivisibile",
+        "tooltip": "Salva lo stato del viewer nel fragment dell'URL (hash). Il link può essere condiviso con altri utenti di Virtual Json Viewer."
+      },
       "forceActivation": {
         "text": "Forza attivazione del plugin",
         "tooltip": "Prova a parsare il contenuto della pagina come JSON su URL che soddisfano la regex, anche se non hanno un Content-Type JSON."

@@ -9,6 +9,7 @@ export type Settings = {
 
   activationUrlRegex: Nullable<string>;
   enableJQ: boolean;
+  enableURLState: boolean;
   expandNodes: boolean;
   indentation: number;
   jqSlurp: boolean;
@@ -50,6 +51,7 @@ export const DefaultSettings: Settings = {
   // all URL paths ending with a json file extension
   activationUrlRegex: "^.*(\\.jsonl?)$",
   enableJQ: true,
+  enableURLState: true,
   expandNodes: false,
   indentation: 4,
   jqSlurp: true,
