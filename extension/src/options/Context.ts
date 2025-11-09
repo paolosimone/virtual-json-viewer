@@ -1,4 +1,3 @@
-import { DispatchSettings } from "@/viewer/hooks";
 import {
   FallbackLanguage,
   LanguageSetting,
@@ -6,7 +5,13 @@ import {
   SystemLanguage,
   Translation,
 } from "@/viewer/localization";
-import { DefaultSettings, DefaultTheme, Settings, Theme } from "@/viewer/state";
+import {
+  DefaultSettings,
+  DefaultTheme,
+  DispatchSettings,
+  Settings,
+  Theme,
+} from "@/viewer/state";
 import { createContext, Dispatch } from "react";
 
 // navigation

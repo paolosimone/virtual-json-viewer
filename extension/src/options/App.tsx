@@ -1,6 +1,5 @@
-import { useSettings, useTheme } from "@/viewer/hooks";
 import { useLocalization } from "@/viewer/localization";
-import { resolveTextSizeClass } from "@/viewer/state";
+import { resolveTextSizeClass, useSettings, useTheme } from "@/viewer/state";
 import classNames from "classnames";
 import { Dispatch, JSX, useState } from "react";
 import { GlobalOptionsContext, OptionsContext, OptionsPage } from "./Context";

@@ -4,4 +4,6 @@ export * from "./Runtime";
 export * from "./Search";
 export * from "./Settings";
 export * from "./Theme";
+export * from "./UseSettings";
+export * from "./UseTheme";
 export * from "./ViewerMode";

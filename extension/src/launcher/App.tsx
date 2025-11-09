@@ -1,5 +1,5 @@
 import "@/global.css";
-import { useTheme } from "@/viewer/hooks";
+import { useTheme } from "@/viewer/state";
 import classNames from "classnames";
 import { Dispatch, JSX, useState } from "react";
 import { OptionsWrapper } from "./OptionsWrapper";

@@ -1,3 +1,6 @@
+import { useMediaQuery, useStorage } from "@/viewer/hooks";
+import { Dispatch, useLayoutEffect } from "react";
+import tinycolor from "tinycolor2";
 import {
   ColorKey,
   DarkColors,
@@ -7,10 +10,7 @@ import {
   Theme,
   ThemeColors,
   ThemeName,
-} from "@/viewer/state";
-import { Dispatch, useLayoutEffect } from "react";
-import tinycolor from "tinycolor2";
-import { useMediaQuery, useStorage } from ".";
+} from "./Theme";
 
 const KEY = "settings-theme";
 

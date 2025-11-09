@@ -1,8 +1,13 @@
 import newJQ, { JQ } from "@/vendor/jq.wasm";
 import * as Json from "@/viewer/commons/Json";
-import { DefaultSettings, getURL, JQCommand } from "@/viewer/state";
+import {
+  DefaultSettings,
+  getURL,
+  JQCommand,
+  useSettings,
+} from "@/viewer/state";
 import { useState } from "react";
-import { Mutex, useEffectAsync, useReactiveRef, useSettings } from ".";
+import { Mutex, useEffectAsync, useReactiveRef } from ".";
 
 export type JQEnabled = boolean;
 export type JQResult = Json.Lines | Error | undefined;
