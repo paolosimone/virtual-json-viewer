@@ -1,11 +1,7 @@
 import newJQ, { JQ } from "@/vendor/jq.wasm";
 import * as Json from "@/viewer/commons/Json";
-import {
-  DefaultSettings,
-  getURL,
-  JQCommand,
-  useSettings,
-} from "@/viewer/state";
+import { getURL } from "@/viewer/commons/Runtime";
+import { DefaultSettings, JQCommand, useSettings } from "@/viewer/state";
 import { useState } from "react";
 import { Mutex, useEffectAsync, useReactiveRef } from ".";
 

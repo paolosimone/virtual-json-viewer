@@ -1,4 +1,4 @@
-import { Runtime, RUNTIME } from "@/viewer/state";
+import { Runtime, RUNTIME } from "./Runtime";
 
 export type RemoveListener = () => void;
 export type OnItemChange<T> = (item: T) => void;

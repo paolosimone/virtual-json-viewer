@@ -1,4 +1,4 @@
-import { getURL } from "@/viewer/state";
+import { getURL } from "@/viewer/commons/Runtime";
 import classNames from "classnames";
 import { JSX } from "react";
 
