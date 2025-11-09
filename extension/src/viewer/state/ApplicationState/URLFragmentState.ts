@@ -22,22 +22,25 @@ export type URLFragmentState = {
   jqSlurp?: JQCommand["slurp"];
 };
 
-export function useURLFragmentState(): [
-  URLFragmentState,
-  Dispatch<URLFragmentState>,
-] {
+export function useURLFragmentState(
+  syncStateToURL: boolean,
+): [URLFragmentState, Dispatch<URLFragmentState>] {
+  // URL is parsed regardless of flag
   const [fragmentState, setFragmentState] = useState<URLFragmentState>(() =>
     URLFragmentStateSerializer.deserialize(window.location.hash),
   );
 
   useEffect(() => {
-    const newHash = URLFragmentStateSerializer.serialize(fragmentState);
+    // Cleanup URL hash if flag is disabled
+    const newHash = syncStateToURL
+      ? URLFragmentStateSerializer.serialize(fragmentState)
+      : "";
 
     // Replace current history entry instead of adding a new one
     const url = new URL(window.location.href);
     url.hash = newHash;
     window.history.replaceState(null, "", url.toString());
-  }, [fragmentState]);
+  }, [syncStateToURL, fragmentState]);
 
   return [fragmentState, setFragmentState];
 }

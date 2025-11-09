@@ -140,6 +140,14 @@ export function MainOptions({
         labels={t.toolbar.search.visibility}
       />
 
+      <Label {...labels.enableURLState} />
+      <Checkbox
+        checked={settings.enableURLState}
+        setChecked={(checked: boolean) =>
+          updateSettings({ enableURLState: checked })
+        }
+      />
+
       <Label {...labels.enableJQ} />
       <Checkbox
         checked={settings.enableJQ}

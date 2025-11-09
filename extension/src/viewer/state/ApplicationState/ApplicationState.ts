@@ -33,7 +33,7 @@ export function useApplicationState(
   isInputMultiline: boolean,
 ): ApplicationState {
   // URL fragment state
-  const [urlState, setURLState] = useURLFragmentState();
+  const [urlState, setURLState] = useURLFragmentState(settings.enableURLState);
 
   // Viewer mode
   const startingViewerMode = urlState.viewerMode ?? settings.viewerMode;

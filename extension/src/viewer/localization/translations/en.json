@@ -18,6 +18,10 @@
         "text": "JQ multiline \"slurp\"",
         "tooltip": "Default state for the \"slurp\" toggle. Only works if JQ is enabled and the input is multiline."
       },
+      "enableURLState": {
+        "text": "Shareable URL",
+        "tooltip": "Store the viewer state in the URL fragment (hash). URL can be shared to other Virtual Json Viewer users."
+      },
       "forceActivation": {
         "text": "Force extension activation",
         "tooltip": "Try parsing the page content as JSON on URLs matching the regex, even if they don't have a JSON Content-Type."
