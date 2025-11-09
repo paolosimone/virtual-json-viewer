@@ -5,17 +5,17 @@ import {
   useSessionStorage,
   useStateObjectAdapter,
 } from "@/viewer/hooks";
+import { useDeferredValue, useEffect, useState } from "react";
+import { EmptyJQCommand, JQCommand } from "../JQCommand";
 import {
-  EmptyJQCommand,
   EmptySearch,
   EmptySearchNavigation,
-  JQCommand,
   Search,
   SearchNavigation,
-  Settings,
-  ViewerMode,
-} from "@/viewer/state";
-import { useDeferredValue, useEffect, useState } from "react";
+} from "../Search";
+import { Settings } from "../Settings";
+import { ViewerMode } from "../ViewerMode";
+import { URLFragmentState, useURLFragmentState } from "./URLFragmentState";
 
 export type ApplicationState = {
   viewerMode: StateObject<ViewerMode>;
@@ -25,18 +25,26 @@ export type ApplicationState = {
   jqCommand: StateObject<JQCommand>;
 };
 
-// Application state is stored in session and kept on page reload.
+// Application state is stored in session and optionally in URL to be kept on page reload.
 // Default state is customizable in settings so it must be used as initial value,
-// unless of course the state was already loaded from an existing session.
+// unless of course the state was already loaded from session.
 export function useApplicationState(
   settings: Settings,
   isInputMultiline: boolean,
 ): ApplicationState {
+  // URL fragment state
+  const [urlState, setURLState] = useURLFragmentState();
+
   // Viewer mode
-  const [viewer, setViewer] = useSessionStorage("viewer", settings.viewerMode);
+  const startingViewerMode = urlState.viewerMode ?? settings.viewerMode;
+  const [viewer, setViewer] = useSessionStorage("viewer", startingViewerMode);
 
   // JQ
-  const [jq, setJQ] = useSessionStorage("jq", EmptyJQCommand);
+  const startingJQCommand: JQCommand = {
+    filter: urlState.jqFilter ?? EmptyJQCommand.filter,
+    slurp: urlState.jqSlurp ?? EmptyJQCommand.slurp,
+  };
+  const [jq, setJQ] = useSessionStorage("jq", startingJQCommand);
   const [sessionSlurp] = useState<Nullable<boolean>>(jq.slurp);
   useEffect(() => {
     // Read default flag from settings if not already set in the session.
@@ -46,10 +54,12 @@ export function useApplicationState(
   }, [settings, isInputMultiline]);
 
   // Search
-  const [search, setSearch] = useSessionStorage("search", {
-    ...EmptySearch,
-    visibility: settings.searchVisibility,
-  });
+  const startingSearch: Search = {
+    text: urlState.searchText ?? EmptySearch.text,
+    visibility: urlState.searchVisibility ?? settings.searchVisibility,
+    caseSensitive: urlState.searchCaseSensitive ?? EmptySearch.caseSensitive,
+  };
+  const [search, setSearch] = useSessionStorage("search", startingSearch);
 
   // Search navigation
   const [searchNavigation, setSearchNavigation] = useState(
@@ -57,8 +67,9 @@ export function useApplicationState(
   );
 
   // Preserve the selected search index on reloads
+  const startingSearchIndex = urlState.searchStartingIndex ?? 0;
   const [searchStartingIndex, setSearchStartingIndex] =
-    useSessionStorage<number>("search-index", 0);
+    useSessionStorage<number>("search-index", startingSearchIndex);
   let syncSearchStartingIndex = searchStartingIndex;
 
   // Reset to 0 when parameters affecting search results change.
@@ -80,7 +91,7 @@ export function useApplicationState(
     [searchNavigation.currentIndex],
   );
 
-  return {
+  const state: ApplicationState = {
     viewerMode: useStateObjectAdapter([viewer, setViewer]),
     search: useStateObjectAdapter([search, setSearch]),
     searchNavigation: useStateObjectAdapter([
@@ -90,4 +101,40 @@ export function useApplicationState(
     searchStartingIndex: syncSearchStartingIndex,
     jqCommand: useStateObjectAdapter([jq, setJQ]),
   };
+
+  // Sync to URL fragment avoiding infinite loops by checking dependencies individually
+  useEffect(
+    () => setURLState(urlFragmentFromState(state)),
+    [viewer, search, searchStartingIndex, jq],
+  );
+
+  return state;
+}
+
+function urlFragmentFromState(state: ApplicationState): URLFragmentState {
+  const urlFragmentState: URLFragmentState = {};
+
+  // State is meaningful to be exposed only if user entered a search/query.
+  if (!state.search.value.text && !state.jqCommand.value.filter) {
+    return urlFragmentState;
+  }
+
+  // Viewer mode
+  urlFragmentState.viewerMode = state.viewerMode.value;
+
+  // Search
+  if (state.search.value.text) {
+    urlFragmentState.searchText = state.search.value.text;
+    urlFragmentState.searchVisibility = state.search.value.visibility;
+    urlFragmentState.searchCaseSensitive = state.search.value.caseSensitive;
+    urlFragmentState.searchStartingIndex = state.searchStartingIndex;
+  }
+
+  // JQ
+  if (state.jqCommand.value.filter) {
+    urlFragmentState.jqFilter = state.jqCommand.value.filter;
+    urlFragmentState.jqSlurp = state.jqCommand.value.slurp;
+  }
+
+  return urlFragmentState;
 }
