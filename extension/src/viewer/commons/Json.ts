@@ -100,29 +100,57 @@ export type TryParseOptions = {
   sortKeys?: boolean;
 };
 
+// Some servers include these prefixes in their JSON responses to protect from XSSI.
+const XSSI_JSON_PREFIXES = [
+  // see: https://cs.opensource.google/angular/angular.js/+/master:src/ng/http.js;l=807-826;drc=71d19f120ab342a9e7cac64cf88b497ad5890de4
+  ")]}',",
+  // see: https://cs.opensource.google/gerrit/gerrit/gerrit/+/master:java/com/google/gerrit/httpd/restapi/RestApiServlet.java;l=219-231;drc=c8da485f48afd7ebf2c703b800ff3e3de5d086c8
+  ")]}'",
+];
+
 export function tryParseLines(
   text: string,
   opts?: TryParseOptions,
 ): Result<Lines> {
   const reviver = buildReviver(opts?.sortKeys || false);
 
-  // try parsing the whole file as a single json...
-  try {
-    return [JSON.parse(text, reviver)];
-  } catch (e) {
-    // ...check if it's a newline-delimited json...
-    try {
-      return text
+  const parsers: ((text: string) => Lines)[] = [
+    // try parsing the whole file as a single json
+    (text) => [JSON.parse(text, reviver)],
+
+    // check if it's a newline-delimited json
+    (text) =>
+      text
         .trim()
         .split("\n")
-        .map((line) => JSON.parse(line, reviver));
-    } catch {
-      // nope
-    }
+        .map((line) => JSON.parse(line, reviver)),
 
-    // ...return the original error
-    return e as Error;
+    // check if it's a single json with an XSSI prefix that we can elide
+    ...XSSI_JSON_PREFIXES.map((prefix) => (text: string) => {
+      if (text.startsWith(prefix)) {
+        const nonPrefixedText = text.substring(prefix.length);
+        return [JSON.parse(nonPrefixedText, reviver)];
+      } else {
+        throw new Error(`The supplied JSON is not prefixed with ${prefix}.`);
+      }
+    }),
+  ];
+
+  // we only want to keep and return the first error if no parser works
+  let firstError = new Error("No parser has been executed.");
+
+  for (let i = 0; i < parsers.length; i++) {
+    const parse = parsers[i];
+    try {
+      return parse(text);
+    } catch (e) {
+      if (i === 0) {
+        firstError = e as Error;
+      }
+    }
   }
+
+  return firstError;
 }
 
 export type ToStringOptions = {
