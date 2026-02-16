@@ -104,6 +104,8 @@ export function tryParseLines(
   text: string,
   opts?: TryParseOptions,
 ): Result<Lines> {
+  text = cleanJsonText(text);
+
   const reviver = buildReviver(opts?.sortKeys || false);
 
   // try parsing the whole file as a single json...
@@ -112,10 +114,7 @@ export function tryParseLines(
   } catch (e) {
     // ...check if it's a newline-delimited json...
     try {
-      return text
-        .trim()
-        .split("\n")
-        .map((line) => JSON.parse(line, reviver));
+      return text.split("\n").map((line) => JSON.parse(line, reviver));
     } catch {
       // nope
     }
@@ -123,6 +122,36 @@ export function tryParseLines(
     // ...return the original error
     return e as Error;
   }
+}
+
+function cleanJsonText(text: string): string {
+  text = removeXssiPrefix(text);
+  text = text.trim();
+  return text;
+}
+
+// Some servers include these prefixes in their JSON responses to protect from XSSI.
+//
+// NOTE: The order of elements in this array is important. Only the first matching
+// prefix will be removed.
+//
+// This means that, if there are two elements |a|, |b| in the array such that
+// |b = a + something|, |b| should appear before |a|.
+// Otherwise, we will never attempt to delete the full prefix |b|.
+const XSSI_JSON_PREFIXES = [
+  // see: https://cs.opensource.google/angular/angular.js/+/master:src/ng/http.js;l=807-826;drc=71d19f120ab342a9e7cac64cf88b497ad5890de4
+  ")]}',",
+  // see: https://cs.opensource.google/gerrit/gerrit/gerrit/+/master:java/com/google/gerrit/httpd/restapi/RestApiServlet.java;l=219-231;drc=c8da485f48afd7ebf2c703b800ff3e3de5d086c8
+  ")]}'",
+];
+
+function removeXssiPrefix(text: string): string {
+  for (const prefix of XSSI_JSON_PREFIXES) {
+    if (text.startsWith(prefix)) {
+      return text.slice(prefix.length);
+    }
+  }
+  return text;
 }
 
 export type ToStringOptions = {
