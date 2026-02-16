@@ -66,9 +66,9 @@ export class NullableSerializer<T> implements SerializerFor<Nullable<T>> {
   }
 }
 
-export class EnumSerializer<T extends StringEnumType>
-  implements SerializerFor<ValueOf<T>>
-{
+export class EnumSerializer<T extends StringEnumType> implements SerializerFor<
+  ValueOf<T>
+> {
   private enumType: T;
 
   constructor(enumType: T) {
