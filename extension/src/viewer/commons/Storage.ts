@@ -49,7 +49,9 @@ class SyncStorage implements Storage {
   get<T>(key: string): Promise<Nullable<T>> {
     return new Promise((resolve, reject) => {
       try {
-        chrome.storage.sync.get(key, (items) => resolve(items[key] ?? null));
+        chrome.storage.sync.get(key, (items) =>
+          resolve((items[key] as T) ?? null),
+        );
       } catch (e) {
         reject(e);
       }

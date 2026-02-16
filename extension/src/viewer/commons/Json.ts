@@ -132,12 +132,8 @@ function cleanJsonText(text: string): string {
 
 // Some servers include these prefixes in their JSON responses to protect from XSSI.
 //
-// NOTE: The order of elements in this array is important. Only the first matching
-// prefix will be removed.
-//
-// This means that, if there are two elements |a|, |b| in the array such that
-// |b = a + something|, |b| should appear before |a|.
-// Otherwise, we will never attempt to delete the full prefix |b|.
+// The order of elements in this array is important.
+// Only the first matching prefix will be removed.
 const XSSI_JSON_PREFIXES = [
   // see: https://cs.opensource.google/angular/angular.js/+/master:src/ng/http.js;l=807-826;drc=71d19f120ab342a9e7cac64cf88b497ad5890de4
   ")]}',",
