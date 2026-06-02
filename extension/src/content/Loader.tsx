@@ -8,7 +8,12 @@ const CONTENT_CSS_URL = chrome.runtime.getURL("assets/content.css");
 
 export function loadIncrementally() {
   DomEvents.headAvailable().then(setupResources);
-  DomEvents.documentLoaded().then(loadViewer);
+  DomEvents.documentLoaded()
+    .then(loadViewer)
+    .catch((error) => {
+      setLoading(false);
+      console.warn(`Virtual Json Viewer activation failed: ${error.message}`);
+    });
 }
 
 export function tryLoadAfterDocumentLoaded() {
@@ -33,7 +38,13 @@ function setupResources() {
 
 function loadViewer() {
   const jsonElement = document.getElementsByTagName("pre")[0];
-  renderViewer(jsonElement.innerText);
+  const jsonText = jsonElement?.textContent ?? tryFindJsonText();
+
+  if (jsonText === undefined) {
+    throw new Error("JSON expected but not found");
+  }
+
+  renderViewer(jsonText);
 }
 
 function forceSetupAndLoadViewer() {
@@ -68,7 +79,7 @@ function setLoadingMessage(show: boolean) {
   if (show) {
     const elem = document.createElement("div");
     elem.id = "loading";
-    elem.innerText = "Loading...";
+    elem.textContent = "Loading...";
     document.body.appendChild(elem);
   } else {
     const elem = document.getElementById("loading");
@@ -133,11 +144,11 @@ function tryFindJsonText(): string | undefined {
   // textual content
   const preformatted = document.getElementsByTagName("pre");
   if (preformatted.length == 1) {
-    candidates.push(preformatted[0].innerText);
+    candidates.push(preformatted[0].textContent ?? "");
   }
 
   // body
-  candidates.push(document.body.innerText);
+  candidates.push(document.body.textContent ?? "");
 
   return candidates.find(
     (candidate) => !(Json.tryParseLines(candidate) instanceof Error),

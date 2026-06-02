@@ -25,7 +25,7 @@ function pageConfig(entrypoint: string, path: string): InlineConfig {
     configFile: false,
     clearScreen: false,
     build: {
-      target: "es2017",
+      target: "es2018",
       emptyOutDir: false,
       rollupOptions: {
         input: { [entrypoint]: path },
