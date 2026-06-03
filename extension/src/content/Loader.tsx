@@ -8,12 +8,7 @@ const CONTENT_CSS_URL = chrome.runtime.getURL("assets/content.css");
 
 export function loadIncrementally() {
   DomEvents.headAvailable().then(setupResources);
-  DomEvents.documentLoaded()
-    .then(loadViewer)
-    .catch((error) => {
-      setLoading(false);
-      console.warn(`Virtual Json Viewer activation failed: ${error.message}`);
-    });
+  DomEvents.documentLoaded().then(loadViewer);
 }
 
 export function tryLoadAfterDocumentLoaded() {
@@ -37,10 +32,9 @@ function setupResources() {
 }
 
 function loadViewer() {
-  const jsonElement = document.getElementsByTagName("pre")[0];
-  const jsonText = jsonElement?.textContent ?? tryFindJsonText();
+  const jsonText = document.getElementsByTagName("pre")[0]?.textContent;
 
-  if (jsonText === undefined) {
+  if (!jsonText) {
     throw new Error("JSON expected but not found");
   }
 
