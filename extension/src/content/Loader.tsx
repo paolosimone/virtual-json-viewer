@@ -32,8 +32,13 @@ function setupResources() {
 }
 
 function loadViewer() {
-  const jsonElement = document.getElementsByTagName("pre")[0];
-  renderViewer(jsonElement.innerText);
+  const jsonText = document.getElementsByTagName("pre")[0]?.textContent;
+
+  if (!jsonText) {
+    throw new Error("JSON expected but not found");
+  }
+
+  renderViewer(jsonText);
 }
 
 function forceSetupAndLoadViewer() {
@@ -68,7 +73,7 @@ function setLoadingMessage(show: boolean) {
   if (show) {
     const elem = document.createElement("div");
     elem.id = "loading";
-    elem.innerText = "Loading...";
+    elem.textContent = "Loading...";
     document.body.appendChild(elem);
   } else {
     const elem = document.getElementById("loading");
@@ -133,11 +138,11 @@ function tryFindJsonText(): string | undefined {
   // textual content
   const preformatted = document.getElementsByTagName("pre");
   if (preformatted.length == 1) {
-    candidates.push(preformatted[0].innerText);
+    candidates.push(preformatted[0].textContent ?? "");
   }
 
   // body
-  candidates.push(document.body.innerText);
+  candidates.push(document.body.textContent ?? "");
 
   return candidates.find(
     (candidate) => !(Json.tryParseLines(candidate) instanceof Error),
