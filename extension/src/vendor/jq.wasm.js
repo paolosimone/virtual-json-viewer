@@ -300,7 +300,7 @@ function initRuntime() {
   if (!Module["noFSInit"] && !FS.initialized) FS.init();
   TTY.init();
   // End ATINITS hooks
-  wasmExports["F"]();
+  wasmExports["G"]();
   // Begin ATPOSTCTORS hooks
   FS.ignorePermissions = false;
 }
@@ -460,9 +460,9 @@ async function createWasm() {
   // performing other necessary setup
   /** @param {WebAssembly.Module=} module*/ function receiveInstance(instance, module) {
     wasmExports = instance.exports;
-    wasmMemory = wasmExports["E"];
+    wasmMemory = wasmExports["F"];
     updateMemoryViews();
-    wasmTable = wasmExports["I"];
+    wasmTable = wasmExports["J"];
     assignWasmExports(wasmExports);
     removeRunDependency("wasm-instantiate");
     return wasmExports;
@@ -3788,6 +3788,16 @@ function _fd_write(fd, iov, iovcnt, pnum) {
   }
 }
 
+function _random_get(buffer, size) {
+  try {
+    randomFill(HEAPU8.subarray(buffer, buffer + size));
+    return 0;
+  } catch (e) {
+    if (typeof FS == "undefined" || !(e.name === "ErrnoError")) throw e;
+    return e.errno;
+  }
+}
+
 var arraySum = (array, index) => {
   var sum = 0;
   for (var i = 0; i <= index; sum += array[i++]) {}
@@ -4133,24 +4143,24 @@ FS.staticInit();
 var _main, _fflush, ___funcs_on_exit, __emscripten_stack_alloc;
 
 function assignWasmExports(wasmExports) {
-  Module["_main"] = _main = wasmExports["G"];
-  _fflush = wasmExports["H"];
-  ___funcs_on_exit = wasmExports["J"];
-  __emscripten_stack_alloc = wasmExports["K"];
+  Module["_main"] = _main = wasmExports["H"];
+  _fflush = wasmExports["I"];
+  ___funcs_on_exit = wasmExports["K"];
+  __emscripten_stack_alloc = wasmExports["L"];
 }
 
 var wasmImports = {
   /** @export */ a: ___assert_fail,
-  /** @export */ D: ___call_sighandler,
+  /** @export */ E: ___call_sighandler,
   /** @export */ g: ___syscall_fcntl64,
-  /** @export */ C: ___syscall_fstat64,
-  /** @export */ B: ___syscall_getcwd,
-  /** @export */ A: ___syscall_ioctl,
-  /** @export */ z: ___syscall_lstat64,
-  /** @export */ y: ___syscall_newfstatat,
+  /** @export */ D: ___syscall_fstat64,
+  /** @export */ C: ___syscall_getcwd,
+  /** @export */ B: ___syscall_ioctl,
+  /** @export */ A: ___syscall_lstat64,
+  /** @export */ z: ___syscall_newfstatat,
   /** @export */ f: ___syscall_openat,
-  /** @export */ x: ___syscall_readlinkat,
-  /** @export */ w: ___syscall_stat64,
+  /** @export */ y: ___syscall_readlinkat,
+  /** @export */ x: ___syscall_stat64,
   /** @export */ p: __abort_js,
   /** @export */ o: __emscripten_runtime_keepalive_clear,
   /** @export */ n: __gmtime_js,
@@ -4160,15 +4170,16 @@ var wasmImports = {
   /** @export */ j: __tzset_js,
   /** @export */ d: _emscripten_date_now,
   /** @export */ i: _emscripten_resize_heap,
-  /** @export */ v: _environ_get,
-  /** @export */ u: _environ_sizes_get,
+  /** @export */ w: _environ_get,
+  /** @export */ v: _environ_sizes_get,
   /** @export */ b: _exit,
   /** @export */ c: _fd_close,
-  /** @export */ t: _fd_fdstat_get,
-  /** @export */ s: _fd_read,
-  /** @export */ r: _fd_seek,
+  /** @export */ u: _fd_fdstat_get,
+  /** @export */ t: _fd_read,
+  /** @export */ s: _fd_seek,
   /** @export */ e: _fd_write,
-  /** @export */ q: _proc_exit,
+  /** @export */ r: _proc_exit,
+  /** @export */ q: _random_get,
   /** @export */ h: _strptime
 };
 
@@ -4267,5 +4278,6 @@ if (runtimeInitialized) {
 })();
 
 // WARN: added manually because vite does not support CommonJS exports
+// Can't use jq.wasm.mjs because content.js doesn't support import.meta
 export default newJQ;
 

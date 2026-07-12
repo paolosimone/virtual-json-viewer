@@ -3,9 +3,13 @@
   "version": "2.2.2",
   "private": true,
   "type": "module",
+  "//": [
+    "ESLint is broken for TS7: https://github.com/typescript-eslint/typescript-eslint/issues/10940",
+    "When fixed, let's re-add yarn eslint --fix command"
+  ],
   "scripts": {
     "format": "yarn prettier --write .",
-    "fix": "yarn format && yarn tsc --noEmit && yarn eslint --fix",
+    "fix": "yarn format && yarn tsc --noEmit",
     "dev": "yarn vite",
     "bump": "yarn upgrade --latest",
     "build:chrome": "yarn tsx vite.build.ts chrome",
