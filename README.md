@@ -193,8 +193,8 @@ Disable native json viewer
 
 Load extension
 
-1. Go to `about:debugging`
-1. Click "This Firefox"
+1. Go to `about:addons`
+1. Click on the top right gear icon and select "Debug Add-ons"
 1. Click "Load Temporary Add-on" and select the `manifest.json` file inside `dist/firefox` directory
 
 *Note:* The extension is automatically removed when Firefox is closed and must be manually loaded on next start.
