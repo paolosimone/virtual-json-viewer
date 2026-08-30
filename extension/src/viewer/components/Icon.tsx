@@ -42,6 +42,18 @@ export function CaseSensitive(): JSX.Element {
   );
 }
 
+export function Check(): JSX.Element {
+  return (
+    <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M14.4318 3.3232L5.96175 13.3232L5.17104 13.2874L1.82104 8.5174L2.63939 7.94268L5.61722 12.1827L13.6687 2.67688L14.4318 3.3232Z"
+      />
+    </svg>
+  );
+}
+
 export function ChevronDown(): JSX.Element {
   return (
     <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
@@ -277,6 +289,30 @@ export function SymbolFile(): JSX.Element {
   return (
     <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
       <path d="M13.8502 4.44L10.5702 1.14L10.2202 1H2.50024L2.00024 1.5V14.5L2.50024 15H13.5002L14.0002 14.5V4.8L13.8502 4.44ZM13.0002 5H10.0002V2L13.0002 5ZM3.00024 14V2H9.00024V5.5L9.50024 6H13.0002V14H3.00024Z" />
+    </svg>
+  );
+}
+
+export function TaskList(): JSX.Element {
+  return (
+    <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M3.57055 6.69861L9.26368 1.76345L8.58506 1L3.27365 5.59585L1.76369 3.76355L1.00024 4.44217L2.84952 6.6562L3.57055 6.69861ZM15.0002 5H6.82434L9.13151 3H15.0002V5ZM6.00024 7H15.0002V9H6.00024V7ZM15.0002 11H6.00024V13H15.0002V11Z"
+      />
+    </svg>
+  );
+}
+
+export function ThreeBars(): JSX.Element {
+  return (
+    <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M14.0002 5H2.00024V3H14.0002V5ZM14.0002 9H2.00024V7H14.0002V9ZM2.00024 13H14.0002V11H2.00024V13Z"
+      />
     </svg>
   );
 }

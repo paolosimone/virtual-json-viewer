@@ -96,7 +96,7 @@ export function JQCommandBox({
           <IconButton
             className="fill-input-foreground hover:bg-input-focus mx-1 h-5 w-5"
             title={t.toolbar.jq.slurp[command.slurp ? "on" : "off"]}
-            icon={command.slurp ? Icon.SymbolFile : Icon.Files}
+            icon={command.slurp ? Icon.TaskList : Icon.ThreeBars}
             onClick={() => setCommand(updateField("slurp", !command.slurp))}
           />
         )}

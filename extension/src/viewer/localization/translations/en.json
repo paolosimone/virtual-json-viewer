@@ -122,6 +122,7 @@
     "expand": "Expand",
     "collapse": "Collapse",
     "save": "Download",
+    "copy": "Copy to clipboard",
     "search": {
       "clear": "Clear",
       "case": {

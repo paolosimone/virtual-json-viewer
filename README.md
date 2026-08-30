@@ -35,6 +35,7 @@ Rightful question, and the answer is quite simple: the others weren't good enoug
 - [X] Support [JSON Lines](https://jsonlines.org/)
 - [X] Shareable URL
 - [X] [Keyboard shortcuts](#keyboard-shortcuts)
+- [X] Download/copy JSON
 - [X] Appearance
     - [X] Light/dark mode
     - [X] Custom theme
@@ -63,6 +64,7 @@ Rightful question, and the answer is quite simple: the others weren't good enoug
 | Expand                       | `Ctrl + e`           |                   |
 | Collapse                     | `Ctrl + Shift + e`   |                   |
 | Save                         | `Ctrl + s`           |                   |
+| Copy to clipboard            | `Ctrl + Shift + c`   | `Shift + y`       |
 | Go to next search match      | `Ctrl + g`           | `n`               |
 | Go to previous search match  | `Ctrl + Shift + g`   | `Shift + n`       |
 
