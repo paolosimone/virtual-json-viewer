@@ -8,7 +8,7 @@
     "When fixed, let's re-add yarn eslint --fix command"
   ],
   "scripts": {
-    "format": "yarn prettier --write .",
+    "format": "yarn prettier --write . ../README.md",
     "fix": "yarn format && yarn tsc --noEmit",
     "dev": "yarn vite",
     "bump": "yarn upgrade --latest",

@@ -18,28 +18,28 @@ Rightful question, and the answer is quite simple: the others weren't good enoug
 
 ## Features
 
-- [X] [Blazing fast](#performance) JSON rendering using virtual DOM
-    - [X] Color-encoded value types
-    - [X] Collapse/expand all nodes
-    - [X] Preview nested item count for closed nodes
-    - [X] Clickable URLs
-    - [X] Option to sort JSON keys alphabetically
-- [X] Full text search
-    - [X] Highlight search results
-    - [X] Navigate to next/previous search match
-    - [X] Option to completely hide subtrees without any search match
-    - [X] Option to enable case sensitive search
-- [X] JQ filtering
-- [X] Raw JSON viewer
-    - [X] Prettify/minify 
-- [X] Support [JSON Lines](https://jsonlines.org/)
-- [X] Shareable URL
-- [X] [Keyboard shortcuts](#keyboard-shortcuts)
-- [X] Download/copy JSON
-- [X] Appearance
-    - [X] Light/dark mode
-    - [X] Custom theme
-    - [X] Internationalization
+- [x] [Blazing fast](#performance) JSON rendering using virtual DOM
+  - [x] Color-encoded value types
+  - [x] Collapse/expand all nodes
+  - [x] Preview nested item count for closed nodes
+  - [x] Clickable URLs
+  - [x] Option to sort JSON keys alphabetically
+- [x] Full text search
+  - [x] Highlight search results
+  - [x] Navigate to next/previous search match
+  - [x] Option to completely hide subtrees without any search match
+  - [x] Option to enable case sensitive search
+- [x] JQ filtering
+- [x] Raw JSON viewer
+  - [x] Prettify/minify
+- [x] Support [JSON Lines](https://jsonlines.org/)
+- [x] Shareable URL
+- [x] [Keyboard shortcuts](#keyboard-shortcuts)
+- [x] Download/copy JSON
+- [x] Appearance
+  - [x] Light/dark mode
+  - [x] Custom theme
+  - [x] Internationalization
 
 ### Keyboard shortcuts
 
@@ -47,53 +47,53 @@ Rightful question, and the answer is quite simple: the others weren't good enoug
 
 ##### Navigate UI
 
-| Action                       | Primary              | Secondary         |
-|------------------------------|:--------------------:|:-----------------:|
-| Focus Next element           | `Tab`                |                   |
-| Focus Previous element       | `Shift + Tab`        |                   |
-| Trigger button               | `Enter`              |                   |
-| Focus Search                 | `Ctrl + f`           | `/`               |
-| Focus JQ                     | `Ctrl + Shift + f`   |                   |
-| Focus Viewer                 | `Ctrl + 0`           |                   |
+| Action                 |      Primary       | Secondary |
+| ---------------------- | :----------------: | :-------: |
+| Focus Next element     |       `Tab`        |           |
+| Focus Previous element |   `Shift + Tab`    |           |
+| Trigger button         |      `Enter`       |           |
+| Focus Search           |     `Ctrl + f`     |    `/`    |
+| Focus JQ               | `Ctrl + Shift + f` |           |
+| Focus Viewer           |     `Ctrl + 0`     |           |
 
 ##### Toolbar
 
-| Action                       | Primary              | Secondary         |
-|------------------------------|:--------------------:|:-----------------:|
-| Toggle Tree/Raw viewer       | `Ctrl + i`           |                   |
-| Expand                       | `Ctrl + e`           |                   |
-| Collapse                     | `Ctrl + Shift + e`   |                   |
-| Save                         | `Ctrl + s`           |                   |
-| Copy to clipboard            | `Ctrl + Shift + c`   | `Shift + y`       |
-| Go to next search match      | `Ctrl + g`           | `n`               |
-| Go to previous search match  | `Ctrl + Shift + g`   | `Shift + n`       |
+| Action                      |      Primary       |  Secondary  |
+| --------------------------- | :----------------: | :---------: |
+| Toggle Tree/Raw viewer      |     `Ctrl + i`     |             |
+| Expand                      |     `Ctrl + e`     |             |
+| Collapse                    | `Ctrl + Shift + e` |             |
+| Save                        |     `Ctrl + s`     |             |
+| Copy to clipboard           | `Ctrl + Shift + c` | `Shift + y` |
+| Go to next search match     |     `Ctrl + g`     |     `n`     |
+| Go to previous search match | `Ctrl + Shift + g` | `Shift + n` |
 
 ##### Tree viewer
 
-| Action                       | Primary              | Secondary         |
-|------------------------------|:--------------------:|:-----------------:|
-| Start navigation             | `Enter`              |                   |
-| End navigation               | `Escape`             |                   |
-| Go to next                   | `ArrowDown`          | `j`               |
-| Go to previous               | `ArrowUp`            | `k`               |
-| Go to next page              | `PageDown`           | `Shift + j`       |
-| Go to previous page          | `PageUp`             | `Shift + k`       |
-| Go to first                  | `Home`               | `gg`              |
-| Go to last                   | `End`                | `Shift + g`       |
-| Open node                    | `ArrowRight`         | `l`               |
-| Close node                   | `ArrowLeft`          | `h`               |
-| Toggle node open/close       | `Spacebar`           |                   |
-| Enter node (requires JQ)     | `Enter`              |                   |
-| Select key text              | `Shift + ArrowLeft`  | `Shift + h`       |
-| Select value text            | `Shift + ArrowRight` | `Shift + l`       |
-| Select node text             | `Ctrl + a`           |                   |
+| Action                   |       Primary        |  Secondary  |
+| ------------------------ | :------------------: | :---------: |
+| Start navigation         |       `Enter`        |             |
+| End navigation           |       `Escape`       |             |
+| Go to next               |     `ArrowDown`      |     `j`     |
+| Go to previous           |      `ArrowUp`       |     `k`     |
+| Go to next page          |      `PageDown`      | `Shift + j` |
+| Go to previous page      |       `PageUp`       | `Shift + k` |
+| Go to first              |        `Home`        |    `gg`     |
+| Go to last               |        `End`         | `Shift + g` |
+| Open node                |     `ArrowRight`     |     `l`     |
+| Close node               |     `ArrowLeft`      |     `h`     |
+| Toggle node open/close   |      `Spacebar`      |             |
+| Enter node (requires JQ) |       `Enter`        |             |
+| Select key text          | `Shift + ArrowLeft`  | `Shift + h` |
+| Select value text        | `Shift + ArrowRight` | `Shift + l` |
+| Select node text         |      `Ctrl + a`      |             |
 
 ##### Raw viewer
 
-| Action                       | Primary              | Secondary         |
-|------------------------------|:--------------------:|:-----------------:|
-| Select all text              | `Ctrl + a`           |                   |
-| Deselect text                | `Escape`             |                   |
+| Action          |  Primary   | Secondary |
+| --------------- | :--------: | :-------: |
+| Select all text | `Ctrl + a` |           |
+| Deselect text   |  `Escape`  |           |
 
 ## FAQ
 
@@ -102,7 +102,7 @@ Rightful question, and the answer is quite simple: the others weren't good enoug
 On Chrome
 
 1. go to `chrome://extensions/`
-1. select "Virtual Json Viewer" 
+1. select "Virtual Json Viewer"
 1. enable the toggle "Allow access to file URLs"
 
 If this doesn't solve the issue make sure you are using the latest version of both Chrome and Virtual Json Viewer, or manually install the [correct build for your version](#manual-installation).
@@ -131,12 +131,13 @@ Why? The core feature of Virtual Json Viewer is the navigation of (possibly larg
 
 The json content is parsed using Javascript's [JSON.parse](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse) in order to be rendered both in Tree and Raw view, and even from Download button. For the vast majority of cases this shouldn't be a problem but if you find yourself in need of debugging the original json text I'd suggest you to ~~start praying~~ turn to more suitable tools like API clients and text editors.
 
-Here are some well-known Javascript behaviour that could lead to differences between the original json and its javascript parsed object.  
+Here are some well-known Javascript behaviour that could lead to differences between the original json and its javascript parsed object.
 
 #### Large numbers are truncated
 
 Integers outside the range `Number.MIN_SAFE_INTEGER` and `Number.MAX_SAFE_INTEGER` are rounded ([MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MAX_SAFE_INTEGER))
 
+<!-- prettier-ignore -->
 ```javascript
 JSON.parse('{"wrong": 10000000000000099}')
 {wrong: 10000000000000100}
@@ -144,15 +145,17 @@ JSON.parse('{"wrong": 10000000000000099}')
 
 Floating point numbers are rounded to 16 digits
 
+<!-- prettier-ignore -->
 ```javascript
 JSON.parse('{"wrong": 1.12345678901234567890}')
 {wrong: 1.1234567890123457}
 ```
 
-#### Keys order is not preserved 
+#### Keys order is not preserved
 
 Even disabling the alphabetical ordering feature flag there is no guarantee that the order of keys on screen will be the same as the original json. The actual order will be the output of `Object.keys(JSON.parse(json))`. For instance by ECMAScript specification integer-like keys will be iterated first ([MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...in#:~:text=The%20traversal%20order,of%20property%20creation.))
 
+<!-- prettier-ignore -->
 ```javascript
 Object.keys(JSON.parse('{"ZZZ": "_", "AAA": "_", "42": "_"}'))
 ['42', 'ZZZ', 'AAA']
@@ -160,6 +163,7 @@ Object.keys(JSON.parse('{"ZZZ": "_", "AAA": "_", "42": "_"}'))
 
 #### Unicode escapes are parsed
 
+<!-- prettier-ignore -->
 ```javascript
 JSON.parse('{"\u3053\u3093\u306B\u3061\u306F": "\u4E16\u754C"}')
 {'こんにちは': '世界'}
@@ -203,7 +207,7 @@ Load extension
 1. Click on the top right gear icon and select "Debug Add-ons"
 1. Click "Load Temporary Add-on" and select the `manifest.json` file inside `dist/firefox` directory
 
-*Note:* The extension is automatically removed when Firefox is closed and must be manually loaded on next start.
+_Note:_ The extension is automatically removed when Firefox is closed and must be manually loaded on next start.
 
 #### Others
 
@@ -239,44 +243,44 @@ Always `yarn format` before creating a commit.
 
 ## Performance
 
-*Disclaimer*: this is NOT a formal benchmark, just a few tests with syntethic data to give an idea of loading performance time.
+_Disclaimer_: this is NOT a formal benchmark, just a few tests with syntethic data to give an idea of loading performance time.
 
 **Setup**
 
-- Virtual Json Viewer v2.0.0 
+- Virtual Json Viewer v2.0.0
 - Macbook Pro 16 (Nov 2023) Apple M3 Pro 18 GB
 - Chrome 139.0.7258.128
 - Jsons are randomly generated using [this script](./samples/random_json.py) (fixed dept: 10)
 - Files are loaded from disk
 - Load time recorded with Chrome DevTool
-    1. Open file in chrome
-    1. From "Performance" -> "Insights" tab click "Record and reload"
-    1. Take the "Largest Contentful Paint" (LCP)
+  1. Open file in chrome
+  1. From "Performance" -> "Insights" tab click "Record and reload"
+  1. Take the "Largest Contentful Paint" (LCP)
 
 **Results**
 
-| Siblings per level | File Size      | Load time       |
-|--------------------|----------------|-----------------|
-| 10                 | ~100 KB        | ~150 ms         |
-| 100                | ~1 MB          | ~150 ms         |
-| 1000               | ~10 MB         | ~450 ms         |
-| 10000              | ~100 MB        | ~4000 ms        |
+| Siblings per level | File Size | Load time |
+| ------------------ | --------- | --------- |
+| 10                 | ~100 KB   | ~150 ms   |
+| 100                | ~1 MB     | ~150 ms   |
+| 1000               | ~10 MB    | ~450 ms   |
+| 10000              | ~100 MB   | ~4000 ms  |
 
 ## References
 
-|Tool                                                                           |Usage                                          |
-|-------------------------------------------------------------------------------|-----------------------------------------------|
-|[anchorme](https://github.com/alexcorvi/anchorme.js)                           |Convert URLs to clickable HTML links|
-|[jq-wasm](https://github.com/paolosimone/jq-wasm)                              |JQ in the browser|
-|[json-stable-stringify](https://github.com/ljharb/json-stable-stringify)       |Sort keys on JSON serialization apparently is rocket science|
-|[React](https://reactjs.org/)                                                  |Learn how to write a frontend application without jQuery and bootstrap|
-|[react-color](https://github.com/casesandberg/react-color)                     |Easily edit the custom theme and, more importantly, looking professional while doing it|
-|[react-window](https://github.com/bvaughn/react-window)                        |Put the virtual in Virtual Json Viewer|
-|[TailwindCSS](https://tailwindcss.com/)                                        |Prevent me from touching CSS files|
-|[Typescript](https://www.typescriptlang.org/)                                  |Try to forget I'm actually writing JS 🤢|
-|[uid](https://github.com/lukeed/uid)                                           |Fast generation of unique keys for [React lists](https://reactjs.org/docs/lists-and-keys.html#keys) |
-|[vite](https://vite.dev/)                                                      |Because Webpack is sooo 2023|
-|[vscode-icons](https://github.com/microsoft/vscode-icons)                      |Keep UI buttons clean and intuitive|
+| Tool                                                                     | Usage                                                                                               |
+| ------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------- |
+| [anchorme](https://github.com/alexcorvi/anchorme.js)                     | Convert URLs to clickable HTML links                                                                |
+| [jq-wasm](https://github.com/paolosimone/jq-wasm)                        | JQ in the browser                                                                                   |
+| [json-stable-stringify](https://github.com/ljharb/json-stable-stringify) | Sort keys on JSON serialization apparently is rocket science                                        |
+| [React](https://reactjs.org/)                                            | Learn how to write a frontend application without jQuery and bootstrap                              |
+| [react-color](https://github.com/casesandberg/react-color)               | Easily edit the custom theme and, more importantly, looking professional while doing it             |
+| [react-window](https://github.com/bvaughn/react-window)                  | Put the virtual in Virtual Json Viewer                                                              |
+| [TailwindCSS](https://tailwindcss.com/)                                  | Prevent me from touching CSS files                                                                  |
+| [Typescript](https://www.typescriptlang.org/)                            | Try to forget I'm actually writing JS 🤢                                                            |
+| [uid](https://github.com/lukeed/uid)                                     | Fast generation of unique keys for [React lists](https://reactjs.org/docs/lists-and-keys.html#keys) |
+| [vite](https://vite.dev/)                                                | Because Webpack is sooo 2023                                                                        |
+| [vscode-icons](https://github.com/microsoft/vscode-icons)                | Keep UI buttons clean and intuitive                                                                 |
 
 ## License
 
