@@ -23,7 +23,7 @@ export function CopyButton({
   const t = useContext(TranslationContext);
   const { sortKeys, indentation } = useContext(SettingsContext);
 
-  const [isCopied, setIsCopied] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const copy = useCallback(async () => {
     try {
@@ -32,21 +32,21 @@ export function CopyButton({
         space: indentation,
       });
       await navigator.clipboard.writeText(text);
-      setIsCopied(true);
+      setShowSuccess(true);
     } catch (err) {
       console.error("Failed to copy json to clipboard: ", err);
     }
   }, [jsonLines, sortKeys, indentation]);
 
   useEffect(() => {
-    if (!isCopied) return;
+    if (!showSuccess) return;
 
     const timerId = setTimeout(() => {
-      setIsCopied(false);
+      setShowSuccess(false);
     }, 1000);
 
     return () => clearTimeout(timerId);
-  }, [isCopied]);
+  }, [showSuccess]);
 
   const handleShortcut = useCallback(
     (e: KeydownEvent) => {
@@ -62,15 +62,32 @@ export function CopyButton({
   );
   useGlobalKeydownEvent(handleShortcut);
 
+  const clipboardEnabled = !!navigator.clipboard && window.isSecureContext;
+
+  useEffect(() => {
+    if (!clipboardEnabled) {
+      console.warn(
+        "Virtual Json Viewer: Clipboard API is not available. Copy button hidden.",
+      );
+    }
+  }, [clipboardEnabled]);
+
+  if (!clipboardEnabled) {
+    return <div />;
+  }
+
   return (
     <IconButton
       className={classNames(
-        "fill-toolbar-foreground hover:bg-toolbar-focus",
+        "fill-toolbar-foreground",
+        { "hover:bg-toolbar-focus": !showSuccess },
         className,
       )}
       title={t.toolbar.copy}
-      icon={isCopied ? Icon.Check : Icon.Files}
+      aria-label={t.toolbar.copy}
+      icon={showSuccess ? Icon.Check : Icon.Files}
       onClick={copy}
+      disabled={showSuccess}
     />
   );
 }

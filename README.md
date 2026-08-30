@@ -107,6 +107,10 @@ On Chrome
 
 If this doesn't solve the issue make sure you are using the latest version of both Chrome and Virtual Json Viewer, or manually install the [correct build for your version](#manual-installation).
 
+### Why the "copy" button is not available?
+
+The copy button relies on the [Clipboard API](https://developer.mozilla.org/en-US/docs/Web/API/Clipboard_API) which requires a [secure context](https://developer.mozilla.org/en-US/docs/Web/Security/Defenses/Secure_Contexts) (HTTPS or localhost). If the page is loaded from an insecure context (HTTP) the copy button is not shown.
+
 ### Why JQ is not available?
 
 [JQ](https://stedolan.github.io/jq) has been [compiled to WebAssembly](https://github.com/paolosimone/jq-wasm) and included in this plugin, but some website's Content Security Policy doesn't allow WASM execution. In those cases the JQ command bar is not shown.
