@@ -12,6 +12,9 @@ import { SettingsContext } from "@/viewer/state";
 import classNames from "classnames";
 import { JSX, useCallback, useContext, useEffect, useState } from "react";
 
+// See https://developer.mozilla.org/en-US/docs/Web/API/Clipboard_API#security_considerations
+const CLIPBOARD_ENABLED = navigator?.clipboard && window?.isSecureContext;
+
 export type CopyButtonProps = Props<{
   jsonLines: Json.Lines;
 }>;
@@ -19,7 +22,17 @@ export type CopyButtonProps = Props<{
 export function CopyButton({
   jsonLines,
   className,
-}: CopyButtonProps): JSX.Element {
+}: CopyButtonProps): Nullable<JSX.Element> {
+  if (!CLIPBOARD_ENABLED) {
+    useEffect(() => {
+      console.warn(
+        "Virtual Json Viewer: Clipboard API is not available. Copy button hidden.",
+      );
+    }, []);
+
+    return null;
+  }
+
   const t = useContext(TranslationContext);
   const { sortKeys, indentation } = useContext(SettingsContext);
 
@@ -61,20 +74,6 @@ export function CopyButton({
     [copy],
   );
   useGlobalKeydownEvent(handleShortcut);
-
-  const clipboardEnabled = !!navigator.clipboard && window.isSecureContext;
-
-  useEffect(() => {
-    if (!clipboardEnabled) {
-      console.warn(
-        "Virtual Json Viewer: Clipboard API is not available. Copy button hidden.",
-      );
-    }
-  }, [clipboardEnabled]);
-
-  if (!clipboardEnabled) {
-    return <div />;
-  }
 
   return (
     <IconButton
