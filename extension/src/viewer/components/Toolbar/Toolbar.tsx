@@ -11,6 +11,7 @@ import { JSX } from "react";
 import { JQCommandBox } from "./JQCommandBox";
 import { OpenStateToggle } from "./OpenStateToggle";
 import { SaveButton } from "./SaveButton";
+import { CopyButton } from "./CopyButton";
 import { SearchBox } from "./SearchBox";
 import { ViewerModeToggle } from "./ViewerModeToggle";
 
@@ -53,6 +54,8 @@ export function Toolbar({
         <Separator />
 
         <SaveButton className="h-6 w-6 px-px" jsonLines={jsonLines} />
+
+        <CopyButton className="ml-2 h-6 w-6 px-px" jsonLines={jsonLines} />
 
         <SearchBox
           className="ml-2 flex-1"

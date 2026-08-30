@@ -35,6 +35,7 @@ Rightful question, and the answer is quite simple: the others weren't good enoug
 - [X] Support [JSON Lines](https://jsonlines.org/)
 - [X] Shareable URL
 - [X] [Keyboard shortcuts](#keyboard-shortcuts)
+- [X] Download/copy JSON
 - [X] Appearance
     - [X] Light/dark mode
     - [X] Custom theme
@@ -63,6 +64,7 @@ Rightful question, and the answer is quite simple: the others weren't good enoug
 | Expand                       | `Ctrl + e`           |                   |
 | Collapse                     | `Ctrl + Shift + e`   |                   |
 | Save                         | `Ctrl + s`           |                   |
+| Copy to clipboard            | `Ctrl + Shift + c`   | `Shift + y`       |
 | Go to next search match      | `Ctrl + g`           | `n`               |
 | Go to previous search match  | `Ctrl + Shift + g`   | `Shift + n`       |
 
@@ -104,6 +106,10 @@ On Chrome
 1. enable the toggle "Allow access to file URLs"
 
 If this doesn't solve the issue make sure you are using the latest version of both Chrome and Virtual Json Viewer, or manually install the [correct build for your version](#manual-installation).
+
+### Why isn't the "copy" button available?
+
+The copy button relies on the [Clipboard API](https://developer.mozilla.org/en-US/docs/Web/API/Clipboard_API) which requires a [secure context](https://developer.mozilla.org/en-US/docs/Web/Security/Defenses/Secure_Contexts) (HTTPS or localhost). If the page is loaded from an insecure context (HTTP) the copy button is not shown.
 
 ### Why JQ is not available?
 
