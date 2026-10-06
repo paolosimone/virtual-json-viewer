@@ -105,7 +105,13 @@ export function LiteralValue({
   const textValue = value?.toString() ?? "null";
 
   return (
-    <span className={classNames("whitespace-pre-wrap", textColor, className)}>
+    <span
+      className={classNames(
+        "wrap-anywhere whitespace-pre-wrap",
+        textColor,
+        className,
+      )}
+    >
       {isString && <span>&quot;</span>}
       <span ref={outerRef}>
         <RenderedTextFromSearch
