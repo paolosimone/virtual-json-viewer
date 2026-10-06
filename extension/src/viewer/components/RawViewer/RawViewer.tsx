@@ -107,7 +107,7 @@ export function RawViewer({
     }
   };
 
-  const wrap = minify ? "break-all" : "whitespace-pre";
+  const wrap = minify ? "break-all" : "whitespace-pre-wrap wrap-anywhere";
 
   // Reset the navigator when search matches change.
   // Starting index is not a dependency, because it must not trigger a reset.
